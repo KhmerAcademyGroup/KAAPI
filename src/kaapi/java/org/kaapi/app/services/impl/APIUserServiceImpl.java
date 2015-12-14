@@ -76,7 +76,7 @@ public class APIUserServiceImpl implements APIUserService {
 
 	@Override
 	public List<APIUser> findAllUserByUsername(Pagination pagination , String username) {
-		String sql = "SELECT id, username, password, email, enabled , position, approved_by, approved_date, created_date, created_by , updated_by, updated_date , locked "
+		String sql = "SELECT id, username, password, email, enabled ,locked ,position, approved_by, approved_date, created_date, created_by , updated_by, updated_date , locked "
 				   + "FROM api_user "
 				   + "WHERE username LIKE ? and position <> ? LIMIT ? OFFSET ?;";
 		List<APIUser> users = new ArrayList<APIUser>();
@@ -94,6 +94,7 @@ public class APIUserServiceImpl implements APIUserService {
 				user.setPassword(rs.getString("password"));
 				user.setEmail(rs.getString("email"));
 				user.setPosition(rs.getString("position"));
+				user.setAccountNonLocked(rs.getBoolean("locked"));
 				user.setApprovedDate(rs.getDate("approved_date"));
 				user.setApprovedBy(rs.getInt("approved_by"));
 				user.setCreatedBy(rs.getInt("created_by"));

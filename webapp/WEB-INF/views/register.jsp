@@ -131,7 +131,7 @@
   	         	datatype: 'JSON',
   	          	data: JSON.stringify(json), 
 	  	        beforeSend: function(xhr) {
-				   xhr.setRequestHeader("Authorization", "Basic a2FhcGk6IUAjJEtobWVyQWNhZGVteQ==");
+				   xhr.setRequestHeader("Authorization", "Basic ${kaapi}");
 	               xhr.setRequestHeader("Accept", "application/json");
 	               xhr.setRequestHeader("Content-Type", "application/json");
 	            },

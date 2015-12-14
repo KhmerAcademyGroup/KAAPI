@@ -212,19 +212,20 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
-                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <table class="table table-hover">
+                                            <div class="table-responsive">
+                                                    <table class="table">
+
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Username</th>
                                                             <th>Email</th>
                                                             <th>Position</th>
-                                                            <th>Status</th>
                                                             <th>Roles</th>
                                                             <th>Registered Date</th>
                                                             <th>Group</th>
-                                                            <th>Action</th>
+                                                            <th>Locked</th>
+                                                            <th>Disabled</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="CONTENTS">
@@ -406,11 +407,11 @@
 				<td>{{= username}}</td>
 				<td>{{= email}}</td>
 				<td>{{= position}}</td>
-				<td>{{= status}}</td>
+				<td>{{if accountNonLocked == true}} <i class="ion-android-close" style="color: red;"></i> {{else}} <i class="ion-android-close" style="color: green;"></i> {{/if}}</td>
 				<td>{{= roles}}</td>
 				<td>{{= createdDate}}</td>
 				<td>{{= position}}</td>
-				<td>Actions</td>
+				<td>{{if enabled == true}} <i class="ion-android-close" style="color: red;"></i> {{else}} <i class="ion-android-close" style="color: green;"></i> {{/if}}</td>
 			</tr>
         </script>
         
