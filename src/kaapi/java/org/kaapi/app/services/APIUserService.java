@@ -17,5 +17,6 @@ public interface APIUserService {
 	public int countAPIUser();
 	public boolean isUsernameExist(String username);
 	public boolean isEmailExist(String email);
+	public boolean addUserRoles(int userID,int roleID);
 	
 }

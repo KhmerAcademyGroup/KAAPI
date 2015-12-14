@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,13 +116,19 @@ public class APIUserServiceImpl implements APIUserService {
 					+"(?,?,?,?,1,0,NOW());";
 		try(
 			Connection cnn = dataSource.getConnection();
-			PreparedStatement ps = cnn.prepareStatement(sql);
+			PreparedStatement ps = cnn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 		){
 			ps.setString(1,user.getUsername());
 			ps.setString(3, new BCryptPasswordEncoder().encode(user.getPassword()));
 			ps.setString(2, user.getEmail());
 			ps.setString(4, user.getPosition());
 			if(ps.executeUpdate() > 0){
+				ResultSet rs = ps.getGeneratedKeys();
+				if ( rs.next() ) {
+				    // Retrieve the auto generated key(s).
+				    System.out.println(rs.getInt(1));
+				    this.addUserRoles(rs.getInt(1), 3);
+				}
 				return true;
 			}
 		}catch(SQLException e){
@@ -130,7 +137,23 @@ public class APIUserServiceImpl implements APIUserService {
 		return false;
 	}
 
-	
+	@Override
+	public boolean addUserRoles(int userID,int roleID) {
+		String sql = "INSERT INTO api_user_role( api_user_id  ,  api_role_id ) VALUES ( ? , ?);";
+		try(
+			Connection cnn = dataSource.getConnection();
+			PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+			ps.setInt(1,userID);
+			ps.setInt(2, roleID);
+			if(ps.executeUpdate() > 0){
+				return true;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	
 	@Override

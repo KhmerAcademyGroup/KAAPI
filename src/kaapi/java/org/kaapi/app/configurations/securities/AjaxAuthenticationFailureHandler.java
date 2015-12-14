@@ -17,6 +17,8 @@ public class AjaxAuthenticationFailureHandler implements AuthenticationFailureHa
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {
 	 	
+		System.out.println("FAIL " + e.getMessage());
+		
 		response.getWriter().print(e.getMessage());
 		
         response.getWriter().flush();

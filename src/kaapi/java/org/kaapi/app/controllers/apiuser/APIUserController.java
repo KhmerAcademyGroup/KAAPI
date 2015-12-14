@@ -7,6 +7,7 @@ import java.util.Map;
 import org.kaapi.app.entities.APIUser;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.exceptions.ResourceConflictException;
+import org.kaapi.app.exceptions.ResourceNotFoundException;
 import org.kaapi.app.services.APIUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,20 +48,16 @@ public class APIUserController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> addUser(@RequestBody APIUser user){
-		Map<String , Object> map = new HashMap<String , Object>();
 		if(apiUserService.isUsernameExist(user.getUsername())){
-//			map.put("MESSAGE", "Username is already existed.");
-//			return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
 			throw new ResourceConflictException("Username is already existed.");
 		}
 		if(apiUserService.isEmailExist(user.getEmail())){
-			map.put("MESSAGE", "Email is already existed.");
-			return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
+			throw new ResourceConflictException("Email is already existed.");
 		}
 		if(apiUserService.addUser(user) == false){
-			map.put("MESSAGE", "Error! User was not registered successful!");
-			return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
+			throw new ResourceNotFoundException("Email is already existed.");
 		}
+		Map<String , Object> map = new HashMap<String , Object>();
 		map.put("MESSAGE", "User was registered successfully");
 		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
 	}

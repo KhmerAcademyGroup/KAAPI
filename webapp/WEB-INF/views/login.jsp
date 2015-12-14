@@ -124,7 +124,10 @@
   	            		alert(data);
   	            	}else if(data == "User is disabled"){
   	            		alert(data);
+  	            	}else if(data == "Bad credentials"){
+  	            		alert(data);
   	            	}else{
+  	            		alert("Logined success.");
   	            		location.href = "${pageContext.request.contextPath}/"+data;
   	            	}
   	            	
