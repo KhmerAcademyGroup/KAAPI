@@ -1,0 +1,25 @@
+package org.kaapi.app.controllers;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/error")
+public class HTTPErrorController {
+	
+	@RequestMapping(value="/500")
+	public String error500(ModelMap m){
+		m.addAttribute("msg","Error 500 | Internal Server Error.");
+		return "errors/500";
+	}
+	
+	@RequestMapping(value="/404")
+	public String error404(ModelMap m){
+		m.addAttribute("msg","Error 404 | Page not found");
+		return "errors/404";
+	}
+	
+	
+	
+}
