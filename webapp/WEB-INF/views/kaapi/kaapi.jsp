@@ -7,6 +7,6 @@
 <title>${msg}</title>
 </head>
 <body>
-<h1>${msg}</h1>  test hi
+<h1>${msg}</h1>  
 </body>
 </html>
