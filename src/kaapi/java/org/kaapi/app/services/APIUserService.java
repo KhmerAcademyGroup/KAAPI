@@ -18,5 +18,6 @@ public interface APIUserService {
 	public boolean isUsernameExist(String username);
 	public boolean isEmailExist(String email);
 	public boolean addUserRoles(int userID,int roleID);
+	public List<APIUser> listRequestedUser();
 	
 }

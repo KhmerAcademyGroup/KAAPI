@@ -74,55 +74,15 @@
                             <ul class="nav navbar-nav navbar-right pull-right">
                                 <li class="dropdown hidden-xs">
                                     <a href="#" data-target="#" class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="true">
-                                        <i class="md md-notifications"></i> <span class="badge badge-xs badge-danger">3</span>
+                                        <i class="md md-notifications"></i> <span class="badge badge-xs badge-danger" id="totalRequestedUser"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-lg">
                                         <li class="text-center notifi-title">Notification</li>
-                                        <li class="list-group">
-                                           <!-- list item-->
-                                           <a href="javascript:void(0);" class="list-group-item">
-                                              <div class="media">
-                                                 <div class="pull-left">
-                                                    <em class="fa fa-user-plus fa-2x text-info"></em>
-                                                 </div>
-                                                 <div class="media-body clearfix">
-                                                    <div class="media-heading">New user registered</div>
-                                                    <p class="m-0">
-                                                       <small>You have 10 unread messages</small>
-                                                    </p>
-                                                 </div>
-                                              </div>
-                                           </a>
-                                           <!-- list item-->
-                                            <a href="javascript:void(0);" class="list-group-item">
-                                              <div class="media">
-                                                 <div class="pull-left">
-                                                    <em class="fa fa-diamond fa-2x text-primary"></em>
-                                                 </div>
-                                                 <div class="media-body clearfix">
-                                                    <div class="media-heading">New settings</div>
-                                                    <p class="m-0">
-                                                       <small>There are new settings available</small>
-                                                    </p>
-                                                 </div>
-                                              </div>
-                                            </a>
-                                            <!-- list item-->
-                                            <a href="javascript:void(0);" class="list-group-item">
-                                              <div class="media">
-                                                 <div class="pull-left">
-                                                    <em class="fa fa-bell-o fa-2x text-danger"></em>
-                                                 </div>
-                                                 <div class="media-body clearfix">
-                                                    <div class="media-heading">Updates</div>
-                                                    <p class="m-0">
-                                                       <small>There are
-                                                          <span class="text-primary">2</span> new updates available</small>
-                                                    </p>
-                                                 </div>
-                                              </div>
-                                            </a>
-                                           <!-- last list item -->
+                                        <li class="list-group" id="listRequestedUser" style="max-height: 400px; overflow: auto">
+                                           
+                                           <!-- list Requested User-->
+                                          
+                                           
                                             <a href="javascript:void(0);" class="list-group-item">
                                               <small>See all notifications</small>
                                             </a>
@@ -417,10 +377,13 @@
         
         
 		<script type="text/javascript">
+		
+		var users = {};
+		var check = true;
+		
 		$(document).ready(function(){
 		
-			var users = {};
-			var check = true;
+			
 			
 			users.findAllUserByUsername = function(currentPage){
 				$.ajax({ 
@@ -476,10 +439,83 @@
    			    }); 
     		};
     		
-    		
+    		users.countRequestedUser = function(){
+				$.ajax({ 
+				    url: "${pageContext.request.contextPath}/api/apiuser/count_req", 
+				    type: 'GET', 
+				    beforeSend: function(xhr) {
+	                    xhr.setRequestHeader("Accept", "application/json");
+	                    xhr.setRequestHeader("Content-Type", "application/json");
+	                    xhr.setRequestHeader("Authorization" , "Basic ${kaapi}");
+	                },
+				    success: function(data) { 
+						console.log(data);
+						if(data.RESP_DATA != null){
+							$("#totalRequestedUser").html(data.RESP_DATA.length);
+							var reqUser = "";
+							 for (i = 0; i < data.RESP_DATA.length; i++) {
+								 reqUser    += 	 '<a href="javascript:void(0);" class="list-group-item">'+
+									            	'<div class="media">'+
+									                  '<div class="pull-left">'+
+									                     '<em class="fa fa-user-plus fa-2x text-info"></em>'+
+									                  '</div>'+
+									                  '<div class="media-body clearfix">'+
+	                                                    '<div class="media-heading">'+data.RESP_DATA[i].username+' registered.</div>'+
+	                                                    '<p class="m-0">'+
+	                                                       '<small>'+data.RESP_DATA[i].createdDate+'</small>'+
+	                                                    '</p>'+
+	                                                 '</div>'+
+									               '</div>'+
+									             '</a>';
+		                     }
+		                     $("#listRequestedUser").html(reqUser);
+						}
+				    },
+				    error:function(data,status,er) { 
+				        console.log("error: "+data+" status: "+status+" er:"+er);
+				    }
+				});
+			};
+			
+			
 			users.findAllUserByUsername(1);
+			users.countRequestedUser();
 
 		});
+		
+		
+		
+			/*************************************************************/
+			
+			
+			var webSocket = 
+				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/notify');
+			
+			webSocket.onerror = function(event) {
+				onError(event)
+			};
+			
+			webSocket.onopen = function(event) {
+				onOpen(event)
+			};
+			
+			webSocket.onmessage = function(event) {
+				onMessage(event)
+			};
+			
+			function onMessage(event) {
+				users.countRequestedUser();
+				console.log("GET : " + event.data);
+			}
+			
+			function onOpen(event) {
+				console.log("Open...");
+			}
+			
+			function onError(event) {
+				alert(event.data);
+			}
+			
 	</script>
 	</body>
 </html>

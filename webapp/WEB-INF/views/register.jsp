@@ -40,7 +40,7 @@
 
         <script src="${pageContext.request.contextPath}/resources/theme/js/modernizr.min.js"></script>
         
-        
+ 
 
 
     </head>
@@ -60,22 +60,22 @@
                    
                     <div class="form-group">
                          <label>Email address</label>
-                         <input id="email" name="email" required type="email" class="form-control" >
+                         <input id="email" name="email" require  type="email" class="form-control" >
                     </div>
                     
                     <div class="form-group">
                          <label>Username</label>
-                         <input id="username" name="username"  required type="text" class="form-control" >
+                         <input id="username" name="username" require  type="text" class="form-control" >
                     </div>
 
                      <div class="form-group">
                          <label>Password</label>
-                         <input id="password" name="password" required type="text" class="form-control">
+                         <input id="password" name="password" require type="text" class="form-control">
                     </div>
                     
                     <div class="form-group">
                          <label>Confirm Password</label>
-                         <input id="confirmPassword" name="confirmPassword" required type="text" class="form-control">
+                         <input id="confirmPassword" name="confirmPassword" require  type="text" class="form-control">
                     </div>
                     
                     <div class="form-group">
@@ -109,12 +109,12 @@
         <script src="${pageContext.request.contextPath}/resources/theme/js/jquery.min.js"></script>
         
         <script type="text/javascript">
-        
         $(function() {
         	
         	$("#frmRegister").submit(function(e){
        		
        		  e.preventDefault();
+       		
        		if( $("#password").val() != $("#confirmPassword").val() ){ 
        			alert("Passwords do not match!");
        			return;
@@ -136,6 +136,7 @@
 	               xhr.setRequestHeader("Content-Type", "application/json");
 	            },
   	            success: function(data) {
+  	            	send();
   	            	alert(data.MESSAGE);
   	            },
   	         	error: function(data){
@@ -147,6 +148,40 @@
 	      
         
         });
+        
+        
+	        var webSocket = 
+				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/notify');
+			
+			webSocket.onerror = function(event) {
+				onError(event)
+			};
+			
+			webSocket.onopen = function(event) {
+				onOpen(event)
+			};
+			
+			webSocket.onmessage = function(event) {
+				onMessage(event)
+			};
+			
+			function onMessage(event) {
+				console.log(event.data);
+			}
+			
+			function onOpen(event) {
+				console.log("OPEN...");
+			}
+			
+			function onError(event) {
+				alert(event.data);
+			}
+			
+			function send() {
+				var txt = "SENT";
+				webSocket.send(txt);
+				return false;
+			}
         </script>
         
         
@@ -169,6 +204,8 @@
         <!-- CUSTOM JS -->
         <script src="${pageContext.request.contextPath}/resources/theme/js/jquery.app.js"></script>
 	
+		
+		
 	</body>
 </html>
         

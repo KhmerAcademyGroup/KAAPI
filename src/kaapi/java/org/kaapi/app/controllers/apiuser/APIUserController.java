@@ -62,4 +62,15 @@ public class APIUserController {
 		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/count_req" , method = RequestMethod.GET)
+	public ResponseEntity<Map<String,Object>> countRequestedUser(){
+		List<APIUser> users = apiUserService.listRequestedUser();
+		if(users == null){
+			throw new ResourceConflictException("Not found!");
+		}
+		Map<String , Object> map = new HashMap<String , Object>();
+		map.put("RESP_DATA", users);
+		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
+	}
+	
 }
