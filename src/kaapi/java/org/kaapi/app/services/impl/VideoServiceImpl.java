@@ -15,7 +15,9 @@ import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class VideoServiceImpl implements VideoService {
 
 	@Autowired
