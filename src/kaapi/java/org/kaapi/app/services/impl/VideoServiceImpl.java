@@ -171,7 +171,7 @@ public class VideoServiceImpl implements VideoService {
 				+ "LEFT JOIN TBLCOMMENT C ON V.VIDEOID=C.VIDEOID "
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID "
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
-				+ "WHERE V.USERID=?"
+				+ "WHERE V.USERID=? AND lower(V.VIDEONAME) LIKE lower(?)"
 				+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES "
 				+ "OFFSET ? LIMIT ?";
 		
@@ -179,8 +179,9 @@ public class VideoServiceImpl implements VideoService {
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, userId);
-			ps.setInt(2, offset);
-			ps.setInt(3, limit);
+			ps.setString(2, VideoName);
+			ps.setInt(3, offset);
+			ps.setInt(4, limit);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
