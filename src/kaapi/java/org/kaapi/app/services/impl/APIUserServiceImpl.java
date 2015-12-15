@@ -242,4 +242,27 @@ public class APIUserServiceImpl implements APIUserService {
 		return false;
 	}
 
+	@Override
+	public List<APIUser> listRequestedUser() {
+		String sql = "SELECT id , username , created_date FROM api_user WHERE locked = 0 ORDER BY id DESC;";
+		List<APIUser> users = new ArrayList<APIUser>();
+		APIUser user = null;
+		try (	
+			Connection cnn = dataSource.getConnection(); 
+			PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				user = new APIUser();
+				user.setId(rs.getInt("id"));
+				user.setUsername(rs.getString("username"));
+				user.setCreatedDate(rs.getDate("created_date"));
+				users.add(user);
+			}
+			return users;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }
