@@ -22,20 +22,52 @@ public class UniversityServiceImpl implements UniversityService{
 	private DataSource dataSource;
 	
 	@Override
-	public boolean createUniverstiy() {
-		// TODO Auto-generated method stub
+	public boolean createUniverstiy(University university) {
+		String sql = "INSERT INTO tbluniversity(universityid,universityname) VALUES(NEXTVAL('seq_university'),?);";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+			){
+		ps.setString(1, university.getUniversityName());
+		if(ps.executeUpdate() > 0)
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean updateUniversityById(University university) {
-		// TODO Auto-generated method stub
+		String sql = "UPDATE tbluniversity SET universityname = ? WHERE universityid = ?;";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+			){
+			ps.setString(1, university.getUniversityName());
+			ps.setInt(2, university.getUniversityId());
+			if(ps.executeUpdate() > 0)
+				return true;
+			
+		}catch(SQLException e){
+				e.printStackTrace();
+			}
 		return false;
 	}
 
 	@Override
 	public boolean deleteUniversityById(int id) {
-		// TODO Auto-generated method stub
+		String sql = "DELETE FROM tbluniversity WHERE universityid = ?;";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+			){
+			ps.setInt(1, id);
+			if(ps.executeUpdate() > 0)
+				return true;			
+		}catch(SQLException e){
+				e.printStackTrace();
+			}
 		return false;
 	}
 
@@ -94,5 +126,7 @@ public class UniversityServiceImpl implements UniversityService{
 		}
 		return 0;
 	}
+
+
 
 }
