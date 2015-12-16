@@ -7,7 +7,7 @@ import org.kaapi.app.entities.University;
 
 public interface UniversityService {
 	
-	public boolean createUniverstiy();
+	public boolean createUniverstiy(University university);
 	public boolean updateUniversityById(University university);
 	public boolean deleteUniversityById(int id);
 	public List<University> findAllUniverstiyByName(Pagination pagination,String keyword); 
