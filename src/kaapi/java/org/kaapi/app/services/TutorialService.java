@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.kaapi.app.entities.Tutorial;
 
 public interface TutorialService {
-	public ArrayList<Tutorial> lists(int userid);
+	public ArrayList<Tutorial> lists(int userid,int offset, int limit);
 	public ArrayList<Tutorial> list(int categoryid);
 	public Tutorial get(int tutorialid);
 	public Tutorial getFirstDetail(int categoryid);

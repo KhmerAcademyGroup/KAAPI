@@ -12,7 +12,9 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.services.TutorialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class TutorialServiceImpl implements TutorialService{
 	
 	@Autowired
@@ -20,14 +22,16 @@ public class TutorialServiceImpl implements TutorialService{
 	private Connection con;
 	
 	@Override
-	public ArrayList<Tutorial> lists(int userid) {
+	public ArrayList<Tutorial> lists(int userid, int offset, int limit) {
 		try {
 			con = ds.getConnection();
 			ResultSet rs = null;	
 			ArrayList<Tutorial> tutorials= new ArrayList<Tutorial>();
-			String sql = "SELECT T.tutorialid,T.index, T.title,T.userid,T.categoryid, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID where u.userid=? ORDER BY T.CATEGORYID, T.INDEX";
+			String sql = "SELECT T.tutorialid,T.index, T.title,T.userid,T.categoryid, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID where u.userid=? ORDER BY T.CATEGORYID, T.INDEX OFFSET ? LIMIT ? ";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, userid);
+			ps.setInt(2, offset);
+			ps.setInt(3, limit);
 			rs = ps.executeQuery();
 			Tutorial dto = null;
 			while(rs.next()){
@@ -190,6 +194,7 @@ public class TutorialServiceImpl implements TutorialService{
 	@Override
 	public boolean delete(int tutorialid) {
 		try {
+			con = ds.getConnection();
 			String sql = "DELETE FROM TBLTUTORIAL WHERE tutorialid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, tutorialid);
@@ -211,6 +216,7 @@ public class TutorialServiceImpl implements TutorialService{
 	@Override
 	public int count() {
 		try {
+			con = ds.getConnection();
 			ResultSet rs = null;
 			String sql = "SELECT COUNT(tutorialid) FROM TBLTUTORIAL";
 			Statement stmt = con.createStatement();
@@ -234,6 +240,7 @@ public class TutorialServiceImpl implements TutorialService{
 	public int count(int categoryid) {
 		
 		try {
+			con = ds.getConnection();
 			ResultSet rs = null;
 			String sql = "SELECT COUNT(tutorialid) FROM TBLTUTORIAL WHERE Categoryid="+categoryid;
 			Statement stmt = con.createStatement();
@@ -256,6 +263,7 @@ public class TutorialServiceImpl implements TutorialService{
 	@Override
 	public boolean update(Tutorial dto) {
 		try {
+			con = ds.getConnection();
 			String sql = "UPDATE TBLTUTORIAL SET title=?, description=?, index=?, userid=?, categoryid=? WHERE tutorialid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, dto.getTitle());
