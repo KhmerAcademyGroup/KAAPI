@@ -23,6 +23,7 @@ public class VideoServiceImpl implements VideoService {
 	@Autowired
 	private DataSource dataSource;
 
+	//list all videos
 	@Override
 	public List<Video> listVideo(int offset, int limit) {
 		
@@ -35,12 +36,12 @@ public class VideoServiceImpl implements VideoService {
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID "
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
 				+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES "
-				+ "OFFSET ? LIMIT ?";
+				+ "ORDER BY V.VIDEOID DESC OFFSET ? LIMIT ?";
 		
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, offset);
+			ps.setInt(1, (offset-1)*limit);
 			ps.setInt(2, limit);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -69,6 +70,7 @@ public class VideoServiceImpl implements VideoService {
 		return null;
 	}
 
+	//list video by name or search video by name
 	@Override
 	public List<Video> listVideo(String videoName, int offset, int limit) {
 		String sql = "SELECT V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
@@ -81,13 +83,13 @@ public class VideoServiceImpl implements VideoService {
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
 				+ "WHERE lower(V.VIDEONAME) LIKE lower(?)"
 				+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES "
-				+ "OFFSET ? LIMIT ?";
+				+ "ORDER BY V.VIDEOID DESC OFFSET ? LIMIT ?";
 		
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setString(1, videoName);
-			ps.setInt(2, offset);
+			ps.setString(1, "%" + videoName + "%");
+			ps.setInt(2, (offset-1)*limit);
 			ps.setInt(3, limit);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -116,6 +118,7 @@ public class VideoServiceImpl implements VideoService {
 		return null;
 	}
 
+	//list video by user id
 	@Override
 	public List<Video> listVideo(int userId, int offset, int limit) {
 		String sql = "SELECT V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
@@ -128,13 +131,13 @@ public class VideoServiceImpl implements VideoService {
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
 				+ "WHERE V.USERID=?"
 				+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES "
-				+ "OFFSET ? LIMIT ?";
+				+ "ORDER BY V.VIDEOID DESC OFFSET ? LIMIT ?";
 		
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, userId);
-			ps.setInt(2, offset);
+			ps.setInt(2, (offset-1)*limit);
 			ps.setInt(3, limit);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -163,8 +166,9 @@ public class VideoServiceImpl implements VideoService {
 		return null;
 	}
 
+	//list video by user id and video name
 	@Override
-	public List<Video> listVideo(int userId, String VideoName, int offset, int limit) {
+	public List<Video> listVideo(int userId, String videoName, int offset, int limit) {
 		String sql = "SELECT V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -175,14 +179,14 @@ public class VideoServiceImpl implements VideoService {
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
 				+ "WHERE V.USERID=? AND lower(V.VIDEONAME) LIKE lower(?)"
 				+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES "
-				+ "OFFSET ? LIMIT ?";
+				+ "ORDER BY V.VIDEOID DESC OFFSET ? LIMIT ?";
 		
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, userId);
-			ps.setString(2, VideoName);
-			ps.setInt(3, offset);
+			ps.setString(2, "%" + videoName + "%");
+			ps.setInt(3, (offset-1)*limit);
 			ps.setInt(4, limit);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -303,13 +307,26 @@ public class VideoServiceImpl implements VideoService {
 
 	@Override
 	public int countVideo() {
-		// TODO Auto-generated method stub
+		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
 	@Override
 	public int countVideo(String videoName) {
-		// TODO Auto-generated method stub
+		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V WHERE lower(V.VIDEONAME) LIKE lower(?)";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setString(1, "%" + videoName + "%");
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
