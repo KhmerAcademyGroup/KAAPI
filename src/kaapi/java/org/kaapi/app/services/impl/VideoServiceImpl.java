@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -344,12 +345,6 @@ public class VideoServiceImpl implements VideoService {
 		return null;
 	}
 
-//	@Override
-//	public List<Playlist> listPlaylist(int videoId, int offset, int limit) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	@Override
 	public List<Video> topVoteAndRecent(int limit) {
 		String sql = "SELECT * FROM (select DISTINCT v.*,count(VO.videoid) vote, u.username, u.userimageurl "
@@ -396,61 +391,128 @@ public class VideoServiceImpl implements VideoService {
 
 	@Override
 	public Video getVideo(int videoId, boolean viewCount) {
-		// TODO Auto-generated method stub
+		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
+					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
+					+ "LEFT JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
+					+ "LEFT JOIN TBLCATEGORYVIDEO CV ON CT.categoryid=CV.categoryid GROUP BY CV.videoid) CC ON V.videoid=CC.videoid "
+					+ "LEFT JOIN TBLCOMMENT C ON V.VIDEOID=C.VIDEOID "
+					+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID "
+					+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
+					+ "WHERE V.VIDEOID=?  "
+					+ "GROUP BY V.VIDEOID, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES";
+		
+		Video video = null;
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, videoId);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				video = new Video();
+				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoName(rs.getString("videoname"));
+				video.setDescription(rs.getString("description"));
+				video.setYoutubeUrl(rs.getString("youtubeurl"));
+				video.setFileUrl(rs.getString("fileurl"));
+				video.setPublicView(rs.getBoolean("publicview"));
+				video.setPostDate(rs.getDate("postdate"));
+				video.setUserId(rs.getInt("userid"));
+				video.setViewCounts(rs.getInt("viewcount"));
+				video.setCategoryName(rs.getString("categorynames"));
+				video.setCountComments(rs.getInt("countcomments"));
+				video.setCountVoteMinus(rs.getInt("countvoteminus"));
+				video.setCountVotePlus(rs.getInt("countvoteplus"));
+				video.setUsername(rs.getString("username"));
+				video.setUserImageUrl(rs.getString("userimageurl"));
+				if(viewCount){
+					Statement s2 = cnn.createStatement();
+					s2.executeUpdate("UPDATE TBLVIDEO SET VIEWCOUNT=VIEWCOUNT+1 WHERE videoid=" + videoId);
+				}
+			}
+			return video;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public boolean insert(Video video) {
-		// TODO Auto-generated method stub
+		String sql = "INSERT INTO TBLVIDEO(videoid, videoname, description, youtubeurl, fileurl, publicview, postdate, userid, viewcount) VALUES(nextval('seq_video'), ?, ?, ?, ?, ?, NOW(), ?, 0)";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setString(1, video.getVideoName());
+			ps.setString(2, video.getDescription());
+			ps.setString(3, video.getYoutubeUrl());
+			ps.setString(4, video.getFileUrl());
+			ps.setBoolean(5, video.isPublicView());
+			ps.setInt(6, video.getUserId());
+			if(ps.executeUpdate()>0){
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean update(Video video) {
-		// TODO Auto-generated method stub
+		String sql = "UPDATE TBLVIDEO SET videoname=?, description=?, youtubeurl=?, fileurl=?, publicview=?, viewcount=? WHERE videoid=?";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setString(1, video.getVideoName());
+			ps.setString(2, video.getDescription());
+			ps.setString(3, video.getYoutubeUrl());
+			ps.setString(4, video.getFileUrl());
+			ps.setBoolean(5, video.isPublicView());
+			ps.setInt(6, video.getViewCounts());
+			ps.setInt(7, video.getVideoId());
+			if(ps.executeUpdate()>0){
+				return true;
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean delete(int videoId) {
-		// TODO Auto-generated method stub
+		String sql = "DELETE FROM TBLVIDEO WHERE videoid=?";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, videoId);
+			if(ps.executeUpdate()>0){
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean insertVideoToCategory(int videoId, int categoryId) {
-		// TODO Auto-generated method stub
+		String sql = "INSERT INTO TBLCATEGORYVIDEO VALUES(?, ?)";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, videoId);
+			ps.setInt(2, categoryId);
+			if(ps.executeUpdate()>0){
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean removeVideoFromCategory(int videoId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removeVideoFromCategory(int videoId, int categoryId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean insertVideoToPlaylist(int videoId, int playlistId, int index) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removeVideoFromPlaylist(int videoId, int playlistId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean updateVideoIndex(int videoId, int playlistId, int index) {
-		// TODO Auto-generated method stub
+		String sql = "DELETE FROM TBLCATEGORYVIDEO WHERE videoid=?";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, videoId);
+			if(ps.executeUpdate()>0){
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
@@ -492,18 +554,6 @@ public class VideoServiceImpl implements VideoService {
 	}
 
 	@Override
-	public int countPlaylist(int videoId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int countUserVideo(int userId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public int countCategoryVideo(int categoryId) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V "
 				   + "INNER JOIN tblcategoryvideo c on v.videoid=c.videoid "
@@ -515,18 +565,6 @@ public class VideoServiceImpl implements VideoService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return 0;
-	}
-
-	@Override
-	public int countVotePlus(int videoId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int countVoteMinus(int videoId) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -574,6 +612,30 @@ public class VideoServiceImpl implements VideoService {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	@Override
+	public List<Video> listVideo(boolean status, int offset, int limit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Video> listVideo(String videoName, boolean status, int offset, int limit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Video> listVideo(int userId, boolean status, int offset, int limit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Video> listVideo(int userId, String VideoName, boolean status, int offset, int limit) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

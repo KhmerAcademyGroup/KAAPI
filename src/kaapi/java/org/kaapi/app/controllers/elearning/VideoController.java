@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +25,7 @@ public class VideoController {
 	VideoService videoService;
 
 	//list all video with offset and limit: param(offset,limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/video", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/video/list", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getVideoList(@RequestParam("page") String page, @RequestParam("item") String item) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int p,i;
@@ -53,7 +54,7 @@ public class VideoController {
 	}
 	
 	//list video by name or search video by name: param(videoName,offset,limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/video/{name}", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/video/list/{name}", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getVideoListByName(@PathVariable("name") String name, @RequestParam("page") String page, @RequestParam("item") String item) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int p,i;
@@ -225,6 +226,7 @@ public class VideoController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
+	//top vote video sort by postdate desc: param(limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/top_vote", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getTopVoteAndRecent(@RequestParam("item") String item) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -246,6 +248,62 @@ public class VideoController {
 		map.put("MESSAGE", "RECORD FOUND");
 		map.put("RES_DATA", video);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	//get video: param(videoId, viewCount)
+	@RequestMapping(method = RequestMethod.GET, value = "/video", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getVideo(@RequestParam("vid") String id, @RequestParam("view") String count) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int i;
+		try{
+			i = Integer.parseInt(id);
+		}catch(NumberFormatException e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR INPUT");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		System.out.println(count);
+		boolean view = false;
+		if(!count.equals("f") && !count.equals("t")){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR INPUT,t,f");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}else{
+			view = (count.equals("t"))?true:false;
+		}
+		System.out.println(view);
+		Video video = videoService.getVideo(i, view);
+		if (video==null) {
+			map.put("STATUS", false);
+			map.put("MESSAGE", "RECORD NOT FOUND");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		map.put("STATUS", true);
+		map.put("MESSAGE", "RECORD FOUND");
+		map.put("RES_DATA", video);
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/video", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> deleteVideo(@RequestBody Video video) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int i;
+		try{
+			i = Integer.parseInt("0" + video.getVideoId());
+		}catch(NumberFormatException e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR INPUT" + video.getVideoId());
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		if (videoService.delete(i)) {
+			map.put("STATUS", true);
+			map.put("MESSAGE", "RECORD HAS BEEN DELETED");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}else{
+			map.put("STATUS", false);
+			map.put("MESSAGE", "RECORD HAS NOT BEEN DELETED");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
 	}
 	
 	//count all videos

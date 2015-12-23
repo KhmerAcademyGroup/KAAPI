@@ -7,14 +7,17 @@ import org.kaapi.app.entities.Video;
 
 public interface VideoService {
 	
-	public List<Video> listVideo(int offset, int limit);	
+	public List<Video> listVideo(int offset, int limit);
+	public List<Video> listVideo(boolean status, int offset, int limit);
 	public List<Video> listVideo(String videoName, int offset, int limit);
+	public List<Video> listVideo(String videoName, boolean status, int offset, int limit);
 	public List<Video> listVideo(int userId, int offset, int limit);
+	public List<Video> listVideo(int userId, boolean status, int offset, int limit);
 	public List<Video> listVideo(int userId, String VideoName, int offset, int limit);
+	public List<Video> listVideo(int userId, String VideoName, boolean status, int offset, int limit);
 	public List<Video> getRelateVideo(String categoryName, int limit);
 	public List<Video> categoryVideo(int categoryid, int offset, int limit);
 	public List<Comment> listComment(int videoid, int offset, int limit);
-	//public List<Playlist> listPlaylist(int videoId, int offset, int limit);
 	public List<Video> topVoteAndRecent(int limit);
 	public Video getVideo(int videoId, boolean viewCount);
 	public boolean insert(Video video);
@@ -22,21 +25,13 @@ public interface VideoService {
 	public boolean delete(int videoId);
 	public boolean insertVideoToCategory(int videoId, int categoryId);
 	public boolean removeVideoFromCategory(int videoId);
-	public boolean removeVideoFromCategory(int videoId, int categoryId);
-	public boolean insertVideoToPlaylist(int videoId, int playlistId, int index);
-	public boolean removeVideoFromPlaylist(int videoId, int playlistId);
-	public boolean updateVideoIndex(int videoId, int playlistId, int index);
 	public int countVideo();
 	public int countVideo(String videoName);
 	public int countVideo(int userId);
 	public int countVideo(int userId, String videoName);
 	public int countUser();
 	public int countPlaylist();
-	public int countPlaylist(int videoId);
-	public int countUserVideo(int userId);
 	public int countCategoryVideo(int categoryId);
-	public int countVotePlus(int videoId);
-	public int countVoteMinus(int videoId);
 	public int countComment(int videoId);
 	public int countForum();
 	
