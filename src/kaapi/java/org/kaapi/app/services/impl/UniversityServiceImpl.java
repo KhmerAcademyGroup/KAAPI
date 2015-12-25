@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
 import org.kaapi.app.services.UniversityService;
@@ -106,7 +107,23 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public University findUniversityById(int id) {
-		// TODO Auto-generated method stub
+		String sql = "SELECT universityname FROM tbluniversity WHERE universityid=?;";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+			){
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			if(!rs.next()){
+				return null;
+			}	
+			University university = new University();
+			university.setUniversityId(id);
+			university.setUniversityName(rs.getString("unversityname"));
+			return university;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return null;
 	}
 
