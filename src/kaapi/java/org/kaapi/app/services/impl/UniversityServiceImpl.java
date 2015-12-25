@@ -103,7 +103,7 @@ public class UniversityServiceImpl implements UniversityService{
 	}
 
 	@Override
-	public University findUniversityById(int id) {
+	public String findUniversityById(int id) {
 		String sql = "SELECT universityname FROM tbluniversity WHERE universityid=?;";
 		try(
 				Connection cnn = dataSource.getConnection();
@@ -111,13 +111,9 @@ public class UniversityServiceImpl implements UniversityService{
 			){
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
-			if(!rs.next()){
-				return null;
+			if(rs.next()){
+				return rs.getString("universityname");
 			}	
-			University university = new University();
-			university.setUniversityId(id);
-			university.setUniversityName(rs.getString("unversityname"));
-			return university;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
