@@ -6,10 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
-import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
 import org.kaapi.app.services.UniversityService;
