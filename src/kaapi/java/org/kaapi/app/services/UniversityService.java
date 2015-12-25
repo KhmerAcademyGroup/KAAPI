@@ -11,7 +11,7 @@ public interface UniversityService {
 	public boolean updateUniversityById(University university);
 	public boolean deleteUniversityById(int id);
 	public List<University> findAllUniverstiyByName(Pagination pagination,String keyword); 
-	public University findUniversityById(int id);
+	public String findUniversityById(int id);
 	public int countUniversity();
 
 }
