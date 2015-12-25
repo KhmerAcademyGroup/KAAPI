@@ -20,6 +20,7 @@ public class Video {
 	private int viewCounts;
 	private String userImageUrl;
 	private boolean status;
+	private int []categoryId;
 	
 	public int getVideoId() {
 		return videoId;
@@ -116,6 +117,12 @@ public class Video {
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+	public int[] getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(int[] categoryId) {
+		this.categoryId = categoryId;
 	}
 	
 }
