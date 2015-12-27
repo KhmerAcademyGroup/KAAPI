@@ -19,6 +19,8 @@ public class Video {
 	private int countComments;
 	private int viewCounts;
 	private String userImageUrl;
+	private boolean status;
+	private int []categoryId;
 	
 	public int getVideoId() {
 		return videoId;
@@ -109,6 +111,18 @@ public class Video {
 	}
 	public void setUserImageUrl(String userImageUrl) {
 		this.userImageUrl = userImageUrl;
+	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	public int[] getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(int[] categoryId) {
+		this.categoryId = categoryId;
 	}
 	
 }

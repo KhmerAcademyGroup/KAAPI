@@ -284,6 +284,7 @@ public class VideoController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
+	//delete video
 	@RequestMapping(method = RequestMethod.DELETE, value = "/video", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> deleteVideo(@RequestBody Video video) {
 		Map<String, Object> map = new HashMap<String, Object>();

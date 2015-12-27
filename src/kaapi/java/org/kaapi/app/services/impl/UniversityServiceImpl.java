@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
 import org.kaapi.app.services.UniversityService;
@@ -23,7 +21,14 @@ public class UniversityServiceImpl implements UniversityService{
 	
 	@Override
 	public boolean createUniverstiy(University university) {
+<<<<<<< HEAD
 		String sql = "INSERT INTO tbluniversity(university_id,university_name) VALUES(NEXTVAL('seq_university'),?);";
+=======
+		String sql = "INSERT "
+				+ "INTO"
+			+ "tbluniversity(universityid,universityname)"
+				+ "VALUES(NEXTVAL('seq_university'),?);";
+>>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -39,7 +44,16 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean updateUniversityById(University university) {
+<<<<<<< HEAD
 		String sql = "UPDATE tbluniversity SET university_name = ? WHERE university_id = ?;";
+=======
+		String sql = "UPDATE "
+				+ "tbluniversity "
+			+ "SET "
+				+ "universityname = ?"
+			+ "WHERE"
+				+ "universityid = ?;";		
+>>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -57,7 +71,15 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean deleteUniversityById(int id) {
+<<<<<<< HEAD
 		String sql = "DELETE FROM tbluniversity WHERE university_id = ?;";
+=======
+		String sql = "DELETE "
+			+ "FROM "
+				+ "tbluniversity "
+			+ "WHERE "
+				+ "universityid = ?;";
+>>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -105,14 +127,38 @@ public class UniversityServiceImpl implements UniversityService{
 	}
 
 	@Override
-	public University findUniversityById(int id) {
-		// TODO Auto-generated method stub
+	public String findUniversityById(int id) {
+		String sql = "SELECT "
+				+ "universityname "
+			+ "FROM "
+				+ "tbluniversity "
+			+ "WHERE "
+				+ "universityid=?;";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+			){
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getString("universityname");
+			}	
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public int countUniversity() {
+<<<<<<< HEAD
 		String sql = "SELECT COUNT(university_id) as count FROM tbluniversity;";
+=======
+		String sql = "SELECT "
+				+ "COUNT(universityid) as count"
+			+ "FROM "
+				+ "tbluniversity;";
+>>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
