@@ -83,9 +83,6 @@
                                            <!-- list Requested User-->
                                           
                                            
-                                            <a href="javascript:void(0);" class="list-group-item">
-                                              <small>See all notifications</small>
-                                            </a>
                                         </li>
                                     </ul>
                                 </li>
@@ -142,7 +139,7 @@
                                 <a href="#" class="waves-effect"><i class="md md-account-child"></i><span>User</span></a>
                             </li>
                             <li>
-                                <a href="${pageContext.request.contextPath}/ka_api" class="waves-effect"><i class="md md-account-child"></i><span>WebService API</span></a>
+                                <a href="${pageContext.request.contextPath}/webserviceapi" class="waves-effect"><i class="md md-account-child"></i><span>WebService API</span></a>
                             </li>
                         </ul>
                         <div class="clearfix"></div>
@@ -168,7 +165,7 @@
                             <div class="col-md-12">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title">KA API Users</h3>
+                                        <h3 class="panel-title">KA API Users</h3>   
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
@@ -180,12 +177,11 @@
                                                             <th>#</th>
                                                             <th>Username</th>
                                                             <th>Email</th>
-                                                            <th>Position</th>
+                                                            <th>Group</th>
                                                             <th>Roles</th>
                                                             <th>Registered Date</th>
-                                                            <th>Group</th>
-                                                            <th>Locked</th>
-                                                            <th>Disabled</th>
+                                                            <th>Approve Date</th>
+                                                            <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="CONTENTS">
@@ -331,6 +327,74 @@
                 </div>
             </div>
             <!-- /Right-bar -->
+            
+            
+            							 <div id="oneReqestedUser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 class="modal-title" id="myModalLabel">New user registered</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h5>Username : <span id="username">Test</span></h5>
+                                                        <hr>
+                                                        <h5>Email : <span id="email">Test</span></h5>
+                                                        <hr>
+                                                        <h5>Register Date : <span id="registerDate">Test</span></h5>
+                                                        <hr>
+                                                        <h5>Group : <span id="group">Test</span></h5>
+                                                        <input type="hidden" id="userid"/>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger waves-effect" id="btnReject">Reject</button>
+                                                        <button type="button" class="btn btn-success waves-effect waves-light" id="btnAccept">Accept</button>
+                                                    </div>
+        
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+            
+           								 <!--  Modal content for the above example -->
+                                        <div class="modal fade all-request-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 class="modal-title" id="myLargeModalLabel">Requested Users</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                      
+                                                      	<div class="row">
+				                                            <div class="table-responsive">
+				                                                    <table class="table">
+				
+				                                                    <thead>
+				                                                        <tr>
+				                                                            <th>#</th>
+				                                                            <th>Username</th>
+				                                                            <th>Email</th>
+				                                                            <th>Registered Date</th>
+				                                                            <th>Group</th>
+				                                                            <th>Action</th>
+				                                                        </tr>
+				                                                    </thead>
+				                                                    <tbody id="tblRequestedUser">
+				                                                       
+				                                                       
+								
+								
+				                                                    </tbody>
+				                                                </table>
+				                                            </div>
+				                                        </div>
+                                                      
+                                                      
+                                                    </div>
+                                                </div><!-- /.modal-content -->    
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+            
 
 
         </div>
@@ -360,6 +424,8 @@
         <!-- CUSTOM JS -->
         <script src="${pageContext.request.contextPath}/resources/theme/js/jquery.app.js"></script>
 	
+	<th>#</th>
+                                                         
 	
 	 <script id="CONTENT_TEMPLATE" type="text/x-jquery-tmpl">
 	    	<tr>
@@ -367,15 +433,30 @@
 				<td>{{= username}}</td>
 				<td>{{= email}}</td>
 				<td>{{= position}}</td>
-				<td>{{if accountNonLocked == true}} <i class="ion-android-close" style="color: red;"></i> {{else}} <i class="ion-android-close" style="color: green;"></i> {{/if}}</td>
 				<td>{{= roles}}</td>
 				<td>{{= createdDate}}</td>
-				<td>{{= position}}</td>
-				<td>{{if enabled == true}} <i class="ion-android-close" style="color: red;"></i> {{else}} <i class="ion-android-close" style="color: green;"></i> {{/if}}</td>
+				<td>{{= approvedDate}}</td>
+				<!--<td>{{if accountNonLocked == true}} <i class="ion-android-close" style="color: red;"></i> {{else}} <i class="ion-android-close" style="color: green;"></i> {{/if}}</td>
+				<td>{{if enabled == true}} <i class="ion-android-close" style="color: green;"></i> {{else}} <i class="ion-android-close" style="color: red;"></i> {{/if}}</td>
+				-->
+				<td>Action</td>
 			</tr>
         </script>
         
-        
+        <script id="tblRequestedUser_tmpl" type="text/x-jquery-tmpl">
+	    	<tr>
+				<td>{{= id}}</td>
+				<td>{{= username}}</td>
+				<td>{{= email}}</td>
+				<td>{{= createdDate}}</td>
+				<td>{{= position}}</td>
+				<td>  
+					<a class="btn btn-danger waves-effect waves-light m-b-5" onclick="rejectRequest({{= id}}, this)">Reject</a> 
+					<a class="btn btn-success waves-effect waves-light m-b-5"  onclick="acceptRequest({{= id}} , this)">Accept</a>
+				</td>
+			</tr>
+        </script>
+       
 		<script type="text/javascript">
 		
 		var users = {};
@@ -391,7 +472,7 @@
 				    type: 'GET', 
 				    data: {
 				    		"currentPage" : currentPage,
-				    		"perPage"     : 1
+				    		"perPage"     : 20
 				    },
 				    beforeSend: function(xhr) {
 	                    xhr.setRequestHeader("Accept", "application/json");
@@ -454,7 +535,7 @@
 							$("#totalRequestedUser").html(data.RESP_DATA.length);
 							var reqUser = "";
 							 for (i = 0; i < data.RESP_DATA.length; i++) {
-								 reqUser    += 	 '<a href="javascript:void(0);" class="list-group-item">'+
+								 reqUser    += 	 '<a href="javascript:void(0);" class="list-group-item" id="getUserReqestedUserByID" onclick="getUserReqestedByID('+data.RESP_DATA[i].id+')">'+
 									            	'<div class="media">'+
 									                  '<div class="pull-left">'+
 									                     '<em class="fa fa-user-plus fa-2x text-info"></em>'+
@@ -469,27 +550,154 @@
 									             '</a>';
 		                     }
 		                     $("#listRequestedUser").html(reqUser);
+		                     
+		                     $('#listRequestedUser').append('<a href="#" onclick="users.listAllRequestedUser()"  data-toggle="modal" data-target=".all-request-modal">'+
+		                     								'<small>See all notifications</small>'+ 
+		                               						'</a>');
+                             
 						}
 				    },
 				    error:function(data,status,er) { 
 				        console.log("error: "+data+" status: "+status+" er:"+er);
 				    }
 				});
+				
+				
+			};
+			
+			users.listAllRequestedUser = function(){
+				$.ajax({ 
+				    url: "${pageContext.request.contextPath}/api/apiuser/count_req", 
+				    type: 'GET', 
+				    beforeSend: function(xhr) {
+	                    xhr.setRequestHeader("Accept", "application/json");
+	                    xhr.setRequestHeader("Content-Type", "application/json");
+	                    xhr.setRequestHeader("Authorization" , "Basic ${kaapi}");
+	                },
+				    success: function(data) { 
+						console.log(data);
+						if(data.RESP_DATA != null){
+							var reqUser = "";
+							
+							if(data.RESP_DATA.length>0){
+								$("tbody#tblRequestedUser").html('');
+								$("#tblRequestedUser_tmpl").tmpl(data.RESP_DATA).appendTo("tbody#tblRequestedUser");
+							}else{
+								$("tbody#tblRequestedUser").html('<tr>NO CONTENTS</tr>');
+							}
+							
+		                     
+                             
+						}
+				    },
+				    error:function(data,status,er) { 
+				        console.log("error: "+data+" status: "+status+" er:"+er);
+				    }
+				});
+				
+				
+			};
+			
+			users.findRequestedUserByID = function(id){
+				$.ajax({ 
+				    url: "${pageContext.request.contextPath}/api/apiuser/requestedUser/"+id, 
+				    type: 'GET', 
+				    beforeSend: function(xhr) {
+	                    xhr.setRequestHeader("Accept", "application/json");
+	                    xhr.setRequestHeader("Content-Type", "application/json");
+	                    xhr.setRequestHeader("Authorization" , "Basic ${kaapi}");
+	                },
+				    success: function(data) { 
+						console.log("API " + data.RESP_DATA.id);
+						if(data.RESP_DATA != null){
+							$("#username").text(data.RESP_DATA.username);
+							$("#email").text(data.RESP_DATA.mail);
+							$("#registerDate").text(data.RESP_DATA.createdDate);
+							$("#group").text(data.RESP_DATA.position);
+							$("#userid").val(data.RESP_DATA.id);
+                             
+						}
+				    },
+				    error:function(data,status,er) { 
+				        console.log("error: "+data+" status: "+status+" er:"+er);
+				    }
+				});
+				
+				
 			};
 			
 			
 			users.findAllUserByUsername(1);
 			users.countRequestedUser();
+			
 
+			
+			$("#btnReject").click(function(){
+				rejectRequest($("#userid").val())
+				$('#oneReqestedUser').modal('hide');
+			});
+			
+			$("#btnAccept").click(function(){
+				acceptRequest($("#userid").val());
+				$('#oneReqestedUser').modal('hide');
+			});
+			
 		});
 		
+			function getUserReqestedByID(id){
+				users.findRequestedUserByID(id);	
+				$('#oneReqestedUser').modal('show');
+			}
 		
+			function acceptRequest(userID , _this){
+				$.ajax({ 
+				    url: "${pageContext.request.contextPath}/api/apiuser/acceptRequest/"+userID, 
+				    type: 'POST', 
+				    beforeSend: function(xhr) {
+	                    xhr.setRequestHeader("Accept", "application/json");
+	                    xhr.setRequestHeader("Content-Type", "application/json");
+	                    xhr.setRequestHeader("Authorization" , "Basic ${kaapi}");
+	                },
+				    success: function(data) { 
+						console.log(data);
+						if(_this != null){
+							_this.closest('tr').remove();
+						}
+						users.countRequestedUser();
+				    },
+				    error:function(data,status,er) { 
+				        console.log("error: "+data+" status: "+status+" er:"+er);
+				    }
+				});
+			}
+			
+			function rejectRequest(userID , _this){
+				$.ajax({ 
+				    url: "${pageContext.request.contextPath}/api/apiuser/rejectRequest/"+userID,
+				    type: 'POST', 
+				    beforeSend: function(xhr) {
+	                    xhr.setRequestHeader("Accept", "application/json");
+	                    xhr.setRequestHeader("Content-Type", "application/json");
+	                    xhr.setRequestHeader("Authorization" , "Basic ${kaapi}");
+	                },
+				    success: function(data) { 
+						console.log(data);
+						if(_this != null){
+							_this.closest('tr').remove();
+						}
+						users.countRequestedUser();
+				    },
+				    error:function(data,status,er) { 
+				        console.log("error: "+data+" status: "+status+" er:"+er);
+				    }
+				});
+			}
 		
 			/*************************************************************/
 			
 			
 			var webSocket = 
-				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/notify');
+				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/websockets/notify');
 			
 			webSocket.onerror = function(event) {
 				onError(event)

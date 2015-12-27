@@ -5,7 +5,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/error")
+@RequestMapping("/")
 public class HTTPErrorController {
 	
 	@RequestMapping(value="/500")
@@ -20,6 +20,17 @@ public class HTTPErrorController {
 		return "errors/404";
 	}
 	
+	@RequestMapping(value="/401")
+	public String error401(ModelMap m){
+//		m.addAttribute("msg","Error 404 | Page not found");
+		return "errors/401";
+	}
+	
+	@RequestMapping(value={"/403" , "/accessDenied"})
+	public String error403(ModelMap m){
+		m.addAttribute("msg","Error 403 | Access Denied Page");
+		return "errors/403";
+	}
 	
 	
 }

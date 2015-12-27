@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,6 +46,12 @@ public class APIUserController {
 		pagination.setTotalPages(pagination.totalPages());
 		map.put("RESP_DATA", users);
 		map.put("PAGINATION", pagination);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		APIUser user = (APIUser)authentication.getPrincipal();
+		System.out.print("____________adminID " +user.getId());
+		System.out.print("____________adminID " +user.getUsername());
+		
 		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
 	}
 	
@@ -72,5 +81,49 @@ public class APIUserController {
 		map.put("RESP_DATA", users);
 		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
 	}
+	
+	@RequestMapping(value="/requestedUser/{id}" , method = RequestMethod.GET)
+	public ResponseEntity<Map<String,Object>> findRequestedUserById(@PathVariable("id") int id){
+		APIUser user = apiUserService.findUserReqestedByID(id);
+		if(user == null){
+			throw new ResourceNotFoundException("Not found!");
+		}
+		Map<String , Object> map = new HashMap<String , Object>();
+		map.put("RESP_DATA", user);
+		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/acceptRequest/{userID}" , method  = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> acceptRequest(@PathVariable("userID") int userID ){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		APIUser user = (APIUser)authentication.getPrincipal();
+		System.out.print("adminID " +user.getId());
+		Map<String , Object> map = new HashMap<String , Object>();
+		if(apiUserService.acceptRequest(userID, user.getId())){
+			map.put("MESSAGE", "Success");
+			return new ResponseEntity<Map<String,Object>> (map , HttpStatus.OK);
+		}
+		map.put("MESSAGE", "Unsuccess");
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value="/rejectRequest/{userID}" , method = RequestMethod.POST)
+	public ResponseEntity<Map<String , Object>> rejectRequest(@PathVariable("userID") int userID){
+		Map<String , Object> map = new HashMap<String , Object>();
+		if(apiUserService.rejectRequest(userID)){
+			map.put("MESSAGE", "Success");
+			return new ResponseEntity<Map<String,Object>> (map , HttpStatus.OK);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.NOT_FOUND);
+	}
+	
+	public int getUserID(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		APIUser user = (APIUser)authentication.getPrincipal();
+		System.out.print("____________adminID " +user.getId());
+		System.out.print("____________adminID " +user.getUsername());
+		return user.getId();
+	}
+	
 	
 }

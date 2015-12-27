@@ -151,7 +151,7 @@
         
         
 	        var webSocket = 
-				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/notify');
+				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/websockets/notify');
 			
 			webSocket.onerror = function(event) {
 				onError(event)

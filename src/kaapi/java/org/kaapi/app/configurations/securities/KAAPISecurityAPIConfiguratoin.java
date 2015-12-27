@@ -43,7 +43,7 @@ public class KAAPISecurityAPIConfiguratoin extends WebSecurityConfigurerAdapter{
 		http.antMatcher("/api/**")
 			.authorizeRequests()
 			.anyRequest()
-			.hasRole("API_TRANSACTION");
+			.hasRole("API");
 		http.csrf().disable();
 		http.httpBasic()
 			.authenticationEntryPoint(authenticationEntryPoint);

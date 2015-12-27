@@ -4,21 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>${msg }</title>
-
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-
-
-
+<title>${msg}</title>
 </head>
 <body>
-
-	<h1>${msg }</h1>
-	
-	<% 
-		response.sendRedirect("webserviceapi");
-	%>
-
-
+<h1>${msg}</h1>
 </body>
 </html>

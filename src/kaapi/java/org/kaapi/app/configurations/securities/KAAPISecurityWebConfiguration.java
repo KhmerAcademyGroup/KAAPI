@@ -63,7 +63,7 @@ public class KAAPISecurityWebConfiguration extends WebSecurityConfigurerAdapter{
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/resources/**");
-		web.ignoring().antMatchers("/notify");
+		web.ignoring().antMatchers("/websockets/**");
 	}
 	
 	
@@ -72,7 +72,7 @@ public class KAAPISecurityWebConfiguration extends WebSecurityConfigurerAdapter{
 		
 		http
 			.authorizeRequests()
-			.antMatchers("/kaapi/**").hasAnyRole("USER","ADMIN")
+			.antMatchers("/webserviceapi/**").hasAnyRole("USER","ADMIN")
 			.antMatchers("/user/**").hasAnyRole("USER" , "ADMIN")
 			.antMatchers("/admin/**").hasRole("ADMIN");
 		http

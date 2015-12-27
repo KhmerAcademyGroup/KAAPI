@@ -23,7 +23,7 @@ public class UniversityServiceImpl implements UniversityService{
 	
 	@Override
 	public boolean createUniverstiy(University university) {
-		String sql = "INSERT INTO tbluniversity(universityid,universityname) VALUES(NEXTVAL('seq_university'),?);";
+		String sql = "INSERT INTO tbluniversity(university_id,university_name) VALUES(NEXTVAL('seq_university'),?);";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -39,7 +39,7 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean updateUniversityById(University university) {
-		String sql = "UPDATE tbluniversity SET universityname = ? WHERE universityid = ?;";
+		String sql = "UPDATE tbluniversity SET university_name = ? WHERE university_id = ?;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -57,7 +57,7 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean deleteUniversityById(int id) {
-		String sql = "DELETE FROM tbluniversity WHERE universityid = ?;";
+		String sql = "DELETE FROM tbluniversity WHERE university_id = ?;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -74,12 +74,12 @@ public class UniversityServiceImpl implements UniversityService{
 	@Override
 	public List<University> findAllUniverstiyByName(Pagination pagination,String keyword) {
 		String sql = "SELECT "
-						+ "universityid,"
-						+ "universityname "
+						+ "university_id,"
+						+ "university_name "
 					+ "FROM "
-						+ "university "
+						+ "tbluniversity "
 					+ "WHERE "
-						+ "universityname LIKE ?"
+						+ "university_name LIKE ?"
 					+ "LIMIT ? OFFSET ?;";
 		List<University> lst = new ArrayList<University>();
 		University university = null;
@@ -93,8 +93,8 @@ public class UniversityServiceImpl implements UniversityService{
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				university = new University();
-				university.setUniversityId(rs.getInt("universityid"));
-				university.setUniversityName(rs.getString("universityname"));
+				university.setUniversityId(rs.getInt("university_id"));
+				university.setUniversityName(rs.getString("university_name"));
 				lst.add(university);
 			}
 			return lst;
@@ -112,7 +112,7 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public int countUniversity() {
-		String sql = "SELECT COUNT(universityid) as count FROM university;";
+		String sql = "SELECT COUNT(university_id) as count FROM tbluniversity;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);

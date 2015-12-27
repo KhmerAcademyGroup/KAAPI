@@ -28,9 +28,5 @@ public class AuthenticationController {
 		return "register";
 	}
 	
-	@RequestMapping(value={"/403" , "/accessDenied"})
-	public String error403(ModelMap m){
-		m.addAttribute("msg","Error 403 | Access Denied Page");
-		return "errors/403";
-	}
+	
 }

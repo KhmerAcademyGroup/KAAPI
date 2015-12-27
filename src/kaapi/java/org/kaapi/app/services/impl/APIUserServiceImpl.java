@@ -15,6 +15,8 @@ import org.kaapi.app.entities.APIUserRole;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.APIUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -78,7 +80,7 @@ public class APIUserServiceImpl implements APIUserService {
 	public List<APIUser> findAllUserByUsername(Pagination pagination , String username) {
 		String sql = "SELECT id, username, password, email, enabled ,locked ,position, approved_by, approved_date, created_date, created_by , updated_by, updated_date , locked "
 				   + "FROM api_user "
-				   + "WHERE username LIKE ? and position <> ? LIMIT ? OFFSET ?;";
+				   + "WHERE username LIKE ? and position <> ? and locked = 1 and enabled = 1 LIMIT ? OFFSET ?;";
 		List<APIUser> users = new ArrayList<APIUser>();
 		APIUser user = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
@@ -244,7 +246,7 @@ public class APIUserServiceImpl implements APIUserService {
 
 	@Override
 	public List<APIUser> listRequestedUser() {
-		String sql = "SELECT id , username , created_date FROM api_user WHERE locked = 0 ORDER BY id DESC;";
+		String sql = "SELECT id , username , email , position ,created_date FROM api_user WHERE locked = 0 ORDER BY id DESC;";
 		List<APIUser> users = new ArrayList<APIUser>();
 		APIUser user = null;
 		try (	
@@ -255,7 +257,9 @@ public class APIUserServiceImpl implements APIUserService {
 				user = new APIUser();
 				user.setId(rs.getInt("id"));
 				user.setUsername(rs.getString("username"));
+				user.setEmail(rs.getString("email"));
 				user.setCreatedDate(rs.getDate("created_date"));
+				user.setPosition(rs.getString("position"));
 				users.add(user);
 			}
 			return users;
@@ -264,5 +268,65 @@ public class APIUserServiceImpl implements APIUserService {
 		}
 		return null;
 	}
+	
+	@Override
+	public APIUser findUserReqestedByID(int id) {
+		String sql = "SELECT id , username , email , position ,created_date FROM api_user WHERE id=? and locked = 0 ORDER BY id DESC;";
+		APIUser user = null;
+		try (	
+				Connection cnn = dataSource.getConnection(); 
+				PreparedStatement ps = cnn.prepareStatement(sql);) {
+				ps.setInt(1, id);
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					user = new APIUser();
+					user.setId(rs.getInt("id"));
+					user.setUsername(rs.getString("username"));
+					user.setEmail(rs.getString("email"));
+					user.setCreatedDate(rs.getDate("created_date"));
+					user.setPosition(rs.getString("position"));
+					return user;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+
+	@Override
+	public boolean acceptRequest(int userID , int adminID) {
+		String sql = "Update api_user set locked = 1 , approved_by=? , approved_date = now() WHERE id =?";
+		try(
+				Connection cnn = dataSource.getConnection(); 
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ps.setInt(1, adminID);
+				ps.setInt(2, userID);
+				if(ps.executeUpdate() > 0) return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean rejectRequest( int userID) {
+		String sql = "DELETE FROM api_user_role WHERE id=?;DELETE FROM api_user WHERE id =?";
+		try(
+				Connection cnn = dataSource.getConnection(); 
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ps.setInt(1, userID);
+				ps.setInt(2, userID);
+				if(ps.executeUpdate() > 0) return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	
+	
+
 
 }

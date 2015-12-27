@@ -29,17 +29,23 @@ public class MainController {
 		m.addAttribute("msg","ADMIN | ADMIN PAGE "  + header);
 		m.addAttribute("kaapi" , header);
 		
-		Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
-		APIUser user = (APIUser) authentication.getPrincipal();
-		System.out.println(user.getUsername()+" | "+user.getId() + " | " + user.getRoles().get(0).getName() );
+//		Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+//		APIUser user = (APIUser) authentication.getPrincipal();
+//		System.out.println(user.getUsername()+" | "+user.getId() + " | " + user.getRoles().get(0).getName() );
 	
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		APIUser user = (APIUser)authentication.getPrincipal();
+		System.out.print("____________adminID " +user.getId());
+		System.out.print("____________adminID " +user.getUsername());
+		
+		
 		return "admin/admin";
 	}
 	
-	@RequestMapping(value={"/kaapi",} , method = RequestMethod.GET)
+	@RequestMapping(value={"/webserviceapi",} , method = RequestMethod.GET)
 	public String kaAPIPage(ModelMap m){
 		m.addAttribute("msg","API PAGE");
-		return "kaapi/kaapi";
+		return "kaapi/webserviceapi";
 	}
 	
 	
