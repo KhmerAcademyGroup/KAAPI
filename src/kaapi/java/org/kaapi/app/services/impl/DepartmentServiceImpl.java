@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import org.kaapi.app.entities.Department;
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,7 +23,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public boolean createDepartment(Department department) {
-		String sql = "INSERT INTO tbldepartment(departmentid,departmentname) VALUES(NEXTVAL('seq_department'),?);";
+		String sql = "INSERT"
+				+ "INTO"
+					+ "tbldepartment(departmentid,departmentname)"
+					+ "VALUES(NEXTVAL('seq_department'),?);";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -36,7 +42,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public boolean updateDepartment(Department department) {
-		String sql = "UPDATE tbldepartment SET departmentname = ? WHERE departmentid = ?;";
+		String sql = "UPDATE"
+				+ "tbldepartment"
+					+ "SET "
+				+ "departmentname = ?"
+					+ "WHERE "
+				+ "departmentid = ?;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -53,7 +64,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public boolean deleteDepartment(int id) {
-		String sql = "DELETE FROM tbldepartment WHERE id = ?;";
+		String sql = "DELETE"
+			+ "FROM "
+				+ "tbldepartment "
+			+ "WHERE "
+				+ "id = ?;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -68,21 +83,29 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
-	public List<Department> listDepartment(int offset, int limit) {
-		String sql = "SELECT departmentId, departmentName FROM tbldepartment OFFSET ? LIMIT ?;";
+	public List<Department> listDepartment(Pagination pagination,String keyword) {
+		String sql = "SELECT "
+					+ "departmentid,"
+				+ "departmentname "
+					+ "FROM "
+				+ "tbldepartment "
+					+ "WHERE "
+				+ "departmentname LIKE ?"
+					+ "LIMIT ? OFFSET ?;";
 		List<Department> list = new ArrayList<Department>();
 		Department department = null;
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			ps.setInt(1, offset);
-			ps.setInt(2, limit);
+			ps.setString(1, "%" + keyword + "%");
+			ps.setInt(2, pagination.getPerPage());
+			ps.setInt(3, pagination.offset());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				department = new Department();
-				department.setDepartmentId(rs.getInt("departmentId"));
-				department.setDepartmentName(rs.getString("departmentName"));
+				department.setDepartmentId(rs.getInt("departmentid"));
+				department.setDepartmentName(rs.getString("departmentname"));
 				list.add(department);
 			}
 			return list;
