@@ -21,7 +21,10 @@ public class UniversityServiceImpl implements UniversityService{
 	
 	@Override
 	public boolean createUniverstiy(University university) {
-		String sql = "INSERT INTO tbluniversity(universityid,universityname) VALUES(NEXTVAL('seq_university'),?);";
+		String sql = "INSERT "
+				+ "INTO"
+			+ "tbluniversity(universityid,universityname)"
+				+ "VALUES(NEXTVAL('seq_university'),?);";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -37,7 +40,12 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean updateUniversityById(University university) {
-		String sql = "UPDATE tbluniversity SET universityname = ? WHERE universityid = ?;";
+		String sql = "UPDATE "
+				+ "tbluniversity "
+			+ "SET "
+				+ "universityname = ?"
+			+ "WHERE"
+				+ "universityid = ?;";		
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -55,7 +63,11 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean deleteUniversityById(int id) {
-		String sql = "DELETE FROM tbluniversity WHERE universityid = ?;";
+		String sql = "DELETE "
+			+ "FROM "
+				+ "tbluniversity "
+			+ "WHERE "
+				+ "universityid = ?;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -75,7 +87,7 @@ public class UniversityServiceImpl implements UniversityService{
 						+ "universityid,"
 						+ "universityname "
 					+ "FROM "
-						+ "university "
+						+ "tbluniversity "
 					+ "WHERE "
 						+ "universityname LIKE ?"
 					+ "LIMIT ? OFFSET ?;";
@@ -104,7 +116,12 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public String findUniversityById(int id) {
-		String sql = "SELECT universityname FROM tbluniversity WHERE universityid=?;";
+		String sql = "SELECT "
+				+ "universityname "
+			+ "FROM "
+				+ "tbluniversity "
+			+ "WHERE "
+				+ "universityid=?;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -122,7 +139,10 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public int countUniversity() {
-		String sql = "SELECT COUNT(universityid) as count FROM university;";
+		String sql = "SELECT "
+				+ "COUNT(universityid) as count"
+			+ "FROM "
+				+ "tbluniversity;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
