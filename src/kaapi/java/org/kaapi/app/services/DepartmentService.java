@@ -8,4 +8,5 @@ public interface DepartmentService {
 	public boolean updateDepartment(Department department);
 	public boolean deleteDepartment(int id);
 	public List<Department> listDepartment(Pagination pagination, String keyword);
+	public int countDepartment();
 }
