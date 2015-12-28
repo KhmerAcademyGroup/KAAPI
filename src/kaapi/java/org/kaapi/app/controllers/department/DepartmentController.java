@@ -3,6 +3,7 @@ package org.kaapi.app.controllers.department;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.DepartmentService;
@@ -43,7 +44,7 @@ public class DepartmentController {
 	
 	//Update Department
 	@RequestMapping(method = RequestMethod.PUT, value = "/updateDepartment" , headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> updateUniversity(@RequestBody Department department){
+	public ResponseEntity<Map<String, Object>> updateDepartment(@RequestBody Department department){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(departmentService.updateDepartment(department)){
@@ -59,7 +60,7 @@ public class DepartmentController {
 	
 	//Delete Department
 	@RequestMapping(method = RequestMethod.DELETE, value="/delete/{id}", headers="Accept=application/json")
-	public ResponseEntity<Map<String, Object>> deleteUniversity(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String, Object>> deleteDepartment(@PathVariable("id") int id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if (departmentService.deleteDepartment(id)) {			
@@ -72,32 +73,48 @@ public class DepartmentController {
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 	}
-	
-	//List Department
-	@RequestMapping(method = RequestMethod.GET, value="/listDepartment", headers = "Accept=application/json")
-	public ResponseEntity<Map<String,Object>> listDepartment(@RequestParam("currentPage") int currentPage, @RequestParam("perPage") int perPage, @RequestParam("totalCount") int totalCount, @RequestParam("totalPages") int totalPages, @RequestParam("keyword") String keyword){
+
+	// List Department
+	@RequestMapping(method = RequestMethod.GET, value = "/listDepartment", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listDepartment(
+			Pagination pagination,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
+
+		List<Department> listDepartment = departmentService
+				.listDepartment(pagination, keyword);
 		Map<String, Object> map = new HashMap<String, Object>();
-		
-		Pagination pagination = new Pagination();
-		pagination.setCurrentPage(currentPage);
-		pagination.setPerPage(perPage);
-		pagination.setTotalCount(totalCount);
-		pagination.setTotalPages(totalPages);
-		
-		List<Department> departmentList = departmentService.listDepartment(pagination, keyword);
-		
-		if(departmentList == null){
+
+		if (listDepartment == null) {
+			map.put("MESSAGE", "RECORD NOT FOUND!");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String, Object>>(map,
+					HttpStatus.NOT_FOUND);
+		}
+		pagination.setTotalCount(departmentService.countDepartment());
+		pagination.setTotalPages(pagination.totalPages());		
+		map.put("MESSAGE", "RECORD FOUND!");
+		map.put("STATUS", true);
+		map.put("RESP_DATA", listDepartment);
+		map.put("PAGINATION", pagination);
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	// Count all Department
+	@RequestMapping(method = RequestMethod.GET, value = "/countDepartment", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> countDepartment() {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		int department = departmentService.countDepartment();
+
+		if (department == 0) {
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			map.put("STATUS", false);
-			return new ResponseEntity<Map<String,Object>>(map , HttpStatus.NOT_FOUND);
-		}else{
-			map.put("MESSAGE","RECORD FOUND");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("MESSAGE", "RECORD FOUND");
 			map.put("STATUS", true);
-			map.put("REST_DATA", departmentList);
-			map.put("PAGINATION", pagination);
-			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+			map.put("RES_DATA", department);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		
 	}
-
 }
