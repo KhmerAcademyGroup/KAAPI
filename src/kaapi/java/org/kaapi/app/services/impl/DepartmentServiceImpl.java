@@ -15,7 +15,7 @@ import org.kaapi.app.services.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("DepartmentServiceImpl")
 public class DepartmentServiceImpl implements DepartmentService {
 	
 	@Autowired
