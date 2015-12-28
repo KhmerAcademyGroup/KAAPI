@@ -11,10 +11,10 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Video;
-import org.kaapi.app.services.VideoServices;
+import org.kaapi.app.services.VideosService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class VideoServiceImplement implements VideoServices{
+public class VideoServiceImplement implements VideosService{
 
 	@Autowired
 	private DataSource dataSource;
