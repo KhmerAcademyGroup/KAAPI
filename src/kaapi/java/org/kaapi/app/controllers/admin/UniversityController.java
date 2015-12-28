@@ -21,138 +21,122 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/university")
 public class UniversityController {
-	
+
 	@Autowired
 	@Qualifier("universityServiceImpl")
 	UniversityService universityService;
-	
-/*	//GetListAllUniversityByName
-	@RequestMapping(method = RequestMethod.GET, value="/list", headers = "Accept=application/json")
-	public ResponseEntity<Map<String,Object>> findAllUniversityByName(Pagination pagination, @RequestParam( value = "keyword" , required = false , defaultValue="") String keyword){
-		List<University> lstUniversity = universityService.findAllUniverstiyByName(pagination, keyword);
-		Map<String , Object> map = new HashMap<String , Object>();
-		if(lstUniversity == null){
-			map.put("MESSAGE", "Not found!");
-			return new ResponseEntity<Map<String,Object>>(map , HttpStatus.NOT_FOUND);
+
+	// GetListAllUniversityByName
+	@RequestMapping(method = RequestMethod.GET, value = "/list", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> findAllUniversityByName(
+			Pagination pagination,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
+
+		List<University> lstUniversity = universityService
+				.findAllUniverstiyByName(pagination, keyword);
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		if (lstUniversity == null) {
+			map.put("MESSAGE", "RECORD NOT FOUND!");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String, Object>>(map,
+					HttpStatus.NOT_FOUND);
 		}
 		pagination.setTotalCount(universityService.countUniversity());
 		pagination.setTotalPages(pagination.totalPages());
+		map.put("MESSAGE", "RECORD FOUND!");
+		map.put("STATUS", true);
 		map.put("RESP_DATA", lstUniversity);
 		map.put("PAGINATION", pagination);
-		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
-	*/
-	//Create university
-		@RequestMapping(method = RequestMethod.POST, value = "/insertUniversity", headers = "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> insertUniversity(@RequestBody University university){
-			Map<String, Object> map = new HashMap<String, Object>();
-			
-			if(universityService.createUniverstiy(university)){
-				map.put("MESSAGE", "UNIVERSITY HAS BEEN CREATED");
-				map.put("STATUS", true);
-				return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-			}else{
-				map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN CREATED");
-				map.put("STATUS", false);
-				return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-			}
-		}
 
-		//Update University
-		@RequestMapping(method = RequestMethod.PUT, value="/updateUnversity", headers="Accept=application/json")
-		public ResponseEntity<Map<String, Object>> updateUniversity(@RequestBody University university){
-			Map<String, Object> map = new HashMap<String, Object>();
-			
-			if(universityService.updateUniversityById(university)){
-				map.put("MESSAGE", "UNIVERSITY HAS BEEN UPDATED");
-				map.put("STATUS", true);
-				return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-			}else{
-				map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN  UPDATED");
-				map.put("STATUS",false);
-				return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-			}
-		}
-		
-		//Delete University
-		@RequestMapping(method = RequestMethod.DELETE, value="/unversity/{id}", headers="Accept=application/json")
-		public ResponseEntity<Map<String, Object>> deleteUniversity(@PathVariable("id") int id) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			
-			if (universityService.deleteUniversityById(id)) {			
-				map.put("MESSAGE", "UNIVERSITY HAS BEEN DELETED");
-				map.put("STATUS", true);
-				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-			}else{			
-				map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN DELETED");
-				map.put("STATUS", false);
-				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-			}
-		}
-	
-		//ListUniversityByName
-		@RequestMapping(method = RequestMethod.GET, value="/list", headers = "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> findUniversityByName(@RequestParam("currentPage") int currentPage, @RequestParam("perPage") int perPage, @RequestParam("totalCount") int totalCount, @RequestParam("totalPages") int totalPages, @RequestParam("keyword") String keyword){
-			
-			Pagination pagination = new Pagination();
-			pagination.setCurrentPage(currentPage);
-			pagination.setPerPage(perPage);
-			pagination.setTotalCount(totalCount);
-			pagination.setTotalPages(totalPages);
-			
-			List<University> universityList = universityService.findAllUniverstiyByName(pagination, keyword);
-			
-			Map<String, Object> map = new HashMap<String, Object>();
-			
-			if(universityList == null){
-				map.put("MESSAGE", "RECORD NOT FOUND");
-				map.put("STATUS", false);
-				return new ResponseEntity<Map<String,Object>>(map , HttpStatus.NOT_FOUND);
-			}else{
-				map.put("MESSAGE","RECORD FOUND");
-				map.put("STATUS", true);
-				map.put("REST_DATA", universityList);
-				map.put("PAGINATION", pagination);
-				return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-			}
-			
-		}
-	
-		//ListFindUniversityByID
-		@RequestMapping(method = RequestMethod.GET, value="/university/{id}", headers = "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> findUniversityById(@PathVariable("id") int id){
-			
-			Map<String, Object> map = new HashMap<String, Object>();
-			String university =  universityService.findUniversityById(id);
-			System.out.println(university);
-			if(university==null){
-				map.put("MESSAGE","RECORD  NOT FOUND");
-				map.put("STATUS", false);
-				return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-			}
-			map.put("MESSAGE","RECORD FOUND");
+	// Create university
+	@RequestMapping(method = RequestMethod.POST, value = "/insertUniversity", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> insertUniversity(
+			@RequestBody University university) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		if (universityService.createUniverstiy(university)) {
+			map.put("MESSAGE", "UNIVERSITY HAS BEEN CREATED");
 			map.put("STATUS", true);
-			map.put("REST_DATA", university);
-			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN CREATED");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		
-		//Count all University
-			@RequestMapping(method = RequestMethod.GET, value = "/countUniversity", headers = "Accept=application/json")
-			public ResponseEntity<Map<String, Object>> countUniversity() {
-				Map<String, Object> map = new HashMap<String, Object>();
-				
-				int university = universityService.countUniversity();
-				
-				if(university == 0){
-					map.put("MESSAGE", "RECORD NOT FOUND");
-					map.put("STATUS", false);
-					return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-				}else{
-					map.put("MESSAGE", "RECORD FOUND");
-					map.put("STATUS", true);
-					map.put("RES_DATA", university);
-					return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-				}
-			}
+	}
 
+	// Update University
+	@RequestMapping(method = RequestMethod.PUT, value = "/updateUnversity", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> updateUniversity(
+			@RequestBody University university) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		if (universityService.updateUniversityById(university)) {
+			map.put("MESSAGE", "UNIVERSITY HAS BEEN UPDATED");
+			map.put("STATUS", true);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN  UPDATED");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+	}
+
+	// Delete University
+	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteUniversity/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> deleteUniversity(
+			@PathVariable("id") int id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		if (universityService.deleteUniversityById(id)) {
+			map.put("MESSAGE", "UNIVERSITY HAS BEEN DELETED");
+			map.put("STATUS", true);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN DELETED");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+	}
+
+	// ListFindUniversityByID
+	@RequestMapping(method = RequestMethod.GET, value = "/listUniversity/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> findUniversityById(
+			@PathVariable("id") int id) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		String university = universityService.findUniversityById(id);
+		System.out.println(university);
+		if (university == null) {
+			map.put("MESSAGE", "RECORD  NOT FOUND");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		map.put("MESSAGE", "RECORD FOUND");
+		map.put("STATUS", true);
+		map.put("REST_DATA", university);
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+
+	// Count all University
+	@RequestMapping(method = RequestMethod.GET, value = "/countUniversity", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> countUniversity() {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		int university = universityService.countUniversity();
+
+		if (university == 0) {
+			map.put("MESSAGE", "RECORD NOT FOUND");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("STATUS", true);
+			map.put("RES_DATA", university);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+	}
 }
