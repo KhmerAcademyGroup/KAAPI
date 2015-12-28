@@ -22,7 +22,7 @@ public class UniversityServiceImpl implements UniversityService{
 	@Override
 	public boolean createUniverstiy(University university) {
 
-		String sql = "INSERT INTO tbluniversity(university_id,university_name) VALUES(NEXTVAL('seq_university'),?);";
+		String sql = "INSERT INTO tbluniversity(universityid,universityname) VALUES(NEXTVAL('seq_university'),?);";
 
 		/*String sql = "INSERT "
 				+ "INTO"
@@ -51,7 +51,7 @@ public class UniversityServiceImpl implements UniversityService{
 				+ "tbluniversity "
 			+ "SET "
 				+ "universityname = ?"
-			+ "WHERE"
+			+ "WHERE "
 				+ "universityid = ?;";	
 
 		try(
@@ -96,12 +96,12 @@ public class UniversityServiceImpl implements UniversityService{
 	@Override
 	public List<University> findAllUniverstiyByName(Pagination pagination,String keyword) {
 		String sql = "SELECT "
-						+ "university_id,"
-						+ "university_name "
+						+ "universityid,"
+						+ "universityname "
 					+ "FROM "
 						+ "tbluniversity "
 					+ "WHERE "
-						+ "university_name LIKE ?"
+						+ "universityname LIKE ?"
 					+ "LIMIT ? OFFSET ?;";
 		List<University> lst = new ArrayList<University>();
 		University university = null;
@@ -115,8 +115,8 @@ public class UniversityServiceImpl implements UniversityService{
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				university = new University();
-				university.setUniversityId(rs.getInt("university_id"));
-				university.setUniversityName(rs.getString("university_name"));
+				university.setUniversityId(rs.getInt("universityid"));
+				university.setUniversityName(rs.getString("universityname"));
 				lst.add(university);
 			}
 			return lst;
@@ -155,7 +155,7 @@ public class UniversityServiceImpl implements UniversityService{
 //		String sql = "SELECT COUNT(university_id) as count FROM tbluniversity;";
 
 		String sql = "SELECT "
-				+ "COUNT(universityid) as count"
+				+ "COUNT(universityid) as count "
 			+ "FROM "
 				+ "tbluniversity;";
 
