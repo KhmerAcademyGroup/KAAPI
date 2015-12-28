@@ -21,14 +21,14 @@ public class UniversityServiceImpl implements UniversityService{
 	
 	@Override
 	public boolean createUniverstiy(University university) {
-<<<<<<< HEAD
+
 		String sql = "INSERT INTO tbluniversity(university_id,university_name) VALUES(NEXTVAL('seq_university'),?);";
-=======
-		String sql = "INSERT "
+
+		/*String sql = "INSERT "
 				+ "INTO"
 			+ "tbluniversity(universityid,universityname)"
-				+ "VALUES(NEXTVAL('seq_university'),?);";
->>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
+				+ "VALUES(NEXTVAL('seq_university'),?);";*/
+
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -44,16 +44,16 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean updateUniversityById(University university) {
-<<<<<<< HEAD
-		String sql = "UPDATE tbluniversity SET university_name = ? WHERE university_id = ?;";
-=======
+
+//		String sql = "UPDATE tbluniversity SET university_name = ? WHERE university_id = ?;";
+
 		String sql = "UPDATE "
 				+ "tbluniversity "
 			+ "SET "
 				+ "universityname = ?"
 			+ "WHERE"
-				+ "universityid = ?;";		
->>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
+				+ "universityid = ?;";	
+
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -71,15 +71,15 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public boolean deleteUniversityById(int id) {
-<<<<<<< HEAD
-		String sql = "DELETE FROM tbluniversity WHERE university_id = ?;";
-=======
+
+	//	String sql = "DELETE FROM tbluniversity WHERE university_id = ?;";
+
 		String sql = "DELETE "
 			+ "FROM "
 				+ "tbluniversity "
 			+ "WHERE "
 				+ "universityid = ?;";
->>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
+
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -151,14 +151,14 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public int countUniversity() {
-<<<<<<< HEAD
-		String sql = "SELECT COUNT(university_id) as count FROM tbluniversity;";
-=======
+
+//		String sql = "SELECT COUNT(university_id) as count FROM tbluniversity;";
+
 		String sql = "SELECT "
 				+ "COUNT(universityid) as count"
 			+ "FROM "
 				+ "tbluniversity;";
->>>>>>> 4be2d5c37efa0de6ec25019ee71e123b5a36417b
+
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
