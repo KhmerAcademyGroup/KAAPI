@@ -13,7 +13,9 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.VideosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class VideoServiceImplement implements VideosService{
 
 	@Autowired

@@ -332,13 +332,31 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public int countSuperComment() {
-		// TODO Auto-generated method stub
+		String sql = "SELECT COUNT(commentid) "
+				   + "FROM TBLCOMMENT "
+				   + "WHERE replycomid is not null AND replycomid = 0";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
 	@Override
 	public int countReplyComment(int videoId, int replyId) {
-		// TODO Auto-generated method stub
+		String sql = "SELECT COUNT(CM.commentid) "
+				   + "FROM TBLCOMMENT CM "
+				   + "WHERE CM.videoid=? and CM.replycomid=?";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, videoId);
+			ps.setInt(2, replyId);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
