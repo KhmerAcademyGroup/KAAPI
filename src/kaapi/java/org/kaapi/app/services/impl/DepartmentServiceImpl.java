@@ -23,9 +23,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public boolean createDepartment(Department department) {
-		String sql = "INSERT"
-				+ "INTO"
-					+ "tbldepartment(departmentid,departmentname)"
+		String sql = "INSERT "
+				+ "INTO "
+					+ "tbldepartment(departmentid,departmentname) "
 					+ "VALUES(NEXTVAL('seq_department'),?);";
 		try(
 				Connection cnn = dataSource.getConnection();
@@ -42,10 +42,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public boolean updateDepartment(Department department) {
-		String sql = "UPDATE"
-				+ "tbldepartment"
+		String sql = "UPDATE "
+				+ "tbldepartment "
 					+ "SET "
-				+ "departmentname = ?"
+				+ "departmentname = ? "
 					+ "WHERE "
 				+ "departmentid = ?;";
 		try(
@@ -64,11 +64,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public boolean deleteDepartment(int id) {
-		String sql = "DELETE"
+		String sql = "DELETE "
 			+ "FROM "
 				+ "tbldepartment "
 			+ "WHERE "
-				+ "id = ?;";
+				+ "departmentid = ?;";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -113,5 +113,27 @@ public class DepartmentServiceImpl implements DepartmentService {
 				e.printStackTrace();
 			}
 	return null;
+	}
+
+	@Override
+	public int countDepartment() {
+		String sql = "SELECT "
+				+ "COUNT(departmentid) as count "
+			+ "FROM "
+				+ "tbldepartment;";
+
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ResultSet rs = ps.executeQuery();
+				if(rs.next()){
+					return rs.getInt(1);
+				}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return 0;
+
 	}
 }
