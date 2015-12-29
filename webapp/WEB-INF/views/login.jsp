@@ -48,10 +48,10 @@
 
 
         <div class="wrapper-page">
-            <div class="panel panel-color panel-primary panel-pages">
+            <div class="panel panel-color panel-success panel-pages">
                 <div class="panel-heading bg-img"> 
                     <div class="bg-overlay"></div>
-                    <h3 class="text-center m-t-10 text-white"> Sign In to <strong>Khmer Academy WebService API</strong> </h3>
+                    <h3 class="text-center m-t-10 text-white"> <strong>Khmer Academy WebService API</strong> </h3>
                 </div> 
 
 				<!-- ${pageContext.request.contextPath}/login -->
@@ -84,7 +84,7 @@
                     
                     <div class="form-group text-center m-t-40">
                         <div class="col-xs-12">
-                            <button class="btn btn-primary btn-lg w-lg waves-effect waves-light" type="submit">Log In</button>
+                            <button class="btn btn-success btn-lg w-lg waves-effect waves-light" type="submit">Log In</button>
                         </div>
                     </div>
 

@@ -1213,7 +1213,7 @@ lesshat-selector {
   position: relative;
   z-index: 1;
   width: 240px;
-  background: #317eeb;
+  background: rgba(0, 0, 0, 0) linear-gradient(#50a253, #4c954d) repeat scroll 0 0;
 }
 .logo h1 {
   margin: 0px auto;
@@ -1223,7 +1223,7 @@ lesshat-selector {
 .navbar-default {
   border: none;
   margin-bottom: 0px;
-  background-color: #317eeb;
+  background:rgba(0, 0, 0, 0) linear-gradient(#50a253, #4c954d) repeat scroll 0 0;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   border-radius: 0px;
 }
@@ -2655,14 +2655,14 @@ div.dataTables_info {
 
 
 /************* 17.PAGES ****************/
-.bg-img {
-  background: url(../images/small/bg.jpg) center;
-}
+/* .bg-img { */
+/*   background: url(../images/small/bg.jpg) center; */
+/* } */
 .bg-overlay {
   position: absolute;
   height: 100%;
   width: 100%;
-  background-color: rgba(49, 126, 235, 0.4);
+  background:rgba(0, 0, 0, 0) linear-gradient(#50a253, #4c954d) repeat scroll 0 0;
   top: 0px;
   left: 0px;
   border-radius: 6px 6px 0px 0px;
