@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.services.TutorialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class TutorialServiceImpl implements TutorialService{
 	private Connection con;
 	
 	@Override
-	public ArrayList<Tutorial> lists(int userid, int offset, int limit) {
+	public ArrayList<Tutorial> lists(int userid, Pagination pagination) {
 		try {
 			con = ds.getConnection();
 			ResultSet rs = null;	
@@ -30,8 +31,8 @@ public class TutorialServiceImpl implements TutorialService{
 			String sql = "SELECT T.tutorialid,T.index, T.title,T.userid,T.categoryid, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID where u.userid=? ORDER BY T.CATEGORYID, T.INDEX OFFSET ? LIMIT ? ";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, userid);
-			ps.setInt(2, offset);
-			ps.setInt(3, limit);
+			ps.setInt(2, pagination.offset());
+			ps.setInt(3, pagination.getPerPage());
 			rs = ps.executeQuery();
 			Tutorial dto = null;
 			while(rs.next()){
@@ -285,6 +286,29 @@ public class TutorialServiceImpl implements TutorialService{
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int countTutorials() {
+		try{
+			con = ds.getConnection();
+			String sql= "select count(tutorialid) as count from tbltutorial";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs= ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1);
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return 0;
 	}
 
 }

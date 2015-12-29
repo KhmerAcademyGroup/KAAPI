@@ -1,7 +1,6 @@
 package org.kaapi.app.test;
 
 
-import java.util.Base64;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -13,8 +12,8 @@ public class BCryptPasswordEncoderTest {
 		
 			System.out.println(new BCryptPasswordEncoder().encode("123"));
 			
-			System.out.println(Base64.getEncoder().encodeToString("11".getBytes()));
-			System.out.println(Base64.getDecoder().decode("MTE="));
+			//System.out.println(Base64.getEncoder().encodeToString("11".getBytes()));
+			//System.out.println(Base64.getDecoder().decode("MTE="));
 		
 			String str = "1";
 	        // encode data using BASE64

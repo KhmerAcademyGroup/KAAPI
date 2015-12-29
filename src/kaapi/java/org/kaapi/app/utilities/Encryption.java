@@ -1,4 +1,4 @@
-package org.kaapi.app.entities;
+package org.kaapi.app.utilities;
 
 import javax.xml.bind.DatatypeConverter;
 
