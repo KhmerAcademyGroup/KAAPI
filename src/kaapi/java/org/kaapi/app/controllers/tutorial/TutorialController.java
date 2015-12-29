@@ -32,7 +32,7 @@ public class TutorialController {
 	public ResponseEntity<Map<String, Object>> getListTutorial(Pagination pagination, @PathVariable("userid") String userid){
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
-			ArrayList<Tutorial> tutorial = service.lists(Integer.parseInt(Encryption.decode(userid)), pagination);
+			ArrayList<Tutorial> tutorial = service.lists(userid, pagination);
 			if(tutorial.isEmpty()){
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
@@ -55,7 +55,7 @@ public class TutorialController {
 	public ResponseEntity<Map<String, Object>> getListTitle(@PathVariable("categoryid") String categoryId){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
-			ArrayList<Tutorial> tutorial = service.list(Integer.parseInt(Encryption.decode(categoryId)));
+			ArrayList<Tutorial> tutorial = service.list(categoryId);
 			if(tutorial.isEmpty()){
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
@@ -75,7 +75,7 @@ public class TutorialController {
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
 			Tutorial dto= new Tutorial();			
-			dto = service.getFirstDetail(Integer.parseInt(Encryption.decode(categoryId)));
+			dto = service.getFirstDetail(categoryId);
 			if(dto != null){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
@@ -96,7 +96,7 @@ public class TutorialController {
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
 			Tutorial tutorial= new Tutorial();
-			tutorial = service.get(Integer.parseInt(Encryption.decode(tutorialId)));
+			tutorial = service.get(tutorialId);
 			if(tutorial!=null){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
@@ -155,7 +155,7 @@ public class TutorialController {
 	public ResponseEntity<Map<String, Object>> delete(@PathVariable("tutorialid") String tutorialId){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
-			if(service.delete(Integer.parseInt(Encryption.decode(tutorialId)))){
+			if(service.delete(tutorialId)){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "DELETE SUCCESSFULLY");
 			}else{

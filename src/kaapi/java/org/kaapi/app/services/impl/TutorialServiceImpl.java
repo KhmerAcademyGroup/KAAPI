@@ -24,14 +24,14 @@ public class TutorialServiceImpl implements TutorialService{
 	private Connection con;
 	
 	@Override
-	public ArrayList<Tutorial> lists(int userid, Pagination pagination) {
+	public ArrayList<Tutorial> lists(String userid, Pagination pagination) {
 		try {
 			con = ds.getConnection();
 			ResultSet rs = null;	
 			ArrayList<Tutorial> tutorials= new ArrayList<Tutorial>();
 			String sql = "SELECT T.tutorialid,T.index, T.title,T.userid,T.categoryid, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID where u.userid=? ORDER BY T.CATEGORYID, T.INDEX OFFSET ? LIMIT ? ";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, userid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ps.setInt(2, pagination.offset());
 			ps.setInt(3, pagination.getPerPage());
 			rs = ps.executeQuery();
@@ -61,13 +61,13 @@ public class TutorialServiceImpl implements TutorialService{
 		return null;	}
 
 	@Override
-	public ArrayList<Tutorial> list(int categoryid) {
+	public ArrayList<Tutorial> list(String categoryid) {
 		try {
 			con = ds.getConnection();
 			ResultSet rs = null;			
 			String sql = "SELECT T.title, T.tutorialid, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID WHERE T.CATEGORYID=? ORDER BY T.INDEX ";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, categoryid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
 			rs = ps.executeQuery();
 			ArrayList<Tutorial> tutorials= new ArrayList<Tutorial>();
 			while(rs.next()){
@@ -94,14 +94,14 @@ public class TutorialServiceImpl implements TutorialService{
 	}
 
 	@Override
-	public Tutorial get(int tutorialid) {
+	public Tutorial get(String tutorialid) {
 		try {
 			con = ds.getConnection();
 			ResultSet rs = null;
 			Tutorial dto = null;
 			String sql = "SELECT T.tutorialid, T.title, T.index, T.description, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID WHERE T.TUTORIALID=? ORDER BY T.INDEX ";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, tutorialid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(tutorialid)));
 			rs = ps.executeQuery();
 			if(rs.next()){
 				dto = new Tutorial();
@@ -130,14 +130,14 @@ public class TutorialServiceImpl implements TutorialService{
 	}
 
 	@Override
-	public Tutorial getFirstDetail(int categoryid) {
+	public Tutorial getFirstDetail(String categoryid) {
 		try {
 			con = ds.getConnection();
 			ResultSet rs = null;
 			Tutorial dto = null;
 			String sql = "SELECT T.*, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID WHERE C.Categoryid=? ORDER BY T.INDEX Limit 1";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, categoryid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
 			rs = ps.executeQuery();
 			if(rs.next()){
 				dto = new Tutorial();
@@ -192,12 +192,12 @@ public class TutorialServiceImpl implements TutorialService{
 	}
 
 	@Override
-	public boolean delete(int tutorialid) {
+	public boolean delete(String tutorialid) {
 		try {
 			con = ds.getConnection();
 			String sql = "DELETE FROM TBLTUTORIAL WHERE tutorialid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, tutorialid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(tutorialid)));
 			if(ps.executeUpdate()>0)
 				return true;
 		} catch (SQLException e) {
@@ -237,7 +237,7 @@ public class TutorialServiceImpl implements TutorialService{
 	}
 
 	@Override
-	public int count(int categoryid) {
+	public int count(String categoryid) {
 		
 		try {
 			con = ds.getConnection();
