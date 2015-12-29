@@ -12,12 +12,12 @@ public class BCryptPasswordEncoderTest {
 	public static void main(String[] args) {
 		
 			// Encrypt Password
-			System.out.println(new BCryptPasswordEncoder().encode("123"));
+			//System.out.println(new BCryptPasswordEncoder().encode("123"));
 			
 			// Encrypt Password basic authentication
 			//System.out.println(Base64.getUrlEncoder().encodeToString("123:123".getBytes()));
 		
-			String str = "19";
+			String str = "425";
 
 	        // encode data using BASE64
 	        String encoded = DatatypeConverter.printBase64Binary(str.getBytes());

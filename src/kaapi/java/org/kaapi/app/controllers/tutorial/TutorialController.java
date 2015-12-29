@@ -14,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -68,7 +70,7 @@ public class TutorialController {
 		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/getDefault/{categoryid}", method= RequestMethod.GET, headers="Accept=application/json")
+	@RequestMapping(value="/getdefault/{categoryid}", method= RequestMethod.GET, headers="Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getDetailDefault(@PathVariable("categoryid") String categoryId){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
@@ -109,6 +111,62 @@ public class TutorialController {
 		}
 		
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);		
+	}
+	
+	@RequestMapping(method= RequestMethod.POST, headers="Accept=application/json")
+	public ResponseEntity<Map<String, Object>> add(@RequestBody Tutorial tutorial){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{		
+			if(service.insert(tutorial)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "INSERT SUCCESSFULLY");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "INSERT UNSUCCESSFULLY");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
+	
+	@RequestMapping(method= RequestMethod.PUT, headers="Accept=application/json")
+	public ResponseEntity<Map<String, Object>> update(@RequestBody Tutorial tutorial){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			if(service.update(tutorial)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "UPDATE SUCCESSFULLY");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "UPDATE UNSUCCESSFULLY");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
+	
+	@RequestMapping(value="/{tutorialid}", method= RequestMethod.DELETE, headers="Accept=application/json")
+	public ResponseEntity<Map<String, Object>> delete(@PathVariable("tutorialid") String tutorialId){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			if(service.delete(Integer.parseInt(Encryption.decode(tutorialId)))){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "DELETE SUCCESSFULLY");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "DELETE UNSUCCESSFULLY");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
 	}
 	
 	

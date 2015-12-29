@@ -38,7 +38,7 @@ public class TutorialServiceImpl implements TutorialService{
 			Tutorial dto = null;
 			while(rs.next()){
 				dto = new Tutorial();
-				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
+				dto.setTutorialId(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setCategoryId(rs.getInt("categoryid"));
 				dto.setCategoryName(rs.getString("categoryname"));
@@ -72,7 +72,7 @@ public class TutorialServiceImpl implements TutorialService{
 			ArrayList<Tutorial> tutorials= new ArrayList<Tutorial>();
 			while(rs.next()){
 				Tutorial dto= new Tutorial();
-				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
+				dto.setTutorialId(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setCategoryName(rs.getString("categoryname"));
 				tutorials.add(dto);
@@ -105,7 +105,7 @@ public class TutorialServiceImpl implements TutorialService{
 			rs = ps.executeQuery();
 			if(rs.next()){
 				dto = new Tutorial();
-				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
+				dto.setTutorialId(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setDescription(rs.getString("description"));
 				dto.setIndex(rs.getInt("index"));
@@ -141,7 +141,7 @@ public class TutorialServiceImpl implements TutorialService{
 			rs = ps.executeQuery();
 			if(rs.next()){
 				dto = new Tutorial();
-				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
+				dto.setTutorialId(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setDescription(rs.getString("description"));
 				dto.setIndex(rs.getInt("index"));
@@ -271,7 +271,7 @@ public class TutorialServiceImpl implements TutorialService{
 			ps.setInt(3, dto.getIndex());
 			ps.setInt(4, dto.getUserId());
 			ps.setInt(5, dto.getCategoryId());
-			ps.setInt(6, dto.getTutorialId());
+			ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getTutorialId())));
 			if(ps.executeUpdate()>0)
 				return true;
 		} catch (SQLException e) {

@@ -2,7 +2,7 @@ package org.kaapi.app.entities;
 
 public class Tutorial {
 
-	private int tutorialId;
+	private String tutorialId;
 	private String title;
 	private String description;
 	private int index;
@@ -10,19 +10,12 @@ public class Tutorial {
 	private String username;
 	private int categoryId;
 	private String categoryName;
-	private String tutorialCode;
 	
 	
-	public String getTutorialCode() {
-		return tutorialCode;
-	}
-	public void setTutorialCode(String tutorialCode) {
-		this.tutorialCode = tutorialCode;
-	}
-	public int getTutorialId() {
+	public String getTutorialId() {
 		return tutorialId;
 	}
-	public void setTutorialId(int tutorialId) {
+	public void setTutorialId(String tutorialId) {
 		this.tutorialId = tutorialId;
 	}
 	public String getTitle() {
