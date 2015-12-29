@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UniversityController {
 
 	@Autowired
-	@Qualifier("universityServiceImpl")
 	UniversityService universityService;
 
 	// GetListAllUniversityByName

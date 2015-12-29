@@ -6,14 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
 import org.kaapi.app.services.UniversityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service("universityServiceImpl")
+@Repository
 public class UniversityServiceImpl implements UniversityService{
 
 	@Autowired
