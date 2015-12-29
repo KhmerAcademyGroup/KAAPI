@@ -7,10 +7,12 @@ import org.kaapi.app.entities.Pagination;
 
 public interface ForumCategoryService {
 	
-	public List<ForumCategory> listForumCate(Pagination pagination , String categoryName);
-	public ForumCategory getForumCate(int id);
-	public boolean deleteForumCate(int id);
-	public boolean updateForumCate(int id);
-	public int countForumCate(String categoryName);
+	public List<ForumCategory> searchForumCate(Pagination pagination , String categoryName);
+	public List<ForumCategory> listForumCate(Pagination pagination);
+	public ForumCategory getForumCate(String id);
+	public boolean deleteForumCate(String id);
+	public boolean updateForumCate(ForumCategory forumCate);
+	public int countSearchForumCate(String categoryName);
+	public int countForumCate();
 	
 }
