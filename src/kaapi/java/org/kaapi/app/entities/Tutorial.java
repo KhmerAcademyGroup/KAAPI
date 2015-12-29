@@ -10,7 +10,15 @@ public class Tutorial {
 	private String username;
 	private int categoryId;
 	private String categoryName;
+	private String tutorialCode;
 	
+	
+	public String getTutorialCode() {
+		return tutorialCode;
+	}
+	public void setTutorialCode(String tutorialCode) {
+		this.tutorialCode = tutorialCode;
+	}
 	public int getTutorialId() {
 		return tutorialId;
 	}

@@ -8,7 +8,7 @@ public class Encryption {
 		return DatatypeConverter.printBase64Binary(code.getBytes());
 	}
 	
-	public static String decrytp(String encoded){
+	public static String decode(String encoded){
 		return  new String(DatatypeConverter.parseBase64Binary(encoded));
 	}
 	

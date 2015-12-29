@@ -7,6 +7,7 @@ import java.util.Map;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.services.TutorialService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,57 +27,89 @@ public class TutorialController {
 	TutorialService service;
 	
 	@RequestMapping(value="/list/{userid}" ,method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getListTutorial(Pagination pagination, @PathVariable("userid") int userid){
-		ArrayList<Tutorial> tutorial = service.lists(userid, pagination);
+	public ResponseEntity<Map<String, Object>> getListTutorial(Pagination pagination, @PathVariable("userid") String userid){
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(tutorial.isEmpty()){
+		try{
+			ArrayList<Tutorial> tutorial = service.lists(Integer.parseInt(Encryption.decode(userid)), pagination);
+			if(tutorial.isEmpty()){
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+			pagination.setTotalCount(service.count());
+			pagination.setTotalPages(pagination.totalPages());
+			map.put("PAGINATION", pagination);
+			map.put("STATUS", true);
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("RES_DATA", tutorial);
+		}catch(Exception e){
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND!");
+			map.put("MESSAGE", "ERROR OCCURRING!");
 		}
-		pagination.setTotalCount(service.countTutorials());
-		pagination.setTotalPages(pagination.totalPages());
-		map.put("PAGINATION", pagination);
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", tutorial);
-		
 		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value="/listtitle/{categoryid}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getListTitle(@PathVariable("categoryid") int categoryId){
-		ArrayList<Tutorial> tutorial = service.list(categoryId);
+	public ResponseEntity<Map<String, Object>> getListTitle(@PathVariable("categoryid") String categoryId){
 		Map<String, Object> map= new HashMap<String, Object>();
-		if(tutorial.isEmpty()){
+		try{
+			ArrayList<Tutorial> tutorial = service.list(Integer.parseInt(Encryption.decode(categoryId)));
+			if(tutorial.isEmpty()){
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+			map.put("STATUS", true);
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("RES_DATA", tutorial);
+		}catch(Exception e){
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND!");
+			map.put("MESSAGE", "ERROR OCCURRING!");
 		}
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", tutorial);
 		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/getDefault/{categoryid}", method= RequestMethod.GET, headers="Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getDetailDefault(@PathVariable("categoryid") int categoryid){
-		
-		Tutorial dto= new Tutorial();
+	public ResponseEntity<Map<String, Object>> getDetailDefault(@PathVariable("categoryid") String categoryId){
 		Map<String, Object> map= new HashMap<String, Object>();
-		dto = service.getFirstDetail(categoryid);
-		if(dto != null){
-			map.put("STATUS", true);
-			map.put("MESSAGE", "RECORD FOUND");
-			map.put("RES_DATA", dto);
-		}else{
+		try{
+			Tutorial dto= new Tutorial();			
+			dto = service.getFirstDetail(Integer.parseInt(Encryption.decode(categoryId)));
+			if(dto != null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND!");
+			map.put("MESSAGE", "ERROR OCCURRING!");
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//@RequestMapping(value="/{tutorialid}", method= RequestMethod.GET, headers="Accept=application/json")
-	
+	@RequestMapping(value="/{tutorialid}", method= RequestMethod.GET, headers="Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getDetail(@PathVariable("tutorialid") String tutorialId){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			Tutorial tutorial= new Tutorial();
+			tutorial = service.get(Integer.parseInt(Encryption.decode(tutorialId)));
+			if(tutorial!=null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", tutorial);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);		
+	}
 	
 	
 	

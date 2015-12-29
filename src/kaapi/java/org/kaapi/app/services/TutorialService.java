@@ -15,6 +15,5 @@ public interface TutorialService {
 	public boolean delete(int tutorialid);
 	public int count();
 	public int count(int categoryid);
-	public int countTutorials();
 	
 }

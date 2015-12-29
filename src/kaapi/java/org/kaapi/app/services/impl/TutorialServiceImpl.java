@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.services.TutorialService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -37,15 +38,13 @@ public class TutorialServiceImpl implements TutorialService{
 			Tutorial dto = null;
 			while(rs.next()){
 				dto = new Tutorial();
-				dto.setTutorialId(rs.getInt("tutorialid"));
+				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setCategoryId(rs.getInt("categoryid"));
 				dto.setCategoryName(rs.getString("categoryname"));
 				dto.setUsername(rs.getString("username"));
-				dto.setIndex(rs.getInt("index"));
-				
+				dto.setIndex(rs.getInt("index"));				
 				tutorials.add(dto);
-
 			}
 			rs.close();
 			return tutorials;
@@ -73,7 +72,7 @@ public class TutorialServiceImpl implements TutorialService{
 			ArrayList<Tutorial> tutorials= new ArrayList<Tutorial>();
 			while(rs.next()){
 				Tutorial dto= new Tutorial();
-				dto.setTutorialId(rs.getInt("tutorialid"));
+				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setCategoryName(rs.getString("categoryname"));
 				tutorials.add(dto);
@@ -106,7 +105,7 @@ public class TutorialServiceImpl implements TutorialService{
 			rs = ps.executeQuery();
 			if(rs.next()){
 				dto = new Tutorial();
-				dto.setTutorialId(rs.getInt("tutorialid"));
+				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setDescription(rs.getString("description"));
 				dto.setIndex(rs.getInt("index"));
@@ -142,7 +141,7 @@ public class TutorialServiceImpl implements TutorialService{
 			rs = ps.executeQuery();
 			if(rs.next()){
 				dto = new Tutorial();
-				dto.setTutorialId(rs.getInt("tutorialid"));
+				dto.setTutorialCode(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
 				dto.setDescription(rs.getString("description"));
 				dto.setIndex(rs.getInt("index"));
@@ -288,27 +287,5 @@ public class TutorialServiceImpl implements TutorialService{
 		return false;
 	}
 
-	@Override
-	public int countTutorials() {
-		try{
-			con = ds.getConnection();
-			String sql= "select count(tutorialid) as count from tbltutorial";
-			PreparedStatement ps = con.prepareStatement(sql);
-			ResultSet rs= ps.executeQuery();
-			if(rs.next()){
-				return rs.getInt(1);
-			}
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			try {
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return 0;
-	}
 
 }
