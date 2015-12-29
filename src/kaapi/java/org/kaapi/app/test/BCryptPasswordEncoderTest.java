@@ -2,6 +2,8 @@ package org.kaapi.app.test;
 
 
 
+import java.util.Base64;
+
 import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,11 +12,13 @@ public class BCryptPasswordEncoderTest {
 
 	public static void main(String[] args) {
 		
+			// Encrypt Password
 			System.out.println(new BCryptPasswordEncoder().encode("123"));
 			
-			//System.out.println(Base64.getEncoder().encodeToString("11".getBytes()));
-			//System.out.println(Base64.getDecoder().decode("MTE="));
+			// Encrypt Password basic authentication
+			System.out.println(Base64.getUrlEncoder().encodeToString("123:123".getBytes()));
 		
+			// Simple Encrypt and Decrypt 
 			String str = "1";
 	        // encode data using BASE64
 	        String encoded = DatatypeConverter.printBase64Binary(str.getBytes());

@@ -172,12 +172,12 @@
                                     <div class="panel-heading">
                                         <h3 class="panel-title">KA API Users</h3>   
                                         <%
-                                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                                		APIUser user = (APIUser)authentication.getPrincipal();
-                                		out.print("____________adminID " +user.getId());
-                                		out.print("____________adminID " +user.getUsername());
+//                                         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//                                 		APIUser user = (APIUser)authentication.getPrincipal();
+//                                 		out.print("____________adminID " +user.getId());
+//                                 		out.print("____________adminID " +user.getUsername());
                                         %>
-                                        <sec:authorize access="isAuthenticated()">Logout</sec:authorize>
+                                      <%--   <sec:authorize access="isAuthenticated()">Logout</sec:authorize>
                                         <sec:authorize access="hasAnyRole('ADMIN' , 'USER')">ROLE ADMIN</sec:authorize>
                                         <sec:authorize access="hasRole('USER')">ROLE USER</sec:authorize>
                                         <sec:authorize access="isAnonymous()">Login</sec:authorize>
@@ -189,7 +189,7 @@
                                         	if('${isAdmin}' == 'true'){
                                         		alert("True");
                                         	}
-                                        </script>
+                                        </script> --%>
                                         
                                     </div>
                                     <div class="panel-body">
