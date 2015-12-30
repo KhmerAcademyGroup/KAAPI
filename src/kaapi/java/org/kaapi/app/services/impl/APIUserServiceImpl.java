@@ -87,7 +87,7 @@ public class APIUserServiceImpl implements APIUserService {
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setString(1, "%" + username + "%");
 			ps.setString(2, "API");
-			ps.setInt(3, pagination.getPerPage());
+			ps.setInt(3, pagination.getItem());
 			ps.setInt(4, pagination.offset());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {

@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class Pagination implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	private int currentPage;
-	private int perPage;
+	private int page;
+	private int item;
 	private int totalCount;
 	private int totalPages;
 	
@@ -14,27 +14,27 @@ public class Pagination implements Serializable{
 		this(1,15,0,0);
 	}	
 	
-	public Pagination(int currentPage, int perPage, int totalCount, int totalPages){
-		this.currentPage = currentPage;
-		this.perPage = perPage;
+	public Pagination(int page, int item, int totalCount, int totalPages){
+		this.page = page;
+		this.item = item;
 		this.totalCount = totalCount;
 		this.totalPages = totalPages;
 	}
-	public int getCurrentPage() {
-		return currentPage;
+	public int getPage() {
+		return page;
 	}
 
 	public int totalPages(){
-		return (int) Math.ceil((double)this.totalCount/perPage);
+		return (int) Math.ceil((double)this.totalCount/item);
 		
 	}
 	
 	public int nextPage(){
-		return this.currentPage+1;
+		return this.page+1;
 	}
 	
 	public int previousPage(){
-		return this.currentPage-1;
+		return this.page-1;
 	}
 	
 	public boolean hasNextPage(){
@@ -46,22 +46,22 @@ public class Pagination implements Serializable{
 	}	
 	
 	public int offset(){
-		return (this.currentPage-1)* perPage;
+		return (this.page-1)* item;
 	}
 	
-	public void setCurrentPage(int currentPage) {
-		this.currentPage = currentPage;
+	public void setPage(int currentPage) {
+		this.page = currentPage;
 	}
 
-	public int getPerPage() {
-		return perPage;
+	public int getItem() {
+		return item;
 	}
 
-	public void setPerPage(int perPage) {
-		if(perPage > 100 ){
-			perPage = 10;
+	public void setItem(int item) {
+		if(item > 100 ){
+			item = 10;
 		}
-		this.perPage = perPage;
+		this.item = item;
 	}
 
 	public int getTotalCount() {

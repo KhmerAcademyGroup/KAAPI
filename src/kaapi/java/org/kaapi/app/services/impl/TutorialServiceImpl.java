@@ -33,7 +33,7 @@ public class TutorialServiceImpl implements TutorialService{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ps.setInt(2, pagination.offset());
-			ps.setInt(3, pagination.getPerPage());
+			ps.setInt(3, pagination.getItem());
 			rs = ps.executeQuery();
 			Tutorial dto = null;
 			while(rs.next()){

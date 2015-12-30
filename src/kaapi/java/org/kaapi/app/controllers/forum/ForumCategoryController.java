@@ -27,17 +27,20 @@ public class ForumCategoryController {
 		try{
 		List<ForumCategory> list = forumCateService.listForumCate(pagination);
 		if(list == null){
-			map.put("MESSAGE", "No data");
+			map.put("MESSAGE", "RECORD NOT FOUND");
 			map.put("STATUS", false);
 		}else{
-			map.put("MESSAGE", "Data found");
+			map.put("MESSAGE", "RECORD FOUND");
 			map.put("STATUS", true);
+			map.put("RES_DATA",list);
 		}
 		}catch(Exception e){
-			map.put("MESSAGE", "Error occuring");
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
 		}
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
+	
+	
 	
 }

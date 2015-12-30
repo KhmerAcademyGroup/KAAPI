@@ -36,6 +36,8 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 			PreparedStatement ps = cnn.prepareStatement(sql);
 		){
 			ps.setString(1, "%"+categoryName+"%");
+			ps.setInt(2, pagination.getItem());
+			ps.setInt(3, pagination.offset());
 			ResultSet rs = ps.executeQuery();
 			ArrayList<ForumCategory> list = new ArrayList<ForumCategory>();
 			ForumCategory fCate = null;
@@ -64,6 +66,8 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 			Connection cnn = dataSource.getConnection();
 			PreparedStatement ps = cnn.prepareStatement(sql);
 		){
+			ps.setInt(1, pagination.getItem());
+			ps.setInt(2, pagination.offset());
 			ResultSet rs = ps.executeQuery();
 			ArrayList<ForumCategory> list = new ArrayList<ForumCategory>();
 			ForumCategory fCate = null;

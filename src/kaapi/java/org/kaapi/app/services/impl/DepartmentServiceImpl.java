@@ -99,7 +99,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
 			ps.setString(1, "%" + keyword + "%");
-			ps.setInt(2, pagination.getPerPage());
+			ps.setInt(2, pagination.getItem());
 			ps.setInt(3, pagination.offset());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){

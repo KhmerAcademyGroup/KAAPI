@@ -33,8 +33,8 @@ public class PlayListServiceImplement implements PlayListService{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
 			ps.setInt(2, dto.getUserId());
-			pagin.getCurrentPage();
-			ps.setInt(4, pagin.getPerPage());
+			pagin.getPage();
+			ps.setInt(4, pagin.getItem());
 			rs = ps.executeQuery();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			while(rs.next()){
@@ -83,7 +83,7 @@ public class PlayListServiceImplement implements PlayListService{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, playlistid);
 			ps.setInt(2, pagin.offset());
-			ps.setInt(3, pagin.getPerPage());
+			ps.setInt(3, pagin.getItem());
 			rs = ps.executeQuery();
 			return playlists;
 		} catch (SQLException e) {
