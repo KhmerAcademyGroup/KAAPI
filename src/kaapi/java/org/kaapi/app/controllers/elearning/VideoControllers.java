@@ -60,6 +60,35 @@ public class VideoControllers {
 		map.put("RES_DATA", video);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
+	
+	//Get video: param(videoId, viewCount)
+	@RequestMapping(method = RequestMethod.PATCH, value = "/video/toggle", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> toggleVideo(@RequestParam("vid") String id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int i;
+		try{
+			i = Integer.parseInt(id);
+		}catch(NumberFormatException e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR INPUT");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		if(i<=0){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR INPUT ID");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		if(videoService.toggleVideo(i)) {
+			map.put("STATUS", true);
+			map.put("MESSAGE", "OPERATION SUCCESS!");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}else{
+			map.put("STATUS", false);
+			map.put("MESSAGE", "OPERATION FAIL");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		
+	}
 		
 	//Insert Video
 	@RequestMapping(method = RequestMethod.POST, value = "/video", headers = "Accept=application/json")
