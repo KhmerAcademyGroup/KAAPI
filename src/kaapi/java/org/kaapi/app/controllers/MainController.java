@@ -48,5 +48,10 @@ public class MainController {
 		return "kaapi/webserviceapi";
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/help")
+	public String help(ModelMap m) {			
+		m.addAttribute("msg","Swagger Page");
+		return "help";
+	}
 	
 }
