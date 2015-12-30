@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class Video {
 
-	private int videoId;
+	private String videoId;
 	private String videoName;
 	private String description;
 	private String youtubeUrl;
@@ -22,10 +22,10 @@ public class Video {
 	private boolean status;
 	private int []categoryId;
 	
-	public int getVideoId() {
+	public String getVideoId() {
 		return videoId;
 	}
-	public void setVideoId(int videoId) {
+	public void setVideoId(String videoId) {
 		this.videoId = videoId;
 	}
 	public String getVideoName() {

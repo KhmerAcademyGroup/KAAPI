@@ -2,28 +2,29 @@ package org.kaapi.app.services;
 
 import java.util.List;
 
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
 
 public interface VideosService {
-	public List<Video> listVideo(int offset, int limit);
-	public List<Video> listVideo(boolean status, int offset, int limit);
-	public List<Video> listVideo(String videoName, int offset, int limit);
-	public List<Video> listVideo(String videoName, boolean status, int offset, int limit);
-	public List<Video> listVideo(int userId, int offset, int limit);
-	public List<Video> listVideo(int userId, boolean status, int offset, int limit);
-	public List<Video> listVideo(int userId, String VideoName, int offset, int limit);
-	public List<Video> listVideo(int userId, String VideoName, boolean status, int offset, int limit);
+	public List<Video> listVideo(Pagination page);
+	public List<Video> listVideo(boolean status, Pagination page);
+	public List<Video> listVideo(String videoName, Pagination page);
+	public List<Video> listVideo(String videoName, boolean status, Pagination page);
+	public List<Video> listVideo(int userId, Pagination page);
+	public List<Video> listVideo(int userId, boolean status, Pagination page);
+	public List<Video> listVideo(int userId, String VideoName, Pagination page);
+	public List<Video> listVideo(int userId, String VideoName, boolean status, Pagination page);
 	public List<Video> getRelateVideo(String categoryName, int limit);
-	public List<Video> categoryVideo(int categoryid, int offset, int limit);
-	public List<Video> categoryVideo(int categoryid, boolean status, int offset, int limit);
+	public List<Video> categoryVideo(int categoryid, Pagination page);
+	public List<Video> categoryVideo(int categoryid, boolean status, Pagination page);
 	public List<Video> topVoteAndRecent(int limit);
-	public Video getVideo(int videoId, boolean viewCount);
+	public Video getVideo(String videoId, boolean viewCount);
 	public int insert(Video video);
 	public boolean update(Video video);
-	public boolean delete(int videoId);
-	public boolean toggleVideo(int videoId);
-	public boolean insertVideoToCategory(int videoId, int categoryId);
-	public boolean removeVideoFromCategory(int videoId);
+	public boolean delete(String videoId);
+	public boolean toggleVideo(String videoId);
+	public boolean insertVideoToCategory(String videoId, int categoryId);
+	public boolean removeVideoFromCategory(String videoId);
 	public int countVideo();
 	public int countVideo(boolean status);
 	public int countVideo(String videoName);

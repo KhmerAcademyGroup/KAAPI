@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.VideosService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,33 +24,19 @@ public class VideoControllers {
 	@Autowired VideosService videoService;
 
 	//Get video: param(videoId, viewCount)
-	@RequestMapping(method = RequestMethod.GET, value = "/video", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideo(@RequestParam("vid") String id, @RequestParam("view") String count) {
+	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getVideo(@PathVariable("id") String id, @RequestParam("view") String count) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int i;
-		try{
-			i = Integer.parseInt(id);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(i<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		System.out.println(count);
 		boolean view = false;
-		if(!count.equals("f") && !count.equals("t")){
+		if(!count.equals("false") && !count.equals("true")){
 			map.put("STATUS", false);
 			map.put("MESSAGE", "ERROR INPUT");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}else{
-			view = (count.equals("t"))?true:false;
+			view = (count.equals("true"))?true:false;
 		}
 		System.out.println(view);
-		Video video = videoService.getVideo(i, view);
+		Video video = videoService.getVideo(id, view);
 		if (video==null) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
@@ -62,23 +49,10 @@ public class VideoControllers {
 	}
 	
 	//Get video: param(videoId, viewCount)
-	@RequestMapping(method = RequestMethod.PATCH, value = "/video/toggle", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> toggleVideo(@RequestParam("vid") String id) {
+	@RequestMapping(method = RequestMethod.PATCH, value = "/video/enable/v/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> toggleVideo(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int i;
-		try{
-			i = Integer.parseInt(id);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(i<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(videoService.toggleVideo(i)) {
+		if(videoService.toggleVideo(id)) {
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS!");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -111,11 +85,12 @@ public class VideoControllers {
 		}
 		boolean help = true;
 		int vid = videoService.insert(video);
+		String id = new Integer(vid).toString();
 		int []catid = video.getCategoryId();
 		for(int i=0; i<catid.length; i++){
 			int cid = Integer.parseInt("0" + catid[i]);
-			if(!videoService.insertVideoToCategory(vid, cid)){
-				videoService.delete(vid);
+			if(!videoService.insertVideoToCategory(Encryption.encode(id), cid)){
+				videoService.delete(Encryption.encode(id));
 				help=false;
 				break;
 			}
@@ -136,11 +111,6 @@ public class VideoControllers {
 	@RequestMapping(method = RequestMethod.PUT, value = "/video", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> updateVideo(@RequestBody Video video) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(video.getVideoId()<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT VIDEO ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
 		if(video.getVideoName().equals("") || video.getVideoName().equals(null)){
 			map.put("STATUS", false);
 			map.put("MESSAGE", "ERROR INPUT VIDEO NAME");
@@ -149,11 +119,6 @@ public class VideoControllers {
 		if(video.getYoutubeUrl().equals("") || video.getYoutubeUrl().equals(null)){
 			map.put("STATUS", false);
 			map.put("MESSAGE", "ERROR INPUT YOUTUBE URL");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(video.getUserId()<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT USER ID");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		boolean help = true;
