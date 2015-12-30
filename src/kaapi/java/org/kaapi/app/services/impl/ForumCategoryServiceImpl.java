@@ -23,7 +23,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 	private DataSource dataSource;
 	
 	@Override
-	public List<ForumCategory> searchForumCate(Pagination pagination, String categoryName) {
+	public List<ForumCategory> searchForumCate(String categoryName , Pagination pagination) {
 		String sql = 	  " SELECT "
 						+ " CA.*, COUNT(C.categoryid) COUNTVIDEOS "
 						+ " FROM "
@@ -98,6 +98,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 			Connection cnn = dataSource.getConnection();
 			PreparedStatement ps = cnn.prepareStatement(sql);
 		){
+			ps.setInt(1, Integer.parseInt(Encryption.decode(id)));
 			ResultSet rs = ps.executeQuery();
 			ForumCategory dto  = null;
 			if(rs.next()){
@@ -136,7 +137,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 				PreparedStatement ps  =  cnn.prepareStatement(sql);
 		){
 				ps.setString(1, forumCate.getCategoryName());
-				ps.setInt(2, Integer.parseInt(forumCate.getCategoryId()));
+				ps.setInt(2, Integer.parseInt(Encryption.decode(forumCate.getCategoryId())));
 				if(ps.executeUpdate() > 0 ) return true;
 		}catch(SQLException e){
 			e.printStackTrace();
