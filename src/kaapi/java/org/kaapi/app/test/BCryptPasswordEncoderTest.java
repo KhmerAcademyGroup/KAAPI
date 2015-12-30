@@ -3,6 +3,9 @@ package org.kaapi.app.test;
 
 
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
 import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,6 +31,33 @@ public class BCryptPasswordEncoderTest {
 	        System.out.println("decoded value is \t" + decoded);
 
 	        System.out.println("original value is \t" + str);
+	        
+	        
+	        
+	        
+	        
+	        
+	         UUID uuid = UUID.randomUUID();
+			 long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
+			 System.out.println(Long.toString(l,Character.MAX_RADIX));
+			 
+			 UUID uuid1 = UUID.randomUUID();
+			 long l1 = ByteBuffer.wrap(uuid1.toString().getBytes()).getLong();
+			 System.out.println(Long.toString(l1,Character.MAX_RADIX));
+			 
+			 UUID uuid2 = UUID.randomUUID();
+			 long l2 = ByteBuffer.wrap(uuid2.toString().getBytes()).getLong();
+			 System.out.println(Long.toString(l2,Character.MAX_RADIX));
+			 
+			 
+			 UUID uuid3 = UUID.randomUUID();
+			 long l3 = ByteBuffer.wrap(uuid3.toString().getBytes()).getLong();
+			 System.out.println(Long.toString(l3,Character.MAX_RADIX));
+			 
+			 
+			 UUID uuid4 = UUID.randomUUID();
+			 long l4 = ByteBuffer.wrap(uuid4.toString().getBytes()).getLong();
+			 System.out.println(Long.toString(l4,Character.MAX_RADIX));
 		
 		
 	}
