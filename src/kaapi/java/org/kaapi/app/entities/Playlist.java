@@ -11,6 +11,35 @@ public class Playlist {
 	private String username;
 	private int countVideos;
 	
+	private int maincategory;
+	private String bgImage;
+	private String color;
+	private boolean status;
+	
+	public int getMaincategory() {
+		return maincategory;
+	}
+	public void setMaincategory(int maincategory) {
+		this.maincategory = maincategory;
+	}
+	public String getBgImage() {
+		return bgImage;
+	}
+	public void setBgImage(String bgImage) {
+		this.bgImage = bgImage;
+	}
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
 	public int getPlaylistId() {
 		return playlistId;
 	}
