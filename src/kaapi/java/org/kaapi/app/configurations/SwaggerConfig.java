@@ -32,7 +32,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
-                "My Project's REST API",
+                "KhmerAcademy  REST API",
                 "This is a description of your API.",
                 "API TOS",
                 "me@wherever.com",
