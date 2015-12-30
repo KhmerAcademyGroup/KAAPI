@@ -167,8 +167,8 @@ public class PlayListController {
 			int begin = (limit * offset) - limit;
 			//set pagination
 			Pagination pagin = new Pagination();
-			pagin.setPerPage(limit);
-			pagin.setCurrentPage(begin);
+//			pagin.setPerPage(limit);
+//			pagin.setCurrentPage(begin);
 			
 			ArrayList<Playlist> playlist = (ArrayList<Playlist>) playlistservice.list(pagin, playlistdto);
 			Map<String, Object> map = new HashMap<String, Object>();
