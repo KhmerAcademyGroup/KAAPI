@@ -1,4 +1,4 @@
-package org.kaapi.app.controllers.tutorial;
+/*package org.kaapi.app.controllers.tutorial;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class PlayListController {
 		playlistdto.setBgImage("aaaa");
 		playlistdto.setColor("bbbbb");
 		
-		/*	boolean playlist =playlistservice.insert(playlistdto);*/
+			boolean playlist =playlistservice.insert(playlistdto);
 
 		//Playlist playlist = playlistservice.get(1);
 		
@@ -242,3 +242,4 @@ public class PlayListController {
 
 }
 
+*/
