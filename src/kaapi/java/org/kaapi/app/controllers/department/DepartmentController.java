@@ -8,7 +8,6 @@ import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class DepartmentController {
 	
 	@Autowired
-	@Qualifier("DepartmentServiceImpl")
 	DepartmentService departmentService;
 	
 	//Create university
-	@RequestMapping(method = RequestMethod.POST, value = "/insertDepartment", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/insert", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> insertDepartment(@RequestBody Department department){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
@@ -43,7 +41,7 @@ public class DepartmentController {
 	}
 	
 	//Update Department
-	@RequestMapping(method = RequestMethod.PUT, value = "/updateDepartment" , headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.PUT, value = "/update" , headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> updateDepartment(@RequestBody Department department){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
@@ -60,7 +58,7 @@ public class DepartmentController {
 	
 	//Delete Department
 	@RequestMapping(method = RequestMethod.DELETE, value="/delete/{id}", headers="Accept=application/json")
-	public ResponseEntity<Map<String, Object>> deleteDepartment(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String, Object>> deleteDepartment(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if (departmentService.deleteDepartment(id)) {			
@@ -75,7 +73,7 @@ public class DepartmentController {
 	}
 
 	// List Department
-	@RequestMapping(method = RequestMethod.GET, value = "/listDepartment", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/list", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listDepartment(
 			Pagination pagination,
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
@@ -95,12 +93,14 @@ public class DepartmentController {
 		map.put("MESSAGE", "RECORD FOUND!");
 		map.put("STATUS", true);
 		map.put("RESP_DATA", listDepartment);
-		map.put("PAGINATION", pagination);
+		map.put("TOTAL_RECORD", pagination.getTotalCount());
+		map.put("TOTAL_PAGE", pagination.getTotalPages());
+		map.put("CURRENT_PAGE", pagination.getPage());
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	// Count all Department
-	@RequestMapping(method = RequestMethod.GET, value = "/countDepartment", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/count", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> countDepartment() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
