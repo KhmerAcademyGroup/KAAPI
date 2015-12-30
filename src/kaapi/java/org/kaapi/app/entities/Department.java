@@ -2,13 +2,12 @@ package org.kaapi.app.entities;
 
 public class Department {
 	
-	private int departmentId;
+	private String departmentId;
 	private String departmentName;
-	
-	public int getDepartmentId() {
+	public String getDepartmentId() {
 		return departmentId;
 	}
-	public void setDepartmentId(int departmentId) {
+	public void setDepartmentId(String departmentId) {
 		this.departmentId = departmentId;
 	}
 	public String getDepartmentName() {
@@ -17,5 +16,4 @@ public class Department {
 	public void setDepartmentName(String departmentName) {
 		this.departmentName = departmentName;
 	}
-	
 }

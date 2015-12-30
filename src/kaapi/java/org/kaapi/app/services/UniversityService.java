@@ -9,9 +9,9 @@ public interface UniversityService {
 	
 	public boolean createUniverstiy(University university);
 	public boolean updateUniversityById(University university);
-	public boolean deleteUniversityById(int id);
+	public boolean deleteUniversityById(String universityId);
 	public List<University> findAllUniverstiyByName(Pagination pagination,String keyword); 
-	public String findUniversityById(int id);
+	public String findUniversityById(String universityId);
 	public int countUniversity();
 
 }

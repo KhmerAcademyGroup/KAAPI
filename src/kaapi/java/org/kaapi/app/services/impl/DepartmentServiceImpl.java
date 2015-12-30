@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.DepartmentService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -53,7 +54,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
 			ps.setString(1, department.getDepartmentName());
-			ps.setInt(2, department.getDepartmentId());
+			ps.setInt(2, Integer.parseInt(Encryption.decode(department.getDepartmentId())));
 			if(ps.executeUpdate() > 0)
 				return true;
 		}catch(SQLException e){
@@ -63,7 +64,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
-	public boolean deleteDepartment(int id) {
+	public boolean deleteDepartment(String departmentId) {
 		String sql = "DELETE "
 			+ "FROM "
 				+ "tbldepartment "
@@ -73,7 +74,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			ps.setInt(1, id);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(departmentId)));
 			if(ps.executeUpdate() > 0)
 				return true;
 		}catch(SQLException e){
@@ -90,7 +91,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 					+ "FROM "
 				+ "tbldepartment "
 					+ "WHERE "
-				+ "departmentname LIKE ?"
+				+ "lower(departmentname) LIKE lower(?)"
 					+ "LIMIT ? OFFSET ?;";
 		List<Department> list = new ArrayList<Department>();
 		Department department = null;
@@ -104,7 +105,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				department = new Department();
-				department.setDepartmentId(rs.getInt("departmentid"));
+				department.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
 				department.setDepartmentName(rs.getString("departmentname"));
 				list.add(department);
 			}
