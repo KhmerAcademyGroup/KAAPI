@@ -30,12 +30,32 @@ public class PlayListController {
 	@RequestMapping(value="/test", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> test(){
 		System.out.println("====================================");
-		//boolean a =playlistservice.deleteVideoFromPlaylist(1, 20);
+		
+		
+		//boolean playlist =playlistservice.addVideoToPlst(1, 111);
 		//System.out.println("result"+a);
-		ArrayList<Playlist> playlist =playlistservice.recommendPlaylist();
 		
+		
+		//ArrayList<Playlist> playlist =playlistservice.recommendPlaylist();
+		
+		//int playlist =playlistservice.countUserPlaylist("ios", 1);
+		
+		Playlist playlistdto = new Playlist();
+		playlistdto.setPlaylistName("chhoin");
+		playlistdto.setDescription("this is chhoin");
+		playlistdto.setUserId(1);
+		playlistdto.setThumbnailUrl("/chhoin/");
+		playlistdto.setPublicView(true);
+		playlistdto.setMaincategory(1);
+		playlistdto.setBgImage("aaaa");
+		playlistdto.setColor("bbbbb");
+		
+		/*	boolean playlist =playlistservice.insert(playlistdto);*/
 
+		//Playlist playlist = playlistservice.get(1);
 		
+		
+		String playlist = playlistservice.getPlaylistName(5);
 		
 		
 		String tutorial = "sfsfsdsd";
