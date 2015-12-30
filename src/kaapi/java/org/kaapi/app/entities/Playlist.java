@@ -10,12 +10,25 @@ public class Playlist {
 	private boolean publicView;
 	private String username;
 	private int countVideos;
-	
+	private int videoId;
+	public int getVideoId() {
+		return videoId;
+	}
+	public void setVideoId(int videoId) {
+		this.videoId = videoId;
+	}
 	private int maincategory;
 	private String bgImage;
 	private String color;
 	private boolean status;
+	private String userImageUrl;
 	
+	public String getUserImageUrl() {
+		return userImageUrl;
+	}
+	public void setUserImageUrl(String userImageUrl) {
+		this.userImageUrl = userImageUrl;
+	}
 	public int getMaincategory() {
 		return maincategory;
 	}
