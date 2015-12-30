@@ -1,15 +1,17 @@
 package org.kaapi.app.services;
 
 import java.util.ArrayList;
+
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
+import org.kaapi.app.entities.Video;
 
 
 public interface PlayListService {
 	public ArrayList<Playlist> list(Pagination pagin , Playlist dto);
-	public ArrayList<Playlist> listVideoInPlaylist(int playlistid , Pagination pagin );
+	public ArrayList<Video> listVideoInPlaylist(int playlistid , Pagination pagin );
 	public String getPlaylistName(int playlistid);
-	public ArrayList<Playlist> listVideo(int playlistid);
+	public ArrayList<Video> listVideo(int playlistid);
 	public ArrayList<Playlist> listplaylistname(Playlist dto);
 	public ArrayList<Playlist> listplaylistbyPublicView(boolean publicview);
 	public ArrayList<Playlist> listplaylistbyAdmin(boolean publicview);
