@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
 import org.kaapi.app.services.UniversityService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,11 +26,6 @@ public class UniversityServiceImpl implements UniversityService{
 	public boolean createUniverstiy(University university) {
 
 		String sql = "INSERT INTO tbluniversity(universityid,universityname) VALUES(NEXTVAL('seq_university'),?);";
-
-		/*String sql = "INSERT "
-				+ "INTO"
-			+ "tbluniversity(universityid,universityname)"
-				+ "VALUES(NEXTVAL('seq_university'),?);";*/
 
 		try(
 				Connection cnn = dataSource.getConnection();
@@ -47,8 +43,6 @@ public class UniversityServiceImpl implements UniversityService{
 	@Override
 	public boolean updateUniversityById(University university) {
 
-//		String sql = "UPDATE tbluniversity SET university_name = ? WHERE university_id = ?;";
-
 		String sql = "UPDATE "
 				+ "tbluniversity "
 			+ "SET "
@@ -61,7 +55,7 @@ public class UniversityServiceImpl implements UniversityService{
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
 			ps.setString(1, university.getUniversityName());
-			ps.setInt(2, university.getUniversityId());
+			ps.setInt(2, Integer.parseInt(Encryption.decode(university.getUniversityId())));
 			if(ps.executeUpdate() > 0)
 				return true;
 			
@@ -72,9 +66,7 @@ public class UniversityServiceImpl implements UniversityService{
 	}
 
 	@Override
-	public boolean deleteUniversityById(int id) {
-
-	//	String sql = "DELETE FROM tbluniversity WHERE university_id = ?;";
+	public boolean deleteUniversityById(String universityId) {
 
 		String sql = "DELETE "
 			+ "FROM "
@@ -86,7 +78,7 @@ public class UniversityServiceImpl implements UniversityService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			ps.setInt(1, id);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(universityId)));
 			if(ps.executeUpdate() > 0)
 				return true;			
 		}catch(SQLException e){
@@ -103,7 +95,7 @@ public class UniversityServiceImpl implements UniversityService{
 					+ "FROM "
 						+ "tbluniversity "
 					+ "WHERE "
-						+ "universityname LIKE ?"
+						+ "lower(universityname) LIKE lower(?)"
 					+ "LIMIT ? OFFSET ?;";
 		List<University> lst = new ArrayList<University>();
 		University university = null;
@@ -117,7 +109,7 @@ public class UniversityServiceImpl implements UniversityService{
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				university = new University();
-				university.setUniversityId(rs.getInt("universityid"));
+				university.setUniversityId(Encryption.encode(rs.getString("universityid")));
 				university.setUniversityName(rs.getString("universityname"));
 				lst.add(university);
 			}
@@ -129,7 +121,7 @@ public class UniversityServiceImpl implements UniversityService{
 	}
 
 	@Override
-	public String findUniversityById(int id) {
+	public String findUniversityById(String universityId) {
 		String sql = "SELECT "
 				+ "universityname "
 			+ "FROM "
@@ -140,7 +132,7 @@ public class UniversityServiceImpl implements UniversityService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			ps.setInt(1, id);
+			ps.setInt(6, Integer.parseInt(Encryption.decode(universityId)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getString("universityname");
@@ -153,8 +145,6 @@ public class UniversityServiceImpl implements UniversityService{
 
 	@Override
 	public int countUniversity() {
-
-//		String sql = "SELECT COUNT(university_id) as count FROM tbluniversity;";
 
 		String sql = "SELECT "
 				+ "COUNT(universityid) as count "
