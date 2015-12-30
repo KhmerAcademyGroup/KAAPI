@@ -1,8 +1,10 @@
-package org.kaapi.app.controllers.tutorial;
+package org.kaapi.app.controllers.elearning;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Qualifier;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
@@ -241,4 +243,3 @@ public class PlayListController {
 		}
 
 }
-
