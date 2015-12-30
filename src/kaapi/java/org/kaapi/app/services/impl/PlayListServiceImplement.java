@@ -5,25 +5,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.services.PlayListService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 
 
 
 
-@Repository
+@Service("PlayListService")
 public class PlayListServiceImplement implements PlayListService{
 	@Autowired
 	DataSource dataSource;
 	Connection con;
 	
 	@Override
-	public ResultSet list(Pagination pagin, Playlist dto) {
+	public ArrayList<Playlist> list(Pagination pagin, Playlist dto) {
 		try {
 			ResultSet rs = null;
 			String sql = "SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid "
@@ -32,10 +33,25 @@ public class PlayListServiceImplement implements PlayListService{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
 			ps.setInt(2, dto.getUserId());
-			ps.setInt(3, pagin.offset());
+			pagin.getCurrentPage();
 			ps.setInt(4, pagin.getPerPage());
 			rs = ps.executeQuery();
-			return rs;
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			while(rs.next()){
+				Playlist playlist = new Playlist();
+				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(rs.getInt("userid"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlists.add(playlist);
+			}
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -49,8 +65,9 @@ public class PlayListServiceImplement implements PlayListService{
 	}
 
 	@Override
-	public ResultSet listVideoInPlaylist(int playlistid, Pagination pagin) {
+	public ArrayList<Playlist> listVideoInPlaylist(int playlistid, Pagination pagin) {
 		try {
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
 			String sql = "SELECT PL.*, V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX ,V.publicview  ispublic "
 					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -68,7 +85,7 @@ public class PlayListServiceImplement implements PlayListService{
 			ps.setInt(2, pagin.offset());
 			ps.setInt(3, pagin.getPerPage());
 			rs = ps.executeQuery();
-			return rs;
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -81,6 +98,9 @@ public class PlayListServiceImplement implements PlayListService{
 		return null;
 	}
 
+	
+	
+	//get playlist
 	@Override
 	public String getPlaylistName(int playlistid) {
 		try{	
@@ -106,9 +126,11 @@ public class PlayListServiceImplement implements PlayListService{
 			return null;
 	}
 
+	//isin need
 	@Override
-	public ResultSet listVideo(int playlistid) {
+	public ArrayList<Playlist> listVideo(int playlistid) {
 		try {
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
 			String sql = "SELECT V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX "
 					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -123,7 +145,7 @@ public class PlayListServiceImplement implements PlayListService{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, playlistid);
 			rs = ps.executeQuery();
-			return rs;
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -137,15 +159,16 @@ public class PlayListServiceImplement implements PlayListService{
 	}
 
 	@Override
-	public ResultSet listplaylistname(Playlist dto) {
+	public ArrayList<Playlist> listplaylistname(Playlist dto) {
 		try {
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
 			String sql = "select playlistid , playlistname,publicview from tblplaylist where playlistname like  ? and userid = ?  order by playlistid desc";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
 			ps.setInt(2, dto.getUserId());
 			rs = ps.executeQuery();
-			return rs;
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -160,13 +183,14 @@ public class PlayListServiceImplement implements PlayListService{
 	
 	
 	@Override
-	public ResultSet listplaylistbyPublicView(boolean publicview) {
+	public ArrayList<Playlist> listplaylistbyPublicView(boolean publicview) {
 		try {
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			String sql = "select playlistid,playlistname  from tblplaylist where publicview= ? order by playlistid desc";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setBoolean(1,publicview);
 			ResultSet rs = ps.executeQuery();
-			return rs;
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -181,13 +205,14 @@ public class PlayListServiceImplement implements PlayListService{
 
 	
 	@Override
-	public ResultSet listplaylistbyAdmin(boolean publicview) {
+	public ArrayList<Playlist> listplaylistbyAdmin(boolean publicview) {
 		try {
+				ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 				String sql = "select playlistid, playlistname from tblplaylist P inner join tbluser U on P.userid=U.userid inner join tblusertype UT on U.usertypeid=UT.usertypeid where publicview=? and UT.userable=true order by playlistid desc";
 				PreparedStatement ps = con.prepareStatement(sql);
 				ps.setBoolean(1,publicview);
 				ResultSet rs = ps.executeQuery();
-				return rs;
+				return playlists;
 			} catch (SQLException e) {
 			e.printStackTrace();
 			}finally{
@@ -201,8 +226,9 @@ public class PlayListServiceImplement implements PlayListService{
 	}
 
 	@Override
-	public ResultSet listplaylistdetail(int userid) {
+	public ArrayList<Playlist> listplaylistdetail(int userid) {
 		try {
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
 			String sql = "select D.playlistid , D.videoid , U.userid from TBLPLAYlISTDETAIL D "
 					+ " INNER JOIN TBLPLAYLIST L ON D.playlistid = L.playlistid "
@@ -211,7 +237,7 @@ public class PlayListServiceImplement implements PlayListService{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, userid);
 			rs = ps.executeQuery();
-			return rs;
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -225,8 +251,9 @@ public class PlayListServiceImplement implements PlayListService{
 	}
 
 	@Override
-	public ResultSet listplaylistdetail(int userid, int playlistid) {
+	public ArrayList<Playlist> listplaylistdetail(int userid, int playlistid) {
 		try {
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
 			String sql = "select D.playlistid , D.videoid , U.userid from TBLPLAYlISTDETAIL D "
 					+ " INNER JOIN TBLPLAYLIST L ON D.playlistid = L.playlistid "
@@ -236,7 +263,7 @@ public class PlayListServiceImplement implements PlayListService{
 			ps.setInt(1, userid);
 			ps.setInt(2, playlistid);
 			rs = ps.executeQuery();
-			return rs;
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -481,15 +508,35 @@ public class PlayListServiceImplement implements PlayListService{
 	}
 
 	@Override
-	public ResultSet recommendPlaylist() {
+	public ArrayList<Playlist> recommendPlaylist() {
 		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
-			String sql= "select p.playlistid, p.playlistname,p.description, p.publicview,p.userid,p.thumbnailurl,u.username, u.userimageurl from tbluser u "
+			String sql= "select p.playlistid, p.playlistname,p.description, p.publicview,p.userid,p.thumbnailurl,p.maincategory,p.bgimage,p.color,p.status,u.username, u.userimageurl from tbluser u "
 					+ "INNER JOIN tblplaylist p on u.userid= p.userid "
 					+ "where p.userid=1 limit 10";
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs=ps.executeQuery();
-			return rs;
+			while(rs.next()){
+				Playlist playlist = new Playlist();
+				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(rs.getInt("userid"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setUsername(rs.getString("username"));
+				
+			
+				playlists.add(playlist);
+				
+			}
+			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -502,9 +549,11 @@ public class PlayListServiceImplement implements PlayListService{
 		return null;
 	}
 
+	//well
 	@Override
 	public boolean deleteVideoFromPlaylist(int playlistid, int vid) {
 		try {
+			con = dataSource.getConnection();
 			String sql = "DELETE FROM tblplaylistdetail WHERE playlistid=? and videoid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, playlistid);
@@ -524,9 +573,11 @@ public class PlayListServiceImplement implements PlayListService{
 		return false;
 	}
 
+	//well
 	@Override
 	public boolean updateThumbnail(int vid, int pid) {
 		try {
+			con = dataSource.getConnection();
 			String sql = "UPDATE TBLPLAYLIST SET  thumbnailurl=(select youtubeurl from tblvideo where videoid=? ) WHERE playlistid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, vid);
@@ -546,9 +597,11 @@ public class PlayListServiceImplement implements PlayListService{
 		return false;
 	}
 
+	//well
 	@Override
 	public boolean updateThumbnailToDefault(int pid) {
 		try {
+			con = dataSource.getConnection();
 			String sql = "UPDATE TBLPLAYLIST SET  thumbnailurl='default.png' WHERE playlistid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, pid);
@@ -566,5 +619,13 @@ public class PlayListServiceImplement implements PlayListService{
 		}
 		return false;
 	}
+	
+	
+	/*public static void main(String[] args) {
+		PlayListServiceImplement p =new PlayListServiceImplement();
+		
+			System.out.println(p.updateThumbnailToDefault(2));
+		
+	}*/
 
 }
