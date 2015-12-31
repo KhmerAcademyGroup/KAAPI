@@ -1,9 +1,10 @@
-/*package org.kaapi.app.controllers.elearning;
+package org.kaapi.app.controllers.elearning;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.VideosService;
 import org.kaapi.app.utilities.Encryption;
@@ -28,12 +29,12 @@ public class VideoControllers {
 	public ResponseEntity<Map<String, Object>> getVideo(@PathVariable("id") String id, @RequestParam("view") String count) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		boolean view = false;
-		if(!count.equals("false") && !count.equals("true")){
+		if(!count.equals("f") && !count.equals("t")){
 			map.put("STATUS", false);
 			map.put("MESSAGE", "ERROR INPUT");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}else{
-			view = (count.equals("true"))?true:false;
+			view = (count.equals("t"))?true:false;
 		}
 		System.out.println(view);
 		Video video = videoService.getVideo(id, view);
@@ -148,14 +149,9 @@ public class VideoControllers {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/video", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> deleteVideo(@RequestBody Video video) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int i = video.getVideoId();
-		if(i<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT VIDEO ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if (videoService.delete(i)) {
-			videoService.removeVideoFromCategory(i);
+		
+		if (videoService.delete(video.getVideoId())) {
+			videoService.removeVideoFromCategory(video.getVideoId());
 			map.put("STATUS", true);
 			map.put("MESSAGE", "RECORD HAS BEEN DELETED");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -168,46 +164,27 @@ public class VideoControllers {
 	
 	//list all video with offset and limit: param(offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list/all", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoList(@RequestParam("page") String page, @RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getVideoList(Pagination page) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i;
-		try{
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		List<Video> video = videoService.listVideo(p, i);
+		List<Video> video = videoService.listVideo(page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo();
+		page.setTotalCount(videoService.countVideo());
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//List all video with status(enable or disable) and offset and limit: param(status, offset, limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListWithStatus(@RequestParam("status") String status, @RequestParam("page") String page, @RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getVideoListWithStatus(Pagination page , @RequestParam("status") String status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i;
-		try{
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
 		boolean help = false;
 		if(!status.equals("f") && !status.equals("t")){
 			map.put("STATUS", false);
@@ -216,64 +193,44 @@ public class VideoControllers {
 		}else{
 			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideo(help, p, i);
+		List<Video> video = videoService.listVideo(help, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo(help);
+		page.setTotalCount(videoService.countVideo(help));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by name or search video by name: param(videoName,offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list/all/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByName(@PathVariable("name") String name, @RequestParam("page") String page, @RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getVideoListByName(Pagination page, @PathVariable("name") String name) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i;
-		try{
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		List<Video> video = videoService.listVideo(name, p, i);
+		List<Video> video = videoService.listVideo(name, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo(name);
+		page.setTotalCount(videoService.countVideo(name));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by name with enable or disable or search video by name: param(videoName,status,offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByNameWithStatus(@PathVariable("name") String name, @RequestParam("status") String status, @RequestParam("page") String page, @RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getVideoListByNameWithStatus(Pagination page,@PathVariable("name") String name, @RequestParam("status") String status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i;
-		try{
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
 		boolean help = false;
 		if(!status.equals("f") && !status.equals("t")){
 			map.put("STATUS", false);
@@ -282,76 +239,44 @@ public class VideoControllers {
 		}else{
 			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideo(name, help, p, i);
+		List<Video> video = videoService.listVideo(name, help, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo(name, help);
+		page.setTotalCount(videoService.countVideo(name, help));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//list video by user id: param(userId, offset, limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/video/user/all", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserId(@RequestParam("uid") String userId, @RequestParam("page") String page, @RequestParam("item") String item) {
+	//list video by user id: param(userId, pagination)
+	@RequestMapping(method = RequestMethod.GET, value = "/video/user/all/u/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getVideoListByUserId(Pagination page, @PathVariable("id") String userId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i,u;
-		try{
-			u = Integer.parseInt(userId);
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(u<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT USER ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		List<Video> video = videoService.listVideo(u, p, i);
+		List<Video> video = videoService.listVideoUser(userId, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo(u);
+		page.setTotalCount(videoService.countVideoUser(userId));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//list video by user id: param(userId, status, offset, limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/video/user", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserIdWithStatus(@RequestParam("uid") String userId, @RequestParam("status") String status, @RequestParam("page") String page, @RequestParam("item") String item) {
+	//list video by user id: param(userId, status, pagination)
+	@RequestMapping(method = RequestMethod.GET, value = "/video/user/u/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getVideoListByUserIdWithStatus(Pagination page, @PathVariable("id") String userId, @RequestParam("status") String status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i,u;
-		try{
-			u = Integer.parseInt(userId);
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(u<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT USER ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
 		boolean help = false;
 		if(!status.equals("f") && !status.equals("t")){
 			map.put("STATUS", false);
@@ -360,76 +285,44 @@ public class VideoControllers {
 		}else{
 			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideo(u, help, p, i);
+		List<Video> video = videoService.listVideoUser(userId, help, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo(u, help);
+		page.setTotalCount(videoService.countVideoUser(userId, help));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//list video by user id and video name or search user video: param(userId, videoName, offset, limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/video/user/all/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndName(@PathVariable("name") String videoName, @RequestParam("uid") String userId, @RequestParam("page") String page, @RequestParam("item") String item) {
+	//list video by user id and video name or search user video: param(userId, videoName, pagination)
+	@RequestMapping(method = RequestMethod.GET, value = "/video/user/all/u/{id}/name/{name}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndName(Pagination page, @PathVariable("name") String videoName, @PathVariable("id") String userId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i,u;
-		try{
-			u = Integer.parseInt(userId);
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(u<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT USER ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		List<Video> video = videoService.listVideo(u, videoName, p, i);
+		List<Video> video = videoService.listVideo(userId, videoName, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo(u, videoName);
+		page.setTotalCount(videoService.countVideo(userId, videoName));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//list video by user id and video name or search user video: param(userId, videoName, offset, limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/video/user/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndNameWithStatus(@PathVariable("name") String videoName, @RequestParam("status") String status, @RequestParam("uid") String userId, @RequestParam("page") String page, @RequestParam("item") String item) {
+	//list video by user id and video name or search user video: param(userId, videoName, status, pagination)
+	@RequestMapping(method = RequestMethod.GET, value = "/video/user/u/{id}/name/{name}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndNameWithStatus(Pagination page, @PathVariable("name") String videoName, @RequestParam("status") String status, @PathVariable("id") String userId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int p,i,u;
-		try{
-			u = Integer.parseInt(userId);
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		if(u<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT USER ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
 		boolean help = false;
 		if(!status.equals("f") && !status.equals("t")){
 			map.put("STATUS", false);
@@ -438,19 +331,18 @@ public class VideoControllers {
 		}else{
 			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideo(u, videoName, help, p, i);
+		List<Video> video = videoService.listVideo(userId, videoName, help, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countVideo(u, videoName, help);
+		page.setTotalCount(videoService.countVideo(userId, videoName, help));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
@@ -479,32 +371,21 @@ public class VideoControllers {
 	}
 	
 	//get video category: param(categoryId,offset,limit);
-	@RequestMapping(method = RequestMethod.GET, value = "/video/category", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getCategoryVideo(@RequestParam("cid") String categoryId, @RequestParam("page") String page, @RequestParam("item") String item) {
+	@RequestMapping(method = RequestMethod.GET, value = "/video/category/c/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getCategoryVideo(Pagination page, @PathVariable("id") String categoryId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int c,i,p;
-		try{
-			c = Integer.parseInt(categoryId);
-			p = Integer.parseInt(page);
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		List<Video> video = videoService.categoryVideo(c, p, i);
+		List<Video> video = videoService.categoryVideo(categoryId, page);
 		if (video.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		int count = videoService.countCategoryVideo(c);
+		page.setTotalCount(videoService.countCategoryVideo(categoryId));
+		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
-		map.put("TOTAL_RECORD", count);
-		map.put("CURRENT_PAGE", p);
-		map.put("TOTAL_PAGE", Math.ceil(count/(float)i));
 		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
@@ -591,11 +472,10 @@ public class VideoControllers {
 	}
 	
 	//count all videos
-	@RequestMapping(method = RequestMethod.GET, value = "/countVideo", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/video/count", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> countVideo() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RES_DATA", videoService.countVideo());
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 }
-*/
