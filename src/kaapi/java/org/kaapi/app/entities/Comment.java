@@ -4,20 +4,20 @@ import java.sql.Date;
 
 public class Comment {
 	
-	private int commentId;
+	private String commentId;
 	private Date commentDate;
 	private String commentText;
-	private int videoId;
-	private int userId;
+	private String videoId;
+	private String userId;
 	private String videoName;
 	private String username;
 	private String userImageUrl;
-	private int replyId;
+	private String replyId;
 	
-	public int getCommentId() {
+	public String getCommentId() {
 		return commentId;
 	}
-	public void setCommentId(int commentId) {
+	public void setCommentId(String commentId) {
 		this.commentId = commentId;
 	}
 	public Date getCommentDate() {
@@ -32,16 +32,16 @@ public class Comment {
 	public void setCommentText(String commentText) {
 		this.commentText = commentText;
 	}
-	public int getVideoId() {
+	public String getVideoId() {
 		return videoId;
 	}
-	public void setVideoId(int videoId) {
+	public void setVideoId(String videoId) {
 		this.videoId = videoId;
 	}
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public String getVideoName() {
@@ -62,10 +62,10 @@ public class Comment {
 	public void setUserImageUrl(String userImageUrl) {
 		this.userImageUrl = userImageUrl;
 	}
-	public int getReplyId() {
+	public String getReplyId() {
 		return replyId;
 	}
-	public void setReplyId(int replyId) {
+	public void setReplyId(String replyId) {
 		this.replyId = replyId;
 	}
 	
