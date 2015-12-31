@@ -3,22 +3,23 @@ package org.kaapi.app.services;
 import java.util.List;
 
 import org.kaapi.app.entities.Comment;
+import org.kaapi.app.entities.Pagination;
 
 public interface CommentService {
-	public List<Comment> listComment(int videoid, int offset, int limit);
-	public List<Comment> listComment(int offset, int limit);
-	public List<Comment> listComment(String commentText, int offset, int limit);
-	public List<Comment> listSuperComment(int offset, int limit);
+	public List<Comment> listCommentOnVideo(String videoid, Pagination page);
+	public List<Comment> listComment(Pagination page);
+	public List<Comment> listComment(String commentText, Pagination page);
+	public List<Comment> listSuperComment(Pagination page);
 	public boolean insert(Comment comment);
 	public boolean reply(Comment comment);
 	public boolean update(Comment comment);
-	public boolean delete(int commentId);
+	public boolean delete(String commentId);
 	public int countComment();
 	public int countComment(String commentText);
-	public int countComment(int videoId);
+	public int countCommentOnVideo(String videoId);
 	public int countSuperComment();
-	public int countReplyComment(int videoId, int replyId);
-	public Comment getComment(int commentId);
-	public List<Comment> listReplyComment(int videoId, int replyId, int limit, int offset);
+	public int countReplyComment(String videoId, String replyId);
+	public Comment getComment(String commentId);
+	public List<Comment> listReplyComment(String videoId, String replyId, Pagination page);
 	
 }

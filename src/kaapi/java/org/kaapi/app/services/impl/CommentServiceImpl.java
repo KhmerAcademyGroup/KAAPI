@@ -10,7 +10,9 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Comment;
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.CommentService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +22,7 @@ public class CommentServiceImpl implements CommentService {
 	@Autowired private DataSource dataSource;
 	
 	@Override
-	public List<Comment> listComment(int videoid, int offset, int limit) {
+	public List<Comment> listCommentOnVideo(String videoid, Pagination page) {
 		String sql = "SELECT CM.*, V.videoname, U.username, U.userimageurl "
 				   + "FROM TBLCOMMENT CM "
 				   + "INNER JOIN TBLVIDEO V ON CM.videoid=V.videoid "
@@ -31,9 +33,9 @@ public class CommentServiceImpl implements CommentService {
 		List<Comment> list = new ArrayList<Comment>();
 		Comment comment = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, videoid);
-			ps.setInt(2, (offset-1)*limit);
-			ps.setInt(3, limit);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoid)));
+			ps.setInt(2, page.offset());
+			ps.setInt(3, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				comment = new Comment();
@@ -50,12 +52,15 @@ public class CommentServiceImpl implements CommentService {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("ERROR covert");
+			return null;
 		}
 		return null;
 	}
 
 	@Override
-	public List<Comment> listComment(int offset, int limit) {
+	public List<Comment> listComment(Pagination page) {
 		String sql = "SELECT CM.*, V.videoname, U.username, U.userimageurl "
 				   + "FROM TBLCOMMENT CM "
 				   + "INNER JOIN TBLVIDEO V ON CM.videoid=V.videoid "
@@ -65,8 +70,8 @@ public class CommentServiceImpl implements CommentService {
 		List<Comment> list = new ArrayList<Comment>();
 		Comment comment = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, (offset-1)*limit);
-			ps.setInt(2, limit);
+			ps.setInt(1, page.offset());
+			ps.setInt(2, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				comment = new Comment();
@@ -236,14 +241,17 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public int countComment(int videoId) {
+	public int countCommentOnVideo(String videoId) {
 		String sql = "SELECT COUNT(videoid) FROM TBLCOMMENT WHERE videoid=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, videoId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error");
+			return 0;
 		}
 		return 0;
 	}
