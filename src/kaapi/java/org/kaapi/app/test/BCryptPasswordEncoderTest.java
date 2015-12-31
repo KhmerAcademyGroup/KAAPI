@@ -18,7 +18,8 @@ public class BCryptPasswordEncoderTest {
 			// Encrypt Password basic authentication
 			//System.out.println(Base64.getUrlEncoder().encodeToString("123:123".getBytes()));
 		
-			String str = "999999999999999999999999999999999999999";
+			String str = "31";
+
 
 	        // encode data using BASE64
 	        String encoded = DatatypeConverter.printBase64Binary(str.getBytes());
@@ -35,7 +36,7 @@ public class BCryptPasswordEncoderTest {
 	        
 	        
 	        
-	         UUID uuid = UUID.randomUUID();
+	        /* UUID uuid = UUID.randomUUID();
 			 long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
 			 System.out.println(Long.toString(l,Character.MAX_RADIX));
 			 
@@ -51,12 +52,12 @@ public class BCryptPasswordEncoderTest {
 			 UUID uuid3 = UUID.randomUUID();
 			 long l3 = ByteBuffer.wrap(uuid3.toString().getBytes()).getLong();
 			 System.out.println(Long.toString(l3,Character.MAX_RADIX));
+			 */
 			 
-			 
-			 UUID uuid4 = UUID.randomUUID();
+			 /*UUID uuid4 = UUID.fromString("1");
 			 long l4 = ByteBuffer.wrap(uuid4.toString().getBytes()).getLong();
 			 System.out.println(Long.toString(l4,Character.MAX_RADIX));
-		
+		*/
 		
 	}
 	

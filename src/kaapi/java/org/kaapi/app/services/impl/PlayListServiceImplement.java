@@ -6,9 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 import javax.sql.DataSource;
+
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
+import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.PlayListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,17 +29,18 @@ public class PlayListServiceImplement implements PlayListService{
 	@Override
 	public ArrayList<Playlist> list(Pagination pagin, Playlist dto) {
 		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
 			String sql = "SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid "
 					+ "LEFT JOIN TBLPLAYlISTDETAIL PD ON P.playlistid=PD.playlistid "
-					+ "WHERE P.playlistname LIKE ? and  U.Userid = ? GROUP BY P.playlistid, U.username order by  P.playlistid desc offset ? limit ?";
+					+ "WHERE LOWER(P.playlistname) LIKE LOWER(?) and  U.Userid = ? GROUP BY P.playlistid, U.username order by  P.playlistid desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
 			ps.setInt(2, dto.getUserId());
-			pagin.getPage();
+			ps.setInt(3, pagin.getPage());
 			ps.setInt(4, pagin.getItem());
 			rs = ps.executeQuery();
-			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			while(rs.next()){
 				Playlist playlist = new Playlist();
 				playlist.setPlaylistId(rs.getInt("playlistid"));
@@ -49,6 +53,8 @@ public class PlayListServiceImplement implements PlayListService{
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setUsername(rs.getString("username"));
+				playlist.setCountVideos(rs.getInt("countvideos"));
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -63,11 +69,12 @@ public class PlayListServiceImplement implements PlayListService{
 		}
 		return null;
 	}
-
+	//well
 	@Override
-	public ArrayList<Playlist> listVideoInPlaylist(int playlistid, Pagination pagin) {
+	public ArrayList<Video> listVideoInPlaylist(int playlistid, Pagination pagin) {
 		try {
-			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			con = dataSource.getConnection();
+			ArrayList<Video> playlists =new ArrayList<Video>();
 			ResultSet rs = null;
 			String sql = "SELECT PL.*, V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX ,V.publicview  ispublic "
 					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -82,9 +89,27 @@ public class PlayListServiceImplement implements PlayListService{
 					+ "ORDER BY PD.INDEX  offset ? limit ? ";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, playlistid);
-			ps.setInt(2, pagin.offset());
+			ps.setInt(2, pagin.getPage());
 			ps.setInt(3, pagin.getItem());
 			rs = ps.executeQuery();
+			Video dto=null;
+			while(rs.next()){
+				
+				dto = new Video();
+//				dto.setVideoId(rs.getInt("videoid"));
+				dto.setVideoName(rs.getString("videoname"));
+				dto.setDescription(rs.getString("description"));
+				dto.setYoutubeUrl(rs.getString("youtubeurl"));
+				dto.setFileUrl(rs.getString("fileurl"));
+				dto.setPublicView(rs.getBoolean("publicview"));
+				dto.setPostDate(rs.getDate("postdate"));
+				dto.setUserId(rs.getInt("userid"));
+				dto.setViewCounts(rs.getInt("viewcount"));
+				dto.setUsername(rs.getString("username"));
+				dto.setCountVotePlus(rs.getInt("countvoteplus"));
+				dto.setCountVoteMinus(rs.getInt("countvoteminus"));
+				playlists.add(dto);
+			}
 			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -100,10 +125,11 @@ public class PlayListServiceImplement implements PlayListService{
 
 	
 	
-	//get playlist
+	//well
 	@Override
 	public String getPlaylistName(int playlistid) {
 		try{	
+				con = dataSource.getConnection();
 				String pname= "";
 				ResultSet rs = null;
 				String sql = "select playlistname from tblplaylist where playlistid=?";
@@ -126,12 +152,12 @@ public class PlayListServiceImplement implements PlayListService{
 			return null;
 	}
 
-	//isin need
+	//well
 	@Override
-	public ArrayList<Playlist> listVideo(int playlistid) {
+	public ArrayList<Video> listVideo(int playlistid) {
 		try {
 			con = dataSource.getConnection();
-			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			ArrayList<Video> playlists =new ArrayList<Video>();
 			ResultSet rs = null;
 			String sql = "SELECT V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX "
 					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -146,6 +172,23 @@ public class PlayListServiceImplement implements PlayListService{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, playlistid);
 			rs = ps.executeQuery();
+			Video dto=null;
+			while(rs.next()){
+				dto = new Video();
+//				dto.setVideoId(rs.getInt("videoid"));
+				dto.setVideoName(rs.getString("videoname"));
+				dto.setDescription(rs.getString("description"));
+				dto.setYoutubeUrl(rs.getString("youtubeurl"));
+				dto.setFileUrl(rs.getString("fileurl"));
+				dto.setPublicView(rs.getBoolean("publicview"));
+				dto.setPostDate(rs.getDate("postdate"));
+				dto.setUserId(rs.getInt("userid"));
+				dto.setViewCounts(rs.getInt("viewcount"));
+				dto.setUsername(rs.getString("username"));
+				dto.setCountVotePlus(rs.getInt("countvoteplus"));
+				dto.setCountVoteMinus(rs.getInt("countvoteminus"));
+				playlists.add(dto);
+			}
 			return playlists;
 		} catch (SQLException e) {
 			e.printStackTrace();

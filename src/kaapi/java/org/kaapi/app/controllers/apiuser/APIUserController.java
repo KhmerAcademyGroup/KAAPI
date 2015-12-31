@@ -22,12 +22,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mangofactory.swagger.annotations.ApiIgnore;
+
 /*
  * This controller is used to manage all user in KhmerAcedemy WebService API.
  */
 
 @RestController
 @RequestMapping("api/apiuser")
+@ApiIgnore
 public class APIUserController {
 
 	@Autowired

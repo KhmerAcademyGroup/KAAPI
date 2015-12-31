@@ -6,9 +6,9 @@ public class Tutorial {
 	private String title;
 	private String description;
 	private int index;
-	private int userId;
+	private String userId;
 	private String username;
-	private int categoryId;
+	private String categoryId;
 	private String categoryName;
 	
 	
@@ -36,23 +36,11 @@ public class Tutorial {
 	public void setIndex(int index) {
 		this.index = index;
 	}
-	public int getUserId() {
-		return userId;
-	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
 	public String getUsername() {
 		return username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
-	}
-	public int getCategoryId() {
-		return categoryId;
-	}
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
 	}
 	public String getCategoryName() {
 		return categoryName;
@@ -60,5 +48,18 @@ public class Tutorial {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+	
 		
 }

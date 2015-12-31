@@ -22,6 +22,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @PropertySource(
 		value={"classpath:applications.properties"}
 )
+
 public class KAAPIWebConfiguraion extends WebMvcConfigurerAdapter {
 
 	@Autowired

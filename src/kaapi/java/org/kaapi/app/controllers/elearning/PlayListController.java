@@ -8,6 +8,7 @@ import javax.inject.Qualifier;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
+import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.PlayListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class PlayListController {
 		
 		//int playlist =playlistservice.countUserPlaylist("ios", 1);
 		
-		Playlist playlistdto = new Playlist();
+		/*Playlist playlistdto = new Playlist();
 		playlistdto.setPlaylistName("chhoin");
 		playlistdto.setDescription("this is chhoin");
 		playlistdto.setUserId(1);
@@ -48,14 +49,26 @@ public class PlayListController {
 		playlistdto.setPublicView(true);
 		playlistdto.setMaincategory(1);
 		playlistdto.setBgImage("aaaa");
-		playlistdto.setColor("bbbbb");
+		playlistdto.setColor("bbbbb");*/
 		
 		/*	boolean playlist =playlistservice.insert(playlistdto);*/
 
 		//Playlist playlist = playlistservice.get(1);
 		
 		
-		String playlist = playlistservice.getPlaylistName(5);
+		//String playlist =playlistservice.getPlaylistName(5);
+		
+		
+		Pagination pagin = new Pagination();
+		pagin.setItem(2);
+		pagin.setPage(1);
+		
+		Playlist dto = new Playlist();
+		dto.setPlaylistName("chhoin");
+		dto.setDescription("this is chhoin");
+		dto.setUserId(1);
+		
+		ArrayList<Playlist> playlist =playlistservice.list(pagin, dto);
 		
 		
 		String tutorial = "sfsfsdsd";
@@ -190,9 +203,10 @@ public class PlayListController {
 //			pagin.setPerPage(limit);
 //			pagin.setCurrentPage(begin);
 			
-			ArrayList<Playlist> playlist = (ArrayList<Playlist>) playlistservice.list(pagin, playlistdto);
+			/*ArrayList<Playlist> playlist = (ArrayList<Playlist>) playlistservice.list(pagin, playlistdto);*/
+			
 			Map<String, Object> map = new HashMap<String, Object>();
-		
+			String playlist="sfsf";
 			
 			if(playlist.isEmpty()){
 				map.put("STATUS", false);

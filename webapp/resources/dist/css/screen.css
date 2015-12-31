@@ -1219,7 +1219,8 @@
   cursor: pointer;
 }
 .swagger-section #header {
-  background-color: #89bf04;
+  /* background-color: #89bf04; */
+  background: rgba(0, 0, 0, 0) linear-gradient(#50a253, #4c954d) repeat scroll 0 0;
   padding: 14px;
 }
 .swagger-section #header a#logo {

@@ -10,8 +10,10 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.VideosService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +25,7 @@ public class VideoServiceImplement implements VideosService{
 
 	//list all videos
 	@Override
-	public List<Video> listVideo(int offset, int limit) {
+	public List<Video> listVideo(Pagination page) {
 		
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
@@ -39,12 +41,12 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, (offset-1)*limit);
-			ps.setInt(2, limit);
+			ps.setInt(1, page.offset());
+			ps.setInt(2, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				//String description = (rs.getString("description").length()>50 ? rs.getString("description").substring(0, 49)+"..." : rs.getString("description"));
 				video.setDescription(rs.getString("description"));
@@ -71,7 +73,7 @@ public class VideoServiceImplement implements VideosService{
 
 	//list video by name or search video by name
 	@Override
-	public List<Video> listVideo(String videoName, int offset, int limit) {
+	public List<Video> listVideo(String videoName, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -88,12 +90,12 @@ public class VideoServiceImplement implements VideosService{
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setString(1, "%" + videoName + "%");
-			ps.setInt(2, (offset-1)*limit);
-			ps.setInt(3, limit);
+			ps.setInt(2, page.offset());
+			ps.setInt(3, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -119,7 +121,7 @@ public class VideoServiceImplement implements VideosService{
 
 	//list video by user id
 	@Override
-	public List<Video> listVideo(int userId, int offset, int limit) {
+	public List<Video> listVideoUser(String userId, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -135,13 +137,13 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
-			ps.setInt(2, (offset-1)*limit);
-			ps.setInt(3, limit);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
+			ps.setInt(2, page.offset());
+			ps.setInt(3, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -161,13 +163,16 @@ public class VideoServiceImplement implements VideosService{
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
 
 	//list video by user id and video name
 	@Override
-	public List<Video> listVideo(int userId, String videoName, int offset, int limit) {
+	public List<Video> listVideo(String userId, String videoName, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME,U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -183,14 +188,14 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
 			ps.setString(2, "%" + videoName + "%");
-			ps.setInt(3, (offset-1)*limit);
-			ps.setInt(4, limit);
+			ps.setInt(3, page.offset());
+			ps.setInt(4, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -210,6 +215,9 @@ public class VideoServiceImplement implements VideosService{
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
@@ -237,7 +245,7 @@ public class VideoServiceImplement implements VideosService{
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -263,7 +271,7 @@ public class VideoServiceImplement implements VideosService{
 
 	//list video by category
 	@Override
-	public List<Video> categoryVideo(int categoryid, int offset, int limit) {
+	public List<Video> categoryVideo(String categoryid, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS " 
 					+"FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
 					+"INNER JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
@@ -278,13 +286,13 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, categoryid);
-			ps.setInt(2, (offset-1)*limit);
-			ps.setInt(3, limit);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
+			ps.setInt(2, page.offset());
+			ps.setInt(3, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -304,6 +312,9 @@ public class VideoServiceImplement implements VideosService{
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
@@ -332,7 +343,7 @@ public class VideoServiceImplement implements VideosService{
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -370,7 +381,7 @@ public class VideoServiceImplement implements VideosService{
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -408,7 +419,7 @@ public class VideoServiceImplement implements VideosService{
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -429,7 +440,7 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public Video getVideo(int videoId, boolean viewCount) {
+	public Video getVideo(String videoId, boolean viewCount) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
 					+ "LEFT JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
@@ -442,11 +453,11 @@ public class VideoServiceImplement implements VideosService{
 		
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, videoId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -469,6 +480,9 @@ public class VideoServiceImplement implements VideosService{
 			return video;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
@@ -505,55 +519,67 @@ public class VideoServiceImplement implements VideosService{
 			ps.setString(4, video.getFileUrl());
 			ps.setBoolean(5, video.isPublicView());
 			ps.setBoolean(6, video.isStatus());
-			ps.setInt(7, video.getVideoId());
+			ps.setInt(7, Integer.parseInt(Encryption.decode(video.getVideoId())));
 			if(ps.executeUpdate()>0){
 				return true;
 			}	
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return false;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean delete(int videoId) {
+	public boolean delete(String videoId) {
 		String sql = "DELETE FROM TBLVIDEO WHERE videoid=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, videoId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return false;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean insertVideoToCategory(int videoId, int categoryId) {
+	public boolean insertVideoToCategory(String videoId, int categoryId) {
 		String sql = "INSERT INTO TBLCATEGORYVIDEO VALUES(?, ?)";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, videoId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
 			ps.setInt(2, categoryId);
 			if(ps.executeUpdate()>0){
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return false;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean removeVideoFromCategory(int videoId) {
+	public boolean removeVideoFromCategory(String videoId) {
 		String sql = "DELETE FROM TBLCATEGORYVIDEO WHERE videoid=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, videoId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return false;
 		}
 		return false;
 	}
@@ -596,16 +622,19 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public int countCategoryVideo(int categoryId) {
+	public int countCategoryVideo(String categoryId) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V "
 				   + "INNER JOIN tblcategoryvideo c on v.videoid=c.videoid "
 				   + "WHERE c.categoryid=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, categoryId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryId)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}
@@ -617,34 +646,40 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public int countVideo(int userId) {
+	public int countVideoUser(String userId) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID WHERE U.USERID=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}
 
 	@Override
-	public int countVideo(int userId, String videoName) {
+	public int countVideo(String userId, String videoName) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID WHERE U.USERID=? AND lower(V.VIDEONAME) LIKE lower(?)";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
 			ps.setString(2, "%" + videoName + "%");
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}
 
 	@Override
-	public List<Video> listVideo(boolean status, int offset, int limit) {
+	public List<Video> listVideo(boolean status, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -661,12 +696,12 @@ public class VideoServiceImplement implements VideosService{
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setBoolean(1, status);
-			ps.setInt(2, (offset-1)*limit);
-			ps.setInt(3, limit);
+			ps.setInt(2, page.offset());
+			ps.setInt(3, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				//String description = (rs.getString("description").length()>50 ? rs.getString("description").substring(0, 49)+"..." : rs.getString("description"));
 				video.setDescription(rs.getString("description"));
@@ -692,7 +727,7 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public List<Video> listVideo(String videoName, boolean status, int offset, int limit) {
+	public List<Video> listVideo(String videoName, boolean status, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -710,12 +745,12 @@ public class VideoServiceImplement implements VideosService{
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setString(1, "%" + videoName + "%");
 			ps.setBoolean(2, status);
-			ps.setInt(3, (offset-1)*limit);
-			ps.setInt(4, limit);
+			ps.setInt(3, page.offset());
+			ps.setInt(4, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -740,7 +775,7 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public List<Video> listVideo(int userId, boolean status, int offset, int limit) {
+	public List<Video> listVideoUser(String userId, boolean status, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -756,14 +791,14 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
 			ps.setBoolean(2, status);
-			ps.setInt(3, (offset-1)*limit);
-			ps.setInt(4, limit);
+			ps.setInt(3, page.offset());
+			ps.setInt(4, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -783,12 +818,15 @@ public class VideoServiceImplement implements VideosService{
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
 
 	@Override
-	public List<Video> listVideo(int userId, String videoName, boolean status, int offset, int limit) {
+	public List<Video> listVideo(String userId, String videoName, boolean status, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME,U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -804,15 +842,15 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
 			ps.setString(2, "%" + videoName + "%");
 			ps.setBoolean(3, status);
-			ps.setInt(4, (offset-1)*limit);
-			ps.setInt(5, limit);
+			ps.setInt(4, page.offset());
+			ps.setInt(5, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -832,20 +870,26 @@ public class VideoServiceImplement implements VideosService{
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
 
 	@Override
-	public boolean toggleVideo(int videoId) {
+	public boolean toggleVideo(String videoId) {
 		String sql = "UPDATE TBLVIDEO SET status=not status WHERE videoid=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, videoId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}	
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return false;
 		}
 		return false;
 	}
@@ -878,36 +922,42 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public int countVideo(int userId, boolean status) {
+	public int countVideoUser(String userId, boolean status) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID WHERE U.USERID=? AND V.STATUS=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
 			ps.setBoolean(2, status);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}
 
 	@Override
-	public int countVideo(int userId, String videoName, boolean status) {
+	public int countVideo(String userId, String videoName, boolean status) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID WHERE U.USERID=? AND lower(V.VIDEONAME) LIKE lower(?) AND V.STATUS=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, userId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
 			ps.setString(2, "%" + videoName + "%");
 			ps.setBoolean(3, status);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}
 
 	@Override
-	public List<Video> categoryVideo(int categoryid, boolean status, int offset, int limit) {
+	public List<Video> categoryVideo(String categoryid, boolean status, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS " 
 				+"FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
 				+"INNER JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
@@ -923,14 +973,14 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, categoryid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
 			ps.setBoolean(2, status);
-			ps.setInt(3, (offset-1)*limit);
-			ps.setInt(4, limit);
+			ps.setInt(3, page.offset());
+			ps.setInt(4, page.getItem());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
-				video.setVideoId(rs.getInt("videoid"));
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
 				video.setVideoName(rs.getString("videoname"));
 				video.setDescription(rs.getString("description"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -950,22 +1000,28 @@ public class VideoServiceImplement implements VideosService{
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
 
 	@Override
-	public int countCategoryVideo(int categoryId, boolean status) {
+	public int countCategoryVideo(String categoryId, boolean status) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V "
 				   + "INNER JOIN tblcategoryvideo c on v.videoid=c.videoid "
 				   + "WHERE c.categoryid=? AND v.status=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, categoryId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryId)));
 			ps.setBoolean(2, status);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}
