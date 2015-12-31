@@ -108,9 +108,9 @@
   <div class="swagger-ui-wrap">
     <a id="logo" href="http://khmeracademy.org">KA API UI</a>
     <form id='api_selector'>
-      <div class='input'><input placeholder="http://localhost:8080/KAAPI/api-docs" value="http://localhost:8080/KAAPI/api-docs" id="input_baseUrl" name="baseUrl" type="text"/></div>
-      <div class='input'><input placeholder="api_key" value="Basic a2FhcGk6MTIz" id="input_apiKey" name="apiKey" type="text"/></div>
-      <div class='input'><a id="explore" href="#" data-sw-translate>Explore</a></div>
+      <div class='input'><input placeholder="http://localhost:8080/KAAPI/api-docs" value="http://localhost:8080/KAAPI/api-docs" id="input_baseUrl" name="baseUrl" type="hidden"/></div>
+      <div class='input'><input placeholder="api_key" value="Basic a2FhcGk6MTIz" id="input_apiKey" name="apiKey" type="hidden"/></div>
+     <!--  <div class='input'><a id="explore" href="#" data-sw-translate >Explore</a></div> -->
     </form>
   </div>
 </div>
