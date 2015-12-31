@@ -33,9 +33,9 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
                 "KhmerAcademy  REST API",
-                "This UI shows about KAAPI request response.",
-                "KA API",
-                "info.kshrd@gmail.com",
+                "This is a description of your API.",
+                "API TOS",
+                "me@wherever.com",
                 "API License",
                 "API License URL"
         );        
