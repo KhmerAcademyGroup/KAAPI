@@ -16,7 +16,7 @@ public interface VideosService {
 	public List<Video> listVideo(String userId, String VideoName, boolean status, Pagination page);
 	public List<Video> getRelateVideo(String categoryName, int limit);
 	public List<Video> categoryVideo(String categoryid, Pagination page);
-	public List<Video> categoryVideo(int categoryid, boolean status, Pagination page);
+	public List<Video> categoryVideo(String categoryid, boolean status, Pagination page);
 	public List<Video> topVoteAndRecent(int limit);
 	public Video getVideo(String videoId, boolean viewCount);
 	public int insert(Video video);
@@ -36,7 +36,7 @@ public interface VideosService {
 	public int countUser();
 	public int countPlaylist();
 	public int countCategoryVideo(String categoryId);
-	public int countCategoryVideo(int categoryId, boolean status);
+	public int countCategoryVideo(String categoryId, boolean status);
 	public int countForum();
 	public List<Video> topVote(int limit);
 	public List<Video> recentVideo(int limit);

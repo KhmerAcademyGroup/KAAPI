@@ -957,7 +957,7 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public List<Video> categoryVideo(int categoryid, boolean status, Pagination page) {
+	public List<Video> categoryVideo(String categoryid, boolean status, Pagination page) {
 		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS " 
 				+"FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
 				+"INNER JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
@@ -973,7 +973,7 @@ public class VideoServiceImplement implements VideosService{
 		List<Video> list = new ArrayList<Video>();
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, categoryid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
 			ps.setBoolean(2, status);
 			ps.setInt(3, page.offset());
 			ps.setInt(4, page.getItem());
@@ -1000,22 +1000,28 @@ public class VideoServiceImplement implements VideosService{
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
 		}
 		return null;
 	}
 
 	@Override
-	public int countCategoryVideo(int categoryId, boolean status) {
+	public int countCategoryVideo(String categoryId, boolean status) {
 		String sql = "SELECT COUNT(V.videoid) FROM TBLVIDEO V "
 				   + "INNER JOIN tblcategoryvideo c on v.videoid=c.videoid "
 				   + "WHERE c.categoryid=? AND v.status=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, categoryId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryId)));
 			ps.setBoolean(2, status);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}

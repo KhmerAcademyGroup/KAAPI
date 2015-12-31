@@ -49,7 +49,7 @@ public class VideoControllers {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//Get video: param(videoId, viewCount)
+	//Toggle video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.PATCH, value = "/video/enable/v/{id}", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> toggleVideo(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -162,7 +162,7 @@ public class VideoControllers {
 		}
 	}
 	
-	//list all video with offset and limit: param(offset,limit)
+	//list all video with offset and limit: param(pagination)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list/all", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getVideoList(Pagination page) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -370,8 +370,8 @@ public class VideoControllers {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//get video category: param(categoryId,offset,limit);
-	@RequestMapping(method = RequestMethod.GET, value = "/video/category/c/{id}", headers = "Accept=application/json")
+	//get video category: param(categoryId,pagination);
+	@RequestMapping(method = RequestMethod.GET, value = "/video/category/all/c/{id}", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getCategoryVideo(Pagination page, @PathVariable("id") String categoryId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Video> video = videoService.categoryVideo(categoryId, page);
@@ -381,6 +381,33 @@ public class VideoControllers {
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		page.setTotalCount(videoService.countCategoryVideo(categoryId));
+		page.setTotalPages(page.totalPages());
+		map.put("STATUS", true);
+		map.put("MESSAGE", "RECORD FOUND");
+		map.put("RES_DATA", video);
+		map.put("PAGINATION", page);
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	//get video category: param(categoryId,pagination);
+	@RequestMapping(method = RequestMethod.GET, value = "/video/category/c/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getCategoryVideoWithStatus(Pagination page, @PathVariable("id") String categoryId, @RequestParam("status") String status) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean help = false;
+		if(!status.equals("f") && !status.equals("t")){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR INPUT");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}else{
+			help = (status.equals("t"))?true:false;
+		}
+		List<Video> video = videoService.categoryVideo(categoryId, help, page);
+		if (video.isEmpty()) {
+			map.put("STATUS", false);
+			map.put("MESSAGE", "RECORD NOT FOUND");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		page.setTotalCount(videoService.countCategoryVideo(categoryId, help));
 		page.setTotalPages(page.totalPages());
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
