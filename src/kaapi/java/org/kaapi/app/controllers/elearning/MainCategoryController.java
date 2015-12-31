@@ -1,8 +1,14 @@
 package org.kaapi.app.controllers.elearning;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.kaapi.app.entities.MainCategory;
 import org.kaapi.app.services.MainCategoryService;
@@ -14,7 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/maincategory")
@@ -95,6 +103,62 @@ public class MainCategoryController {
 		map.put("MESSAGE", "ADD NOT SUCCESS");
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.NOT_FOUND);
 	}
+	
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
+	public ResponseEntity<Map<String, Object>> insertPhoto(@RequestParam(value="LOGO_IMG") MultipartFile file, HttpServletRequest request) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		String filename = file.getOriginalFilename();
+		String mainCategoryLogo = "";
+		
+		if (!file.isEmpty()) {
+			
+			try {
+
+				String filenameGen = UUID.randomUUID() + ".jpg";
+				
+				byte[] bytes = file.getBytes();
+
+				// creating the directory to store file
+				String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/maincategory");
+				System.out.println(savePath);
+				File path = new File(savePath);
+				if (!path.exists()) {
+					path.mkdir();
+				}
+				// creating the file on server
+				File serverFile = new File(savePath + File.separator + filenameGen);
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
+				
+				System.out.println(serverFile.getAbsolutePath());
+				
+				System.out.println("You are successfully uploaded file " + filename);
+
+				mainCategoryLogo = "/resources/upload/image/maincategory/" + filenameGen;
+
+			} catch (Exception e) {
+				System.out.println("You are failed to upload " + filename + " => " + e.getMessage());
+			}
+		} else {
+			System.out.println("You are failed to upload " + filename + " because the file was empty!");
+		}
+		
+		if (mainCategoryLogo != "") {
+			map.put("STATUS", true);
+			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
+			map.put("LOGO_IMG", mainCategoryLogo);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("STATUS", false);
+			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+	}
+	
 
 	/*
 	 * public void AddMainCategory(){} public void DeleteMainCategory(){} public
