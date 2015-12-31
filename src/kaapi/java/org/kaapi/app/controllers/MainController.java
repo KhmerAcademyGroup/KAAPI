@@ -10,6 +10,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.mangofactory.swagger.annotations.ApiIgnore;
+
 @Controller
 @RequestMapping("/")
 public class MainController {
@@ -42,6 +44,7 @@ public class MainController {
 		return "admin/admin";
 	}
 	
+	@ApiIgnore
 	@RequestMapping(value={"/webserviceapi",} , method = RequestMethod.GET)
 	public String kaAPIPage(ModelMap m){
 		m.addAttribute("msg","API PAGE");
