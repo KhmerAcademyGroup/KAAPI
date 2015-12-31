@@ -1,4 +1,4 @@
-package org.kaapi.app.controllers.elearning;
+/*package org.kaapi.app.controllers.elearning;
 
 import java.util.HashMap;
 import java.util.List;
@@ -598,3 +598,4 @@ public class VideoControllers {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 }
+*/

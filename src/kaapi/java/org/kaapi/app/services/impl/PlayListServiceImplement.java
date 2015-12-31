@@ -96,7 +96,7 @@ public class PlayListServiceImplement implements PlayListService{
 			while(rs.next()){
 				
 				dto = new Video();
-				dto.setVideoId(rs.getInt("videoid"));
+//				dto.setVideoId(rs.getInt("videoid"));
 				dto.setVideoName(rs.getString("videoname"));
 				dto.setDescription(rs.getString("description"));
 				dto.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -175,7 +175,7 @@ public class PlayListServiceImplement implements PlayListService{
 			Video dto=null;
 			while(rs.next()){
 				dto = new Video();
-				dto.setVideoId(rs.getInt("videoid"));
+//				dto.setVideoId(rs.getInt("videoid"));
 				dto.setVideoName(rs.getString("videoname"));
 				dto.setDescription(rs.getString("description"));
 				dto.setYoutubeUrl(rs.getString("youtubeurl"));
