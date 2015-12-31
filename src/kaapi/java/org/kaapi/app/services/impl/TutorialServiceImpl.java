@@ -40,7 +40,7 @@ public class TutorialServiceImpl implements TutorialService{
 				dto = new Tutorial();
 				dto.setTutorialId(Encryption.encode(rs.getString("tutorialid")));
 				dto.setTitle(rs.getString("title"));
-				dto.setCategoryId(rs.getInt("categoryid"));
+				dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
 				dto.setCategoryName(rs.getString("categoryname"));
 				dto.setUsername(rs.getString("username"));
 				dto.setIndex(rs.getInt("index"));				
@@ -145,8 +145,8 @@ public class TutorialServiceImpl implements TutorialService{
 				dto.setTitle(rs.getString("title"));
 				dto.setDescription(rs.getString("description"));
 				dto.setIndex(rs.getInt("index"));
-				dto.setUserId(rs.getInt("userid"));
-				dto.setCategoryId(rs.getInt("categoryid"));
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
+				dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
 				dto.setUsername(rs.getString("username"));
 				dto.setCategoryName(rs.getString("categoryname"));
 			}
@@ -174,8 +174,8 @@ public class TutorialServiceImpl implements TutorialService{
 			ps.setString(1, dto.getTitle());
 			ps.setString(2, dto.getDescription());
 			ps.setInt(3, dto.getIndex());
-			ps.setInt(4, dto.getUserId());
-			ps.setInt(5, dto.getCategoryId());
+			ps.setInt(4, Integer.parseInt(Encryption.decode(dto.getUserId())));
+			ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getCategoryId())));
 			if(ps.executeUpdate()>0)
 				return true;
 		} catch (SQLException e) {
@@ -269,8 +269,8 @@ public class TutorialServiceImpl implements TutorialService{
 			ps.setString(1, dto.getTitle());
 			ps.setString(2, dto.getDescription());
 			ps.setInt(3, dto.getIndex());
-			ps.setInt(4, dto.getUserId());
-			ps.setInt(5, dto.getCategoryId());
+			ps.setInt(4, Integer.parseInt(Encryption.decode(dto.getUserId())));
+			ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getCategoryId())));
 			ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getTutorialId())));
 			if(ps.executeUpdate()>0)
 				return true;

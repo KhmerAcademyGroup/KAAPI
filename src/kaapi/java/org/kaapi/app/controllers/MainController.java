@@ -45,7 +45,7 @@ public class MainController {
 	@RequestMapping(value={"/webserviceapi",} , method = RequestMethod.GET)
 	public String kaAPIPage(ModelMap m){
 		m.addAttribute("msg","API PAGE");
-		return "kaapi/webserviceapi";
+		return "kaapi/index";
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/help")
