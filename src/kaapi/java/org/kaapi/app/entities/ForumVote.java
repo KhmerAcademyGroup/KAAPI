@@ -2,14 +2,14 @@ package org.kaapi.app.entities;
 
 public class ForumVote {
 
-	private int userId;
+	private String userId;
 	private int commentId;
 	private int voteType;
 	
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public int getCommentId() {

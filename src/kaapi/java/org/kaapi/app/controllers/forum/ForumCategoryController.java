@@ -25,9 +25,14 @@ public class ForumCategoryController {
 	ForumCategoryService forumCateService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<Map<String , Object>> listForumCate(Pagination pagination){
+	public ResponseEntity<Map<String , Object>> listForumCate(
+			  @RequestParam(value = "page", required = false , defaultValue="1") int page 
+			, @RequestParam(value="item" , required = false , defaultValue="20") int item){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
 			pagination.setTotalCount(forumCateService.countForumCate());
 			pagination.setTotalPages(pagination.totalPages());
 			List<ForumCategory> list = forumCateService.listForumCate(pagination);
@@ -48,9 +53,15 @@ public class ForumCategoryController {
 	}
 	
 	@RequestMapping(value="/search" , method = RequestMethod.GET)
-	public ResponseEntity<Map<String , Object>> searchForumCate(@RequestParam(value="name", required = false , defaultValue="") String categoryName , Pagination pagination){
+	public ResponseEntity<Map<String , Object>> searchForumCate(
+			@RequestParam(value="name", required = false , defaultValue="") String categoryName , 
+			@RequestParam(value = "page", required = false , defaultValue="1") int page ,
+			@RequestParam(value="item" , required = false , defaultValue="20") int item){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
 			pagination.setTotalCount(forumCateService.countSearchForumCate(categoryName));
 			pagination.setTotalPages(pagination.totalPages());
 			List<ForumCategory> list = forumCateService.searchForumCate(categoryName,pagination);
@@ -71,7 +82,7 @@ public class ForumCategoryController {
 	}
 	
 	@RequestMapping(value="/{cid}" , method = RequestMethod.GET)
-	public ResponseEntity<Map<String , Object>> getForumCate(@PathVariable("cid") String cid){
+	public ResponseEntity<Map<String , Object>> getForumCate(@PathVariable("cid") int cid){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
 			ForumCategory forumCate = forumCateService.getForumCate(cid);
@@ -90,8 +101,28 @@ public class ForumCategoryController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 	
+	@RequestMapping( method = RequestMethod.POST)
+	public ResponseEntity<Map<String , Object>> addForumCate(@RequestBody ForumCategory forumCate){
+		System.out.println(forumCate.getCategoryName());
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			if(forumCateService.addForumCategory(forumCate)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN INSERTED");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN INSERTED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
 	@RequestMapping(value="/{cid}" , method = RequestMethod.PUT)
-	public ResponseEntity<Map<String , Object>> updateForumCate(@PathVariable("cid") String cid , @RequestBody ForumCategory forumCate){
+	public ResponseEntity<Map<String , Object>> updateForumCate(@PathVariable("cid") int cid , @RequestBody ForumCategory forumCate){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
 			ForumCategory currentforumCate = forumCateService.getForumCate(cid);
