@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/history/")
+@RequestMapping("/api/elearning/history/")
 public class HistoryController {
 	
 	@Autowired
