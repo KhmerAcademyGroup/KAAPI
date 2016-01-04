@@ -204,10 +204,11 @@ public class PlayListServiceImplement implements PlayListService{
 
 	//well
 	@Override
-	public ArrayList<Playlist> listplaylistname(Playlist dto) {
+	public Playlist listplaylistname(Playlist dto) {
 		try {
 			con = dataSource.getConnection();
-			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			//ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = new Playlist();
 			ResultSet rs = null;
 			String sql = "select playlistid , playlistname,publicview from tblplaylist where LOWER(playlistname) like  LOWER(?) and userid = ?  order by playlistid desc";
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -215,15 +216,11 @@ public class PlayListServiceImplement implements PlayListService{
 			ps.setInt(2, dto.getUserId());
 			rs = ps.executeQuery();
 			while(rs.next()){
-				
-				Playlist playlist = new Playlist();
 				playlist.setPlaylistId(rs.getInt("playlistid"));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlists.add(playlist);
-				
 			}
-			return playlists;
+			return playlist;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -541,6 +538,7 @@ public class PlayListServiceImplement implements PlayListService{
 			ps.setBoolean(8, dto.isStatus());
 			ps.setInt(9, dto.getPlaylistId());
 			if(ps.executeUpdate()>0){
+				System.out.println();
 				return true;
 			}
 		} catch (SQLException e) {
@@ -554,6 +552,7 @@ public class PlayListServiceImplement implements PlayListService{
 		}
 		return false;
 	}
+	
 	//well
 	@Override
 	public boolean delete(int playlistid) {
