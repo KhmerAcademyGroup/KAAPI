@@ -7,7 +7,7 @@ import java.sql.Date;
  *
  */
 public class User {
-	private int userId;
+	private String userId;
 	private String email;
 	private String password;
 	private String username;
@@ -16,7 +16,7 @@ public class User {
 	private String phoneNumber;
 	private Date registerDate;
 	private String userImageUrl;
-	private int userTypeId;
+	private String userTypeId;
 	private String userTypeName;
 	private int countVideos;
 	private int countVotePlus;
@@ -30,16 +30,16 @@ public class User {
 	private boolean userable;
 	private String coverphoto;
 //	private String school;
-	private int universityId;
-	private int departmentId;
+	private String universityId;
+	private String departmentId;
 	private String universityName;
 	private String departmentName;
 	private int point;
 	
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public String getEmail() {
@@ -90,10 +90,10 @@ public class User {
 	public void setUserImageUrl(String userImageUrl) {
 		this.userImageUrl = userImageUrl;
 	}
-	public int getUserTypeId() {
+	public String getUserTypeId() {
 		return userTypeId;
 	}
-	public void setUserTypeId(int userTypeId) {
+	public void setUserTypeId(String userTypeId) {
 		this.userTypeId = userTypeId;
 	}
 	public String getUserTypeName() {
@@ -168,16 +168,16 @@ public class User {
 	public void setCoverphoto(String coverphoto) {
 		this.coverphoto = coverphoto;
 	}
-	public int getUniversityId() {
+	public String getUniversityId() {
 		return universityId;
 	}
-	public void setUniversityId(int universityId) {
+	public void setUniversityId(String universityId) {
 		this.universityId = universityId;
 	}
-	public int getDepartmentId() {
+	public String getDepartmentId() {
 		return departmentId;
 	}
-	public void setDepartmentId(int departmentId) {
+	public void setDepartmentId(String departmentId) {
 		this.departmentId = departmentId;
 	}
 	public String getUniversityName() {

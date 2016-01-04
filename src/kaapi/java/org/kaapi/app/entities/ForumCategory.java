@@ -25,4 +25,5 @@ public class ForumCategory {
 		this.commentCount = commentCount;
 	}
 	
+	
 }
