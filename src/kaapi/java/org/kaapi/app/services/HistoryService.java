@@ -1,13 +1,13 @@
 package org.kaapi.app.services;
 
-import java.sql.ResultSet;
-
 import org.kaapi.app.entities.History;
+import org.kaapi.app.entities.Pagination;
 
 public interface HistoryService {
-	public ResultSet list(String search ,int id , int offset , int limit);
+	public History list(String search ,int uid , Pagination pagin);
 	public boolean insert(History dto);
 	public boolean delete(int historyid);
 	public boolean deleteAll(int userid);
 	public int count(String search , int userid);
+	
 }
