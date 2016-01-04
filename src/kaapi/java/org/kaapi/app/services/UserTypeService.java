@@ -6,6 +6,7 @@ import org.kaapi.app.entities.UserType;
 
 public interface UserTypeService {
 
+	
 	public List<UserType> listUserType();
 	public int countUserType();
 	public List<UserType> searchUserType(String name);

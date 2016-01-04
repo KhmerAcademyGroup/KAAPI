@@ -2,6 +2,7 @@ package org.kaapi.app.entities;
 
 public class UserType {
 
+	
 	private String userTypeId;
 	private String userTypeName;
 	private boolean viewable;
