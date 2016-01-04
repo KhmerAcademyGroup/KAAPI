@@ -1,8 +1,14 @@
 package org.kaapi.app.controllers.elearning;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("api/category")
@@ -121,6 +128,64 @@ public class CategoryController {
 		map.put("STATUS", false);
 		map.put("MESSAGE", "ADD NOT SUCCESS");
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.NOT_FOUND);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
+	public ResponseEntity<Map<String, Object>> uploadImageCategory(
+			@RequestParam(value = "LOGO_IMG", required = false) MultipartFile logo, HttpServletRequest request) {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		String imageCategoryName = logo.getOriginalFilename();
+
+		String CategoryImage = "";
+
+		if (!logo.isEmpty()) {
+
+			try {
+
+				String imagecategroy_ramdomname = UUID.randomUUID() + ".jpg";
+
+				byte[] imagecategroy_convert_byte_code = logo.getBytes();
+
+				// creating the directory to store file
+				String savePath = request.getSession().getServletContext()
+						.getRealPath("/resources/upload/image/category");
+
+				System.out.println(savePath);
+				File path = new File(savePath);
+				if (!path.exists()) {
+					path.mkdir();
+				}
+				// creating the file on server
+				File serverFileimage = new File(savePath + File.separator + imagecategroy_ramdomname);
+				BufferedOutputStream streamimagecategory = new BufferedOutputStream(new FileOutputStream(
+						serverFileimage));
+				streamimagecategory.write(imagecategroy_convert_byte_code);
+				streamimagecategory.close();
+
+				System.err.println(serverFileimage.getAbsolutePath());
+
+				System.out.println("You are successfully uploaded file " + imageCategoryName);
+
+				CategoryImage = "/resources/upload/image/category/" + imagecategroy_ramdomname;
+			} catch (Exception e) {
+				System.out.println("You are failed to upload " + imageCategoryName + " => " + e.getMessage());
+			}
+		} else {
+			System.out.println("You are failed to upload " + imageCategoryName + " because the file was empty!");
+		}
+
+		if (CategoryImage != "") {
+			map.put("STATUS", true);
+			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
+			map.put("LOGO_IMG", CategoryImage);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("STATUS", false);
+			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
 	}
 
 	public void ViewCategory() {

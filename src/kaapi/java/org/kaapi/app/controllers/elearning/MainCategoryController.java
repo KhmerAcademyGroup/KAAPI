@@ -105,52 +105,69 @@ public class MainCategoryController {
 	}
 	
 	
+	
+	
+
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
-	public ResponseEntity<Map<String, Object>> insertPhoto(@RequestParam(value="LOGO_IMG") MultipartFile file, HttpServletRequest request) {
+	public ResponseEntity<Map<String, Object>> insertPhoto(@RequestParam(value="LOGO_IMG",required=false) MultipartFile logo,@RequestParam(value="BACKGROUND" ,required = false) MultipartFile backgound, HttpServletRequest request) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		String filename = file.getOriginalFilename();
+		String logoname = logo.getOriginalFilename();
+		String backgroundname=backgound.getOriginalFilename();
 		String mainCategoryLogo = "";
+		String mainCategoryBackground="";
 		
-		if (!file.isEmpty()) {
+		if (!logo.isEmpty() && !backgound.isEmpty()) {
 			
 			try {
 
-				String filenameGen = UUID.randomUUID() + ".jpg";
+				String logofile_ramdomname = UUID.randomUUID() + ".jpg";
+				String backgroundfile_ramdomname = UUID.randomUUID() + ".jpg";
 				
-				byte[] bytes = file.getBytes();
+				
+				
+				byte[] logo_convert_byte_code = logo.getBytes();
+				byte[] background_convert_byte_code =backgound.getBytes();
 
 				// creating the directory to store file
 				String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/maincategory");
+				
 				System.out.println(savePath);
 				File path = new File(savePath);
 				if (!path.exists()) {
 					path.mkdir();
 				}
 				// creating the file on server
-				File serverFile = new File(savePath + File.separator + filenameGen);
-				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
+				File serverFilelogo = new File(savePath + File.separator + logofile_ramdomname);
+				File serverFilebackground = new File(savePath + File.separator + backgroundfile_ramdomname);
+				BufferedOutputStream streamlogo = new BufferedOutputStream(new FileOutputStream(serverFilelogo));
+				BufferedOutputStream streambackground = new BufferedOutputStream(new FileOutputStream(serverFilebackground));
+				streamlogo.write(logo_convert_byte_code);
+				streambackground.write(background_convert_byte_code);
+				streambackground.close();
+				streamlogo.close();
 				
-				System.out.println(serverFile.getAbsolutePath());
+				System.err.println(serverFilelogo.getAbsolutePath());
+				System.err.println(serverFilebackground.getAbsolutePath());
 				
-				System.out.println("You are successfully uploaded file " + filename);
+				System.out.println("You are successfully uploaded file " + logoname +" and "+ backgroundname);
 
-				mainCategoryLogo = "/resources/upload/image/maincategory/" + filenameGen;
-
+				mainCategoryLogo = "/resources/upload/image/maincategory/" + logofile_ramdomname;
+				mainCategoryBackground ="/resources/upload/image/maincategory/" + backgroundfile_ramdomname;
 			} catch (Exception e) {
-				System.out.println("You are failed to upload " + filename + " => " + e.getMessage());
+				System.out.println("You are failed to upload " + logoname + " => " + e.getMessage());
 			}
 		} else {
-			System.out.println("You are failed to upload " + filename + " because the file was empty!");
+			System.out.println("You are failed to upload " + logoname + " because the file was empty!");
 		}
 		
-		if (mainCategoryLogo != "") {
+		if (mainCategoryLogo != "" && mainCategoryBackground != "") {
 			map.put("STATUS", true);
 			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
 			map.put("LOGO_IMG", mainCategoryLogo);
+			map.put("BACKGROUND_IMAGE", mainCategoryBackground);
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} else {
 			map.put("STATUS", false);
@@ -159,7 +176,8 @@ public class MainCategoryController {
 		}
 	}
 	
-
+	
+	
 	/*
 	 * public void AddMainCategory(){} public void DeleteMainCategory(){} public
 	 * void UpdateMainCategory(){} public void GetMainCategory(){} public void
