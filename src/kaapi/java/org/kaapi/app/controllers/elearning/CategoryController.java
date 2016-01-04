@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("api/category")
+@RequestMapping("api/elearning/category")
 public class CategoryController {
 
 	@Autowired
@@ -197,4 +197,5 @@ public class CategoryController {
 	public void ToAddCategory() {
 	}
 
+	
 }

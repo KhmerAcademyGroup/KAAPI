@@ -2,7 +2,7 @@ package org.kaapi.app.entities;
 
 public class UserType {
 
-	private int userTypeId;
+	private String userTypeId;
 	private String userTypeName;
 	private boolean viewable;
 	private boolean commentable;
@@ -11,10 +11,10 @@ public class UserType {
 	private boolean userable;
 	private int countUsers;
 	
-	public int getUserTypeId() {
+	public String getUserTypeId() {
 		return userTypeId;
 	}
-	public void setUserTypeId(int userTypeId) {
+	public void setUserTypeId(String userTypeId) {
 		this.userTypeId = userTypeId;
 	}
 	public String getUserTypeName() {

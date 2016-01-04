@@ -7,12 +7,12 @@ import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
 
 
-public interface PlayListService {
+public interface PlayListServices {
 	public ArrayList<Playlist> list(Pagination pagin , Playlist dto);
 	public ArrayList<Video> listVideoInPlaylist(int playlistid , Pagination pagin );
 	public String getPlaylistName(int playlistid);
 	public ArrayList<Video> listVideo(int playlistid);
-	public ArrayList<Playlist> listplaylistname(Playlist dto);
+	public Playlist listplaylistname(Playlist dto);
 	public ArrayList<Playlist> listplaylistbyPublicView(boolean publicview);
 	public ArrayList<Playlist> listplaylistbyAdmin(boolean publicview);
 	public ArrayList<Playlist> listplaylistdetail(int userid);
