@@ -32,6 +32,7 @@ public class MainCategoryController {
 	@Qualifier("MainCategoryService")
 	MainCategoryService mainCategoryService;
 
+	
 	@RequestMapping(value = "/listmaincategory", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> listMainCategory() {
 		List<MainCategory> list = mainCategoryService.listMainCategory("");

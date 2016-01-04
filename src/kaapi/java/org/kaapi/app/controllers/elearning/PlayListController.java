@@ -26,7 +26,6 @@ public class PlayListController {
 	PlayListService playlistservice;
 	Playlist playlistdto;
 	
-	
 	//actionaddvideoToplayist
 	@RequestMapping(value="/test", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> test(){
