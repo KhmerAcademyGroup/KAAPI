@@ -29,9 +29,14 @@ public class TutorialController {
 	TutorialService service;
 	
 	@RequestMapping(value="/list/{userid}" ,method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getListTutorial(Pagination pagination, @PathVariable("userid") String userid){
+	public ResponseEntity<Map<String, Object>> getListTutorial(@PathVariable("userid") String userid 
+			, @RequestParam(value = "page", required = false , defaultValue="1") int page 
+			, @RequestParam(value="item" , required = false , defaultValue="20") int item){
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
 			ArrayList<Tutorial> tutorial = service.lists(userid, pagination);
 			if(tutorial.isEmpty()){
 				map.put("STATUS", false);
