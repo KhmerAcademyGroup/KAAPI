@@ -7,7 +7,7 @@ import java.util.Map;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
-import org.kaapi.app.services.PlayListService;
+import org.kaapi.app.services.PlayListServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PlayListController {
 	
 	@Autowired
-	PlayListService playlistservice;
+	PlayListServices playlistservice;
 
 	//actionaddvideoToplayist ->well
 	@RequestMapping(value="/addvideotoplaylist/pid-{pid}/vid-{vid}", method= RequestMethod.GET, headers= "Accept=application/json")
