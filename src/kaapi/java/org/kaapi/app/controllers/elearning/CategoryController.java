@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("api/category")
+@RequestMapping("api/elearning/category")
 public class CategoryController {
 
 	@Autowired

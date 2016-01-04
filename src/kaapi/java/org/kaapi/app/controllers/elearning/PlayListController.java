@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/playlist/")
+@RequestMapping("/api/elearning/playlist/")
 public class PlayListController {
 	
 	@Autowired
