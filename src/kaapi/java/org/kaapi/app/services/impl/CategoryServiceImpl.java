@@ -15,6 +15,7 @@ import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.CategoryService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
 			 */
 			while (rs.next()) {
 				dto = new Category();
-				dto.setCategoryId(rs.getInt("categoryid"));
+				dto.setCategoryId(Encryption.encode(rs.getInt("categoryid")+""));
 				dto.setCategoryName(rs.getString("categoryname"));
 				dto.setMainCategoryName(rs.getString("maincategoryname"));
 				dto.setCategoryLogoUrl(rs.getString("categorylogourl"));
@@ -80,17 +81,19 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category getCategory(int categoryid) {
+	public Category getCategory(String categoryid) {
 
 		try {
 			ResultSet rs = null;
 			Category dto = null;
+			
 			System.out.println(dataSource.getConnection().getMetaData().getDatabaseProductName());
-			String sql = "SELECT C.*, MC.maincategoryname, COUNT(CV.categoryid) COUNTVIDEOS FROM TBLCATEGORY C LEFT JOIN TBLCATEGORYVIDEO CV ON C.categoryid=CV.categoryid INNER JOIN TBLMAINCATEGORY MC ON C.maincategoryid=MC.maincategoryid WHERE C.categoryid="
-					+ categoryid + " GROUP BY C.categoryid, MC.maincategoryname";
+			String sql = "SELECT C.*, MC.maincategoryname, COUNT(CV.categoryid) COUNTVIDEOS FROM TBLCATEGORY C LEFT JOIN TBLCATEGORYVIDEO CV ON C.categoryid=CV.categoryid INNER JOIN TBLMAINCATEGORY MC ON C.maincategoryid=MC.maincategoryid WHERE C.categoryid= ?"
+					+ " GROUP BY C.categoryid, MC.maincategoryname";
 			con = dataSource.getConnection();			
-			Statement stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1,Integer.parseInt(Encryption.decode(categoryid)));
+			rs = stmt.executeQuery();
 			while (rs.next()) {
 				dto = new Category();
 				dto.setCategoryId(categoryid);
@@ -147,7 +150,7 @@ public class CategoryServiceImpl implements CategoryService {
 			ps.setString(1, dto.getCategoryName());
 			ps.setString(2, dto.getCategoryLogoUrl());
 			ps.setInt(3, dto.getMainCategoryId());
-			ps.setInt(4, dto.getCategoryId());
+			ps.setInt(4,Integer.parseInt(Encryption.decode( dto.getCategoryId())));			
 			if (ps.executeUpdate() > 0)
 				return true;
 		} catch (SQLException e) {
@@ -164,12 +167,12 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public boolean deleteCategory(int categoryid) {
+	public boolean deleteCategory(String categoryid) {
 		try {
 			String sql = "DELETE FROM TBLCATEGORY WHERE categoryid= ?";
 			con = dataSource.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setInt(1, categoryid);
+			stmt.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
 			if (stmt.executeUpdate() > 0) {
 				return true;
 			}
@@ -210,13 +213,14 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public int countVideoByCategory(int categoryid) {
+	public int countVideoByCategory(String categoryid) {
 		try {
 			ResultSet rs = null;
-			String sql = "SELECT COUNT(CV.categoryid) COUNTVIDEOS FROM TBLCATEGORY C LEFT JOIN TBLCATEGORYVIDEO CV ON C.categoryid=CV.categoryid WHERE C.categoryid="
-					+ categoryid + " GROUP BY C.categoryid";
-			Statement stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
+			String sql = "SELECT COUNT(CV.categoryid) COUNTVIDEOS FROM TBLCATEGORY C LEFT JOIN TBLCATEGORYVIDEO CV ON C.categoryid=CV.categoryid WHERE C.categoryid= ?"
+					+ " GROUP BY C.categoryid";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
+			rs=stmt.executeQuery();			
 			if (rs.next())
 				return rs.getInt(1);
 		} catch (SQLException e) {
@@ -233,7 +237,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Video> listVideosInCategory(int categoryid, int page, int maxview) {
+	public List<Video> listVideosInCategory(String categoryid, int page, int maxview) {
 		ResultSet rs = null;
 		Video dto = null;
 		List<Video> videos = new ArrayList<Video>();
@@ -242,7 +246,7 @@ public class CategoryServiceImpl implements CategoryService {
 			String sql = "select v.*, u.username, cat.categoryname from tblcategoryvideo cv join tblvideo v on v.videoid = cv.videoid join tbluser u on v.userid = u.userid join tblcategory cat on cat.categoryid = cv.categoryid where cv.categoryid = ? order by v.videoid DESC OFFSET ? LIMIT ?;";
 			con = dataSource.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, categoryid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
 			ps.setInt(2, (page - 1) * maxview);
 			ps.setInt(3, maxview);
 			rs = ps.executeQuery();

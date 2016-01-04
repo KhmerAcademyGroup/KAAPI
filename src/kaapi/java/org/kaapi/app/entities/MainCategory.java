@@ -2,7 +2,7 @@ package org.kaapi.app.entities;
 
 public class MainCategory {
 	
-	private int mainCategoryId;
+	private String mainCategoryId;
 	private String mainCategoryName;
 	private String mainCategoryLogoUrl;
 	private int mainCategoryOrder;
@@ -11,10 +11,10 @@ public class MainCategory {
 	private String Color;
 	private boolean status;
 	
-	public int getMainCategoryId() {
+	public String getMainCategoryId() {
 		return mainCategoryId;
 	}
-	public void setMainCategoryId(int mainCategoryId) {
+	public void setMainCategoryId(String mainCategoryId) {
 		this.mainCategoryId = mainCategoryId;
 	}
 	public String getMainCategoryName() {

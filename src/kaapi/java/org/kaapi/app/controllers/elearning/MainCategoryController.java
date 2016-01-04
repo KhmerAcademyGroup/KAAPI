@@ -34,8 +34,9 @@ public class MainCategoryController {
 
 	
 	@RequestMapping(value = "/listmaincategory", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> listMainCategory() {
-		List<MainCategory> list = mainCategoryService.listMainCategory("");
+	public ResponseEntity<Map<String, Object>> listMainCategory(
+			@RequestParam(value = "name", required = false, defaultValue = "") String mainCategoryName) {
+		List<MainCategory> list = mainCategoryService.listMainCategory(mainCategoryName);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (list.isEmpty()) {
 			map.put("STATUS", false);
@@ -49,7 +50,7 @@ public class MainCategoryController {
 	}
 
 	@RequestMapping(value = "/getmaincategory/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> getMainCategory(@PathVariable("id") int maincategoryid) {
+	public ResponseEntity<Map<String, Object>> getMainCategory(@PathVariable("id") String maincategoryid) {
 		MainCategory list = mainCategoryService.getMainCategory(maincategoryid);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (list == null) {
@@ -64,7 +65,7 @@ public class MainCategoryController {
 	}
 
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Map<String, Object>> deleteMainCategory(@PathVariable("id") int maincategoryid) {
+	public ResponseEntity<Map<String, Object>> deleteMainCategory(@PathVariable("id") String maincategoryid) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (mainCategoryService.deleteMainCategory(maincategoryid)) {

@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.MainCategory;
 import org.kaapi.app.services.MainCategoryService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 				dto.setMainCategoryName(rs.getString("Maincategoryname"));
 				dto.setMainCategoryLogoUrl(rs.getString("Maincategorylogourl"));
 				dto.setMainCategoryOrder(rs.getInt("Maincategoryorder"));
-				dto.setMainCategoryId(rs.getInt("Maincategoryid"));
+				dto.setMainCategoryId(Encryption.encode(rs.getString("Maincategoryid")));
 				dto.setBackgroundImage(rs.getString("bgImage"));
 				dto.setColor(rs.getString("color"));
 				dto.setStatus(rs.getBoolean("status"));
@@ -59,7 +60,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 	}
 
 	@Override
-	public MainCategory getMainCategory(int maincategoryid) {
+	public MainCategory getMainCategory(String maincategoryid) {
 		MainCategory dto = null;
 		try {
 			ResultSet rs = null;
@@ -67,12 +68,11 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 			String sql = "SELECT MC.*, COUNT(C.categoryid) COUNTCATEGORY FROM TBLMAINCATEGORY MC LEFT JOIN TBLCATEGORY C ON MC.maincategoryid=C.maincategoryid WHERE MC.maincategoryid=? GROUP BY MC.maincategoryid";
 			con = dataSource.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, maincategoryid);
+			ps.setInt(1,Integer.parseInt(Encryption.decode(maincategoryid)));
 			rs = ps.executeQuery();
-
 			if (rs.next()) {
 				dto = new MainCategory();
-				dto.setMainCategoryId(rs.getInt("maincategoryid"));
+				dto.setMainCategoryId(maincategoryid);
 				dto.setMainCategoryName(rs.getString("maincategoryname"));
 				dto.setMainCategoryLogoUrl(rs.getString("maincategorylogourl"));
 				dto.setMainCategoryOrder(rs.getInt("maincategoryorder"));
@@ -140,7 +140,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 					+ "update tblmaincategory set Maincategoryname=?, Maincategorylogourl=?, Maincategoryorder=?,bgimage=?,color=?,status=? WHERE maincategoryid=?";
 			con = dataSource.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, dto.getMainCategoryId());
+			ps.setInt(1, Integer.parseInt(Encryption.decode(dto.getMainCategoryId())));
 			ps.setInt(2, dto.getMainCategoryOrder());
 			ps.setString(3, dto.getMainCategoryName());
 			ps.setString(4, dto.getMainCategoryLogoUrl());
@@ -148,7 +148,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 			ps.setString(6, dto.getBackgroundImage());
 			ps.setString(7, dto.getColor());
 			ps.setBoolean(8, dto.isStatus());
-			ps.setInt(9, dto.getMainCategoryId());
+			ps.setInt(9, Integer.parseInt(Encryption.decode(dto.getMainCategoryId())));
 			if (ps.executeUpdate() > 0) {
 				return true;
 			}
@@ -166,14 +166,15 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 	}
 
 	@Override
-	public boolean deleteMainCategory(int maincategoryid) {
+	public boolean deleteMainCategory(String maincategoryid) {
 
 		try {
 			System.out.println(maincategoryid + " hellow world");
-			String sql = "DELETE FROM TBLMAINCATEGORY WHERE maincategoryid=" + maincategoryid;
+			String sql = "DELETE FROM TBLMAINCATEGORY WHERE maincategoryid=?";
 			con = dataSource.getConnection();
-			Statement stmt = con.createStatement();
-			if (stmt.executeUpdate(sql) > 0) {
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, Integer.parseInt(Encryption.decode(maincategoryid)));
+			if (stmt.executeUpdate() > 0) {
 				return true;
 			}
 		} catch (SQLException e) {
@@ -213,13 +214,14 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 	}
 
 	@Override
-	public int countCategory(int maincategoryid) {
+	public int countCategory(String maincategoryid) {
 		try {
 			ResultSet rs = null;
-			String sql = "SELECT COUNT(CATEGORYID) FROM TBLCATEGORY WHERE maincategoryid=" + maincategoryid;
+			String sql = "SELECT COUNT(CATEGORYID) FROM TBLCATEGORY WHERE maincategoryid=?";
 			con = dataSource.getConnection();
-			Statement stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, Integer.parseInt(Encryption.decode(maincategoryid)));
+			rs = stmt.executeQuery();
 			if (rs.next())
 				return rs.getInt(1);
 		} catch (SQLException e) {

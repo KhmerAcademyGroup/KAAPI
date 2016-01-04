@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.kaapi.app.entities.Category;
+import org.kaapi.app.entities.ForumCategory;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.CategoryService;
@@ -35,28 +36,38 @@ public class CategoryController {
 	CategoryService categoryService;
 
 	@RequestMapping(value = "/listcategory", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> listCategory(Pagination pagination,
-			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
-		List<Category> lstcategory = categoryService.listCategory(pagination, keyword);
+	public ResponseEntity<Map<String, Object>> listCategory(
+			@RequestParam(value = "name", required = false, defaultValue = "") String categoryName,
+			@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+			@RequestParam(value = "item", required = false, defaultValue = "20") int item) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (lstcategory == null) {
-			map.put("MESSAGE", "Not found!");
+		try {
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(categoryService.countCategory());
+			pagination.setTotalPages(pagination.totalPages());
+			List<Category> list = categoryService.listCategory(pagination, categoryName);
+			if (list == null) {
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			} else {
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RES_DATA", list);
+				map.put("PAGINATION", pagination);
+			}
+		} catch (Exception e) {
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.NOT_FOUND);
 		}
-		System.err.println(lstcategory.size());
-		pagination.setTotalCount(categoryService.countCategory());
-		pagination.setTotalPages(pagination.totalPages());
-		map.put("MESSAGE", "LIST FOUND");
-		map.put("RESP_DATA", lstcategory);
-		map.put("STATUS", true);
-		map.put("PAGINATION", pagination);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
 	}
 
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable("id") int id) {
+	public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable("id") String id) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (categoryService.deleteCategory(id)) {
@@ -70,11 +81,13 @@ public class CategoryController {
 	}
 
 	@RequestMapping(value = "/listvideoincategory", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> listVideoIncategory(@RequestParam("category") int category,
-			@RequestParam("page") int page) {
+	public ResponseEntity<Map<String, Object>> listVideoIncategory(
+			@RequestParam(value = "name", required = false, defaultValue = "") String categoryId,
+			@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+			@RequestParam(value = "item", required = false, defaultValue = "20") int item) {
 
-		System.err.println(category + " " + page);
-		List<Video> listvideo = categoryService.listVideosInCategory(category, page, 10);
+		System.err.println(categoryId + " " + page);
+		List<Video> listvideo = categoryService.listVideosInCategory(categoryId, page, item);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (listvideo == null) {
 			map.put("MESSAGE", "Not found!");
@@ -86,11 +99,10 @@ public class CategoryController {
 		map.put("RES_DATA", listvideo);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
-
 	@RequestMapping(value = "/getcategory", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> getCategory(@RequestParam("category") int category) {
+	public ResponseEntity<Map<String, Object>> getCategory(@RequestParam("categoryId") String categoryId) {
 
-		Category getcategory = categoryService.getCategory(category);
+		Category getcategory = categoryService.getCategory(categoryId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (getcategory == null) {
 			map.put("MESSAGE", "Not found!");
@@ -197,5 +209,4 @@ public class CategoryController {
 	public void ToAddCategory() {
 	}
 
-	
 }
