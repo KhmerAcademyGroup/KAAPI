@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
-import org.kaapi.app.services.PlayListService;
+import org.kaapi.app.services.PlayListServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service("PlayListService")
-public class PlayListServiceImplement implements PlayListService{
+public class PlayListServiceImplement implements PlayListServices{
 	@Autowired
 	DataSource dataSource;
 	Connection con;
