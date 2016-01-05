@@ -14,4 +14,5 @@ public interface PreCourseService {
 	boolean checkPrecourseStudent(String id);
 	PreCourse getPreCourse(String id);
 	PreCourse getPreCourseStudent(String uid);
+	
 }
