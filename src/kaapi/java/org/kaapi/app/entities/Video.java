@@ -11,7 +11,7 @@ public class Video {
 	private String fileUrl;
 	private boolean publicView;
 	private Date postDate;
-	private int userId;
+	private String userId;
 	private String username;
 	private String categoryName;	//e.g. "Java, Jsp, J2EE, " it's multiple concated string
 	private int countVotePlus;
@@ -20,7 +20,7 @@ public class Video {
 	private int viewCounts;
 	private String userImageUrl;
 	private boolean status;
-	private int []categoryId;
+	private String []categoryId;
 	
 	public String getVideoId() {
 		return videoId;
@@ -64,10 +64,10 @@ public class Video {
 	public void setPostDate(Date postDate) {
 		this.postDate = postDate;
 	}
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public String getUsername() {
@@ -118,10 +118,10 @@ public class Video {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	public int[] getCategoryId() {
+	public String[] getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(int[] categoryId) {
+	public void setCategoryId(String[] categoryId) {
 		this.categoryId = categoryId;
 	}
 	

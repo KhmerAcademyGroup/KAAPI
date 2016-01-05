@@ -12,7 +12,8 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
-import org.kaapi.app.services.PlayListServices;
+import org.kaapi.app.services.PlayListServics;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service("PlayListService")
-public class PlayListServiceImplement implements PlayListServices{
+public class PlayListServiceImpl implements PlayListServics{
 	@Autowired
 	DataSource dataSource;
 	Connection con;
@@ -37,16 +38,16 @@ public class PlayListServiceImplement implements PlayListServices{
 					+ "WHERE LOWER(P.playlistname) LIKE LOWER(?) and  U.Userid = ? GROUP BY P.playlistid, U.username order by  P.playlistid desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
-			ps.setInt(2, dto.getUserId());
+			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getUserId())));
 			ps.setInt(3, pagin.getPage());
 			ps.setInt(4, pagin.getItem());
 			rs = ps.executeQuery();
 			while(rs.next()){
 				Playlist playlist = new Playlist();
-				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setDescription(rs.getString("description"));
-				playlist.setUserId(rs.getInt("userid"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
 				playlist.setMaincategory(rs.getInt("maincategory"));
@@ -71,7 +72,7 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 	//well
 	@Override
-	public ArrayList<Video> listVideoInPlaylist(int playlistid, Pagination pagin) {
+	public ArrayList<Video> listVideoInPlaylist(String playlistid, Pagination pagin) {
 		try {
 			con = dataSource.getConnection();
 			ArrayList<Video> playlists =new ArrayList<Video>();
@@ -88,7 +89,7 @@ public class PlayListServiceImplement implements PlayListServices{
 					+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES, PD.INDEX , PL.playlistid "
 					+ "ORDER BY PD.INDEX  offset ? limit ? ";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, playlistid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
 			ps.setInt(2, pagin.getPage());
 			ps.setInt(3, pagin.getItem());
 			rs = ps.executeQuery();
@@ -103,7 +104,7 @@ public class PlayListServiceImplement implements PlayListServices{
 				dto.setFileUrl(rs.getString("fileurl"));
 				dto.setPublicView(rs.getBoolean("publicview"));
 				dto.setPostDate(rs.getDate("postdate"));
-				dto.setUserId(rs.getInt("userid"));
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
 				dto.setViewCounts(rs.getInt("viewcount"));
 				dto.setUsername(rs.getString("username"));
 				dto.setCountVotePlus(rs.getInt("countvoteplus"));
@@ -127,14 +128,14 @@ public class PlayListServiceImplement implements PlayListServices{
 	
 	//well
 	@Override
-	public String getPlaylistName(int playlistid) {
+	public String getPlaylistName(String playlistid) {
 		try{	
 				con = dataSource.getConnection();
 				String pname= "";
 				ResultSet rs = null;
 				String sql = "select playlistname from tblplaylist where playlistid=?";
 				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setInt(1, playlistid);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
 				rs = ps.executeQuery();
 				if(rs.next()){
 					pname = rs.getString("playlistname");
@@ -154,7 +155,7 @@ public class PlayListServiceImplement implements PlayListServices{
 
 	//well
 	@Override
-	public ArrayList<Video> listVideo(int playlistid) {
+	public ArrayList<Video> listVideo(String playlistid) {
 		try {
 			con = dataSource.getConnection();
 			ArrayList<Video> playlists =new ArrayList<Video>();
@@ -170,7 +171,7 @@ public class PlayListServiceImplement implements PlayListServices{
 					+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES, PD.INDEX "
 					+ "ORDER BY PD.INDEX";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, playlistid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
 			rs = ps.executeQuery();
 			Video dto=null;
 			while(rs.next()){
@@ -182,7 +183,7 @@ public class PlayListServiceImplement implements PlayListServices{
 				dto.setFileUrl(rs.getString("fileurl"));
 				dto.setPublicView(rs.getBoolean("publicview"));
 				dto.setPostDate(rs.getDate("postdate"));
-				dto.setUserId(rs.getInt("userid"));
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
 				dto.setViewCounts(rs.getInt("viewcount"));
 				dto.setUsername(rs.getString("username"));
 				dto.setCountVotePlus(rs.getInt("countvoteplus"));
@@ -213,10 +214,10 @@ public class PlayListServiceImplement implements PlayListServices{
 			String sql = "select playlistid , playlistname,publicview from tblplaylist where LOWER(playlistname) like  LOWER(?) and userid = ?  order by playlistid desc";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
-			ps.setInt(2, dto.getUserId());
+			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getUserId())));
 			rs = ps.executeQuery();
 			while(rs.next()){
-				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
 			}
@@ -246,7 +247,7 @@ public class PlayListServiceImplement implements PlayListServices{
 			while(rs.next()){
 				
 				Playlist playlist = new Playlist();
-				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlists.add(playlist);
 				
@@ -277,7 +278,7 @@ public class PlayListServiceImplement implements PlayListServices{
 				while(rs.next()){
 					
 					Playlist playlist = new Playlist();
-					playlist.setPlaylistId(rs.getInt("playlistid"));
+					playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 					playlist.setPlaylistName(rs.getString("playlistname"));
 					playlists.add(playlist);
 					
@@ -296,7 +297,7 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 	//well
 	@Override
-	public ArrayList<Playlist> listplaylistdetail(int userid) {
+	public ArrayList<Playlist> listplaylistdetail(String userid) {
 		try {
 			con = dataSource.getConnection();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
@@ -306,14 +307,14 @@ public class PlayListServiceImplement implements PlayListServices{
 					+ " INNER JOIN TBLUSER U ON L.userid = L.userid "
 					+ " Where U.Userid = ? order by D.Playlistid desc ";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, userid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
 			while(rs.next()){
 				
 				Playlist playlist = new Playlist();
-				playlist.setPlaylistId(rs.getInt("playlistid"));
-				playlist.setVideoId(rs.getInt("videoid"));
-				playlist.setUserId(rs.getInt("userid"));
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				
 				
 				/*playlist.setPlaylistName(rs.getString("playlistname"));
@@ -345,7 +346,7 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 	//not sure
 	@Override
-	public ArrayList<Playlist> listplaylistdetail(int userid, int playlistid) {
+	public ArrayList<Playlist> listplaylistdetail(String userid, String playlistid) {
 		try {
 			con = dataSource.getConnection();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
@@ -355,16 +356,16 @@ public class PlayListServiceImplement implements PlayListServices{
 					+ " INNER JOIN TBLUSER U ON L.userid = L.userid "
 					+ " Where U.Userid = ? and D.playlistid = ? order by D.Playlistid desc ";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, userid);
-			ps.setInt(2, playlistid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(playlistid)));
 			rs = ps.executeQuery();
 			while(rs.next()){
 				
 				Playlist playlist = new Playlist();
-				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setDescription(rs.getString("description"));
-				playlist.setUserId(rs.getInt("userid"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
 				playlist.setMaincategory(rs.getInt("maincategory"));
@@ -393,7 +394,7 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 	//well
 	@Override
-	public Playlist get(int playlistid) {
+	public Playlist get(String playlistid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid "
@@ -403,10 +404,10 @@ public class PlayListServiceImplement implements PlayListServices{
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.next()){
 				Playlist dto = new Playlist();
-				dto.setPlaylistId(playlistid);
+				dto.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				dto.setPlaylistName(rs.getString("playlistname"));
 				dto.setDescription(rs.getString("description"));
-				dto.setUserId(rs.getInt("userid"));
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
 				dto.setThumbnailUrl(rs.getString("thumbnailurl"));
 				dto.setPublicView(rs.getBoolean("publicview"));
 				dto.setUsername(rs.getString("username"));
@@ -430,19 +431,19 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 	//well
 	@Override
-	public Playlist getPlaylistForUpdate(int playlistid) {
+	public Playlist getPlaylistForUpdate(String playlistid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "select * from tblplaylist where playlistid = ?";
 			PreparedStatement ps=con.prepareStatement(sql);
-			ps.setInt(1, playlistid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				Playlist playlist =new Playlist();
-				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setDescription(rs.getString("description"));
-				playlist.setUserId(rs.getInt("userid"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
 				playlist.setMaincategory(rs.getInt("maincategory"));
@@ -465,7 +466,7 @@ public class PlayListServiceImplement implements PlayListServices{
 
 	//well
 	@Override
-	public boolean addVideoToPlst(int pid, int vid) {
+	public boolean addVideoToPlst(String pid, String vid) {
 		try {  
 			con = dataSource.getConnection();
 			PreparedStatement pstmt=con.prepareStatement("select max(index) from tblplaylistdetail");
@@ -475,8 +476,8 @@ public class PlayListServiceImplement implements PlayListServices{
 				num =rs.getInt(1)+1;
 			String sql = "INSERT INTO tblplaylistdetail VALUES( ?, ? , "+num+" )";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1,pid );
-			ps.setInt(2, vid );
+			ps.setInt(1,Integer.parseInt(Encryption.decode(pid )));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(vid )));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
@@ -500,7 +501,7 @@ public class PlayListServiceImplement implements PlayListServices{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, dto.getPlaylistName());
 			ps.setString(2, dto.getDescription());
-			ps.setInt(3, dto.getUserId());
+			ps.setInt(3, Integer.parseInt(Encryption.decode(dto.getUserId())));
 			ps.setString(4, dto.getThumbnailUrl());
 			ps.setBoolean(5, dto.isPublicView());
 			ps.setInt(6, dto.getMaincategory());
@@ -536,7 +537,7 @@ public class PlayListServiceImplement implements PlayListServices{
 			ps.setString(6, dto.getBgImage());
 			ps.setString(7, dto.getColor());
 			ps.setBoolean(8, dto.isStatus());
-			ps.setInt(9, dto.getPlaylistId());
+			ps.setInt(9, Integer.parseInt(Encryption.decode(dto.getPlaylistId())));
 			if(ps.executeUpdate()>0){
 				System.out.println();
 				return true;
@@ -555,12 +556,12 @@ public class PlayListServiceImplement implements PlayListServices{
 	
 	//well
 	@Override
-	public boolean delete(int playlistid) {
+	public boolean delete(String playlistid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "DELETE FROM TBLPLAYLIST WHERE playlistid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, playlistid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
@@ -600,13 +601,13 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 	//well
 	@Override
-	public int countUserPlaylist(String keyword, int userid) {
+	public int countUserPlaylist(String keyword, String userid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where LOWER(playlistname) like LOWER(?) and userid = ?";
 			PreparedStatement ps=con.prepareStatement(sql);
 			ps.setString(1, "%"+keyword+"%");
-			ps.setInt(2, userid);
+			ps.setInt(2, Integer.parseInt(Encryption.decode(userid)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getInt(1); 
@@ -624,13 +625,21 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 	
 	//well
+	/*
+	 * after add video to playlistdetail
+	 * will check if countvideos have playlistid ==1 so we process update thumnails
+	 * 
+	 * after delete from playlist
+	 * will check if countvideos have playlistid ==0 so we process update thumnails to default
+	 * 
+	 */
 	@Override
-	public int countvideos(int playlistid) {
+	public int countvideos(String playlistid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "SELECT COUNT(videoid) FROM TBLPLAYLISTDETAIL WHERE playlistid=?";
 			PreparedStatement ps=con.prepareStatement(sql);
-			ps.setInt(1, playlistid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getInt(1); 
@@ -660,10 +669,10 @@ public class PlayListServiceImplement implements PlayListServices{
 			rs=ps.executeQuery();
 			while(rs.next()){
 				Playlist playlist = new Playlist();
-				playlist.setPlaylistId(rs.getInt("playlistid"));
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setDescription(rs.getString("description"));
-				playlist.setUserId(rs.getInt("userid"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
 				playlist.setMaincategory(rs.getInt("maincategory"));
@@ -690,13 +699,13 @@ public class PlayListServiceImplement implements PlayListServices{
 
 	//well
 	@Override
-	public boolean deleteVideoFromPlaylist(int playlistid, int vid) {
+	public boolean deleteVideoFromPlaylist(String playlistid, String vid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "DELETE FROM tblplaylistdetail WHERE playlistid=? and videoid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, playlistid);
-			ps.setInt(2, vid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(vid)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
@@ -713,14 +722,17 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 
 	//well
+	/*
+	 * we use when insert data to playlistdetail
+	 */
 	@Override
-	public boolean updateThumbnail(int vid, int pid) {
+	public boolean updateThumbnail(String vid, String pid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "UPDATE TBLPLAYLIST SET  thumbnailurl=(select youtubeurl from tblvideo where videoid=? ) WHERE playlistid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, vid);
-			ps.setInt(2, pid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(vid)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(pid)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
@@ -737,13 +749,16 @@ public class PlayListServiceImplement implements PlayListServices{
 	}
 
 	//well
+	/*
+	 * after delete playlist if playlist id =0 will update thumbnailur to default
+	 */
 	@Override
-	public boolean updateThumbnailToDefault(int pid) {
+	public boolean updateThumbnailToDefault(String pid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "UPDATE TBLPLAYLIST SET  thumbnailurl='default.png' WHERE playlistid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, pid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(pid)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}

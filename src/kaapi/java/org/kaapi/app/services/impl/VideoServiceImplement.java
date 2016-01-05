@@ -54,7 +54,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -62,6 +62,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -102,7 +103,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -110,6 +111,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -150,7 +152,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -158,6 +160,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -202,7 +205,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -210,6 +213,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -252,7 +256,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -260,6 +264,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -299,7 +304,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -307,6 +312,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -350,11 +356,12 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setCountVotePlus(rs.getInt("vote"));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -388,11 +395,12 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setCountVotePlus(rs.getInt("vote"));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -426,10 +434,11 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -453,7 +462,8 @@ public class VideoServiceImplement implements VideosService{
 		
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
-			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
+			int id = Integer.parseInt(Encryption.decode(videoId));
+			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
@@ -464,7 +474,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -472,9 +482,10 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				if(viewCount){
 					Statement s2 = cnn.createStatement();
-					s2.executeUpdate("UPDATE TBLVIDEO SET VIEWCOUNT=VIEWCOUNT+1 WHERE videoid=" + videoId);
+					s2.executeUpdate("UPDATE TBLVIDEO SET VIEWCOUNT=VIEWCOUNT+1 WHERE videoid=" + id);
 				}
 			}
 			return video;
@@ -496,7 +507,7 @@ public class VideoServiceImplement implements VideosService{
 			ps.setString(3, video.getYoutubeUrl());
 			ps.setString(4, video.getFileUrl());
 			ps.setBoolean(5, video.isPublicView());
-			ps.setInt(6, video.getUserId());
+			ps.setInt(6, Integer.parseInt(Encryption.decode(video.getUserId())));
 			ps.setBoolean(7, video.isStatus());
 			if(ps.executeUpdate()>0){
 				ResultSet rs = ps.getGeneratedKeys();
@@ -505,6 +516,9 @@ public class VideoServiceImplement implements VideosService{
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return 0;
 		}
 		return 0;
 	}
@@ -550,11 +564,11 @@ public class VideoServiceImplement implements VideosService{
 	}
 
 	@Override
-	public boolean insertVideoToCategory(String videoId, int categoryId) {
+	public boolean insertVideoToCategory(String videoId, String categoryId) {
 		String sql = "INSERT INTO TBLCATEGORYVIDEO VALUES(?, ?)";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
-			ps.setInt(2, categoryId);
+			ps.setInt(2, Integer.parseInt(Encryption.decode(categoryId)));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
@@ -709,7 +723,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -717,6 +731,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -757,7 +772,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -765,6 +780,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -805,7 +821,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -813,6 +829,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -857,7 +874,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -865,6 +882,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -987,7 +1005,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setFileUrl(rs.getString("fileurl"));
 				video.setPublicView(rs.getBoolean("publicview"));
 				video.setPostDate(rs.getDate("postdate"));
-				video.setUserId(rs.getInt("userid"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
@@ -995,6 +1013,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;

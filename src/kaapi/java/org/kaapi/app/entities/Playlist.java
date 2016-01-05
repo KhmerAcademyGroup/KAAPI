@@ -2,21 +2,16 @@ package org.kaapi.app.entities;
 
 public class Playlist {
 
-	private int playlistId;
+	private String playlistId;
 	private String playlistName;
 	private String description;
-	private int userId;
+	private String userId;
 	private String thumbnailUrl;
 	private boolean publicView;
 	private String username;
 	private int countVideos;
-	private int videoId;
-	public int getVideoId() {
-		return videoId;
-	}
-	public void setVideoId(int videoId) {
-		this.videoId = videoId;
-	}
+	private String videoId;
+	
 	private int maincategory;
 	private String bgImage;
 	private String color;
@@ -53,12 +48,7 @@ public class Playlist {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	public int getPlaylistId() {
-		return playlistId;
-	}
-	public void setPlaylistId(int playlistId) {
-		this.playlistId = playlistId;
-	}
+	
 	public String getPlaylistName() {
 		return playlistName;
 	}
@@ -71,11 +61,24 @@ public class Playlist {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public int getUserId() {
+	
+	public String getPlaylistId() {
+		return playlistId;
+	}
+	public void setPlaylistId(String playlistId) {
+		this.playlistId = playlistId;
+	}
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public String getVideoId() {
+		return videoId;
+	}
+	public void setVideoId(String videoId) {
+		this.videoId = videoId;
 	}
 	public String getThumbnailUrl() {
 		return thumbnailUrl;
