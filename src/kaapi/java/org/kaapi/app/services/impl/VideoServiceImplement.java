@@ -62,6 +62,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -110,6 +111,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -158,6 +160,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -210,6 +213,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -260,6 +264,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -307,6 +312,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -355,6 +361,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -393,6 +400,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -430,6 +438,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -473,6 +482,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				if(viewCount){
 					Statement s2 = cnn.createStatement();
 					s2.executeUpdate("UPDATE TBLVIDEO SET VIEWCOUNT=VIEWCOUNT+1 WHERE videoid=" + id);
@@ -721,6 +731,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -769,6 +780,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -817,6 +829,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -869,6 +882,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
@@ -999,6 +1013,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
 				list.add(video);
 			}
 			return list;
