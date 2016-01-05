@@ -142,7 +142,11 @@ public class HistoryServiceImplement implements HistoryService{
 		}
 		return false;
 	}
-	//well
+	
+	/*well
+	 * we want to know how many time use view each 
+	 * video
+	 */
 	@Override
 	public int count(String search, int userid) {
 		try {

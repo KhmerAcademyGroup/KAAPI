@@ -1,4 +1,12 @@
+
 package org.kaapi.app.services;
+
+import java.util.List;
+
+import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.entities.User;
+
+
 
 import java.util.List;
 
@@ -27,3 +35,4 @@ public interface UserService {
 	public boolean validateOldPassword(String password);
 	
 }
+

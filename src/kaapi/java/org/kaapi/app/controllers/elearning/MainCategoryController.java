@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.kaapi.app.controllers.UploadFile;
 import org.kaapi.app.entities.MainCategory;
 import org.kaapi.app.services.MainCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,7 +113,7 @@ public class MainCategoryController {
 	
 
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
+/*	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
 	public ResponseEntity<Map<String, Object>> insertPhoto(@RequestParam(value="LOGO_IMG",required=false) MultipartFile logo,@RequestParam(value="BACKGROUND" ,required = false) MultipartFile backgound, HttpServletRequest request) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -177,7 +179,28 @@ public class MainCategoryController {
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 	}
-	
+	*/
+	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
+	public ResponseEntity<Map<String, Object>> uploadImageMainCategory(
+			@RequestParam(value="LOGO_IMG1",required=false) MultipartFile file1,
+			@RequestParam(value="LOGO_IMG",required=false) MultipartFile file, HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		MultipartFile[] c = {file1,file};
+		String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/maincategory");
+		UploadFile fileName = new UploadFile();
+		String[] CategoryImage =fileName.multipleFileUpload(c,savePath);		
+		if (CategoryImage[1] != "") {
+			map.put("STATUS", true);
+			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
+			map.put("IMG_CATE", CategoryImage);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("STATUS", false);
+			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+		
+	}
 	
 	
 	/*

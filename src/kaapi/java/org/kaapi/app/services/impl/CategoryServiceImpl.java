@@ -256,7 +256,7 @@ public class CategoryServiceImpl implements CategoryService {
 				dto.setVideoName(rs.getString("videoname"));
 				dto.setDescription(rs.getString("description"));
 				dto.setYoutubeUrl(rs.getString("youtubeurl"));
-				dto.setUserId(rs.getInt("userid"));
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
 				dto.setUsername(rs.getString("username"));
 				dto.setViewCounts(rs.getInt("viewcount"));
 				dto.setPostDate(rs.getDate("postdate"));

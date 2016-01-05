@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.kaapi.app.controllers.UploadFile;
 import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.ForumCategory;
 import org.kaapi.app.entities.Pagination;
@@ -142,7 +143,7 @@ public class CategoryController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
+	/*@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
 	public ResponseEntity<Map<String, Object>> uploadImageCategory(
 			@RequestParam(value = "LOGO_IMG", required = false) MultipartFile logo, HttpServletRequest request) {
 
@@ -198,8 +199,28 @@ public class CategoryController {
 			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-	}
+	}*/
 
+	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
+	public ResponseEntity<Map<String, Object>> uploadImageCategory(
+			@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/category");
+		UploadFile fileName = new UploadFile();
+		String CategoryImage =fileName.sigleFileUpload(file,savePath);				
+		if (CategoryImage != "") {
+			map.put("STATUS", true);
+			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
+			map.put("IMG_CATE", CategoryImage);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {
+			map.put("STATUS", false);
+			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}		
+		
+	}
+	
 	public void ViewCategory() {
 	}
 
