@@ -57,4 +57,17 @@ public class MainController {
 		return "help";
 	}
 	
+	@RequestMapping(value="/login" , method = RequestMethod.GET)
+	public String loginPage(ModelMap m){
+		m.addAttribute("msg","Login");
+		return "login";
+	}
+	
+	@RequestMapping(value="/register" , method = RequestMethod.GET)
+	public String registerPage(ModelMap m){
+		m.addAttribute("msg","Register");
+		m.addAttribute("kaapi" , header);
+		return "register";
+	}
+	
 }
