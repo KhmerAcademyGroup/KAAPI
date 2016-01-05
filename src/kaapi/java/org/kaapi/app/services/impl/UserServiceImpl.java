@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 					+ " LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON u.USERID=vm.USERID"
 					+ " LEFT JOIN tblplaylist PL ON u.USERID=pl.userid "
 					+ " LEFT JOIN tblcoverphoto co ON u.userid = co.userid"
-					+ " WHERE LOWER(u.EMAIL)=LOWER(?)"
+					+ " WHERE LOWER(u.EMAIL)=LOWER(?)  AND u.userstatus = '1';"
 					+ " GROUP BY u.USERID, ut.USERTYPEID, co.coverid";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setString(1, email);
@@ -78,9 +78,13 @@ public class UserServiceImpl implements UserService {
 				u.setUserTypeId(Encryption.encode(rs.getString("usertypeid")));
 				u.setUserTypeName(rs.getString("usertypename"));
 				u.setPoint(rs.getInt("point"));
-				u.setUniversityId(Encryption.encode(rs.getString("universityid")));
-				u.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
-				u.setCoverphoto(Encryption.encode(rs.getString("coverphotourl")));
+				if(rs.getString("universityid") != null){
+					u.setUniversityId(Encryption.encode(rs.getString("universityid")));
+				}
+				if(rs.getString("departmentid") != null){
+					u.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
+				}
+				u.setCoverphoto(rs.getString("coverphotourl"));
 				u.setCountComments(rs.getInt("countcomments"));
 				u.setCountPlaylists(rs.getInt("countplaylist"));
 				u.setCountVideos(rs.getInt("countvideos"));
@@ -125,9 +129,13 @@ public class UserServiceImpl implements UserService {
 				u.setUserTypeId(Encryption.encode(rs.getString("usertypeid")));
 				u.setUserTypeName(rs.getString("usertypename"));
 				u.setPoint(rs.getInt("point"));
-				u.setUniversityId(Encryption.encode(rs.getString("universityid")));
-				u.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
-				u.setCoverphoto(Encryption.encode(rs.getString("coverphotourl")));
+				if(rs.getString("universityid") != null){
+					u.setUniversityId(Encryption.encode(rs.getString("universityid")));
+				}
+				if(rs.getString("departmentid") != null){
+					u.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
+				}
+				u.setCoverphoto(rs.getString("coverphotourl"));
 				u.setCountComments(rs.getInt("countcomments"));
 				u.setCountPlaylists(rs.getInt("countplaylist"));
 				u.setCountVideos(rs.getInt("countvideos"));
@@ -142,7 +150,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int countUser() {
-		// TODO Auto-generated method stub
+		String sql = "SELECT COUNT(id) FROM tbluser;";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ResultSet rs = ps.executeQuery();
+				if(rs.next()){
+					return rs.getInt(1);
+				}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return 0;
 	}
 	
@@ -181,9 +200,13 @@ public class UserServiceImpl implements UserService {
 				u.setUserTypeId(Encryption.encode(rs.getString("usertypeid")));
 				u.setUserTypeName(rs.getString("usertypename"));
 				u.setPoint(rs.getInt("point"));
-				u.setUniversityId(Encryption.encode(rs.getString("universityid")));
-				u.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
-				u.setCoverphoto(Encryption.encode(rs.getString("coverphotourl")));
+				if(rs.getString("universityid") != null){
+					u.setUniversityId(Encryption.encode(rs.getString("universityid")));
+				}
+				if(rs.getString("departmentid") != null){
+					u.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
+				}
+				u.setCoverphoto(rs.getString("coverphotourl"));
 				u.setCountComments(rs.getInt("countcomments"));
 				u.setCountPlaylists(rs.getInt("countplaylist"));
 				u.setCountVideos(rs.getInt("countvideos"));
@@ -198,68 +221,227 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int countSearchUser(String username) {
-		// TODO Auto-generated method stub
+		String sql = "SELECT COUNT(id) FROM tbluser WHERE username LIKE ?;";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ps.setString(1, "%"+username+"%");
+				ResultSet rs = ps.executeQuery();
+				if(rs.next()){
+					return rs.getInt(1);
+				}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
 	@Override
-	public boolean getUSer(String id) {
-		// TODO Auto-generated method stub
-		return false;
+	public User getUSer(String id) {
+		String sql = "";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setInt(1, Integer.parseInt(Encryption.decode(id)));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				User u = new User();
+				u.setUserId(Encryption.encode(rs.getString("userid")));
+				u.setUsername(rs.getString("username"));
+				u.setEmail(rs.getString("email"));
+				u.setGender(rs.getString("gender"));
+				u.setDateOfBirth(rs.getDate("dateofbirth"));
+				u.setPhoneNumber(rs.getString("phonenumber"));
+				u.setRegisterDate(rs.getDate("registerdate"));
+				u.setUserImageUrl(rs.getString("userimageurl"));
+				u.setUserTypeId(Encryption.encode(rs.getString("usertypeid")));
+				u.setUserTypeName(rs.getString("usertypename"));
+				u.setPoint(rs.getInt("point"));
+				if(rs.getString("universityid") != null){
+					u.setUniversityId(Encryption.encode(rs.getString("universityid")));
+				}
+				if(rs.getString("departmentid") != null){
+					u.setDepartmentId(Encryption.encode(rs.getString("departmentid")));
+				}
+				u.setCoverphoto(rs.getString("coverphotourl"));
+				u.setCountComments(rs.getInt("countcomments"));
+				u.setCountPlaylists(rs.getInt("countplaylist"));
+				u.setCountVideos(rs.getInt("countvideos"));
+				return u;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
 	public boolean validateEmail(String email) {
-		// TODO Auto-generated method stub
+		String sql = "select email from tbluser where LOWER(email)=LOWER(?)";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql) ){
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return true;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
-	public boolean insertUser(User user) {
-		// TODO Auto-generated method stub
+	public boolean insertUser(User dto) {
+		String sql = "INSERT INTO TBLUSER VALUES(NEXTVAL('seq_user'), ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)";
+		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, dto.getEmail());
+			ps.setString(2, dto.getPassword());
+			ps.setString(3, dto.getUsername());
+			ps.setString(4, dto.getGender());
+			if(dto.getDateOfBirth()!=null){
+				ps.setDate(5, new java.sql.Date(dto.getDateOfBirth().getTime()));
+			}else{
+				ps.setDate(5, null);
+			}
+			ps.setString(6, dto.getPhoneNumber());
+			ps.setString(7, dto.getUserImageUrl());
+			ps.setInt(8, Integer.parseInt(Encryption.decode(dto.getUserTypeId())));
+			ps.setInt(9, dto.getPoint());
+			ps.setInt(10, Integer.parseInt(Encryption.decode(dto.getUniversityId())));
+			ps.setInt(11, Integer.parseInt(Encryption.decode(dto.getDepartmentId())));
+			ps.setInt(12, 1);
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
-	public boolean updateUser(User user) {
-		// TODO Auto-generated method stub
+	public boolean updateUser(User dto) {
+		String sql = "UPDATE TBLUSER SET password=?, username=?, gender=?, dateofbirth=?, phonenumber=?, userimageurl=?,"
+				+ " usertypeid=?, universityid=?, departmentid=? WHERE userid=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+			if(dto.getPassword()!=null){
+			ps.setString(1, dto.getPassword());
+			}
+			if(dto.getUsername()!=null){
+			ps.setString(2, dto.getUsername());
+			}
+			if(dto.getGender()!=null){
+			ps.setString(3, dto.getGender());
+			}
+			if(dto.getDateOfBirth()!=null){
+			ps.setDate(4, new java.sql.Date(dto.getDateOfBirth().getTime()));
+			}
+			if(dto.getPhoneNumber()!=null){
+			ps.setString(5, dto.getPhoneNumber());
+			}
+			if(dto.getUserImageUrl()!=null){
+			ps.setString(6, dto.getUserImageUrl());
+			}
+			ps.setInt(7, Integer.parseInt(Encryption.decode(dto.getUserTypeId())));
+			ps.setInt(8, Integer.parseInt(Encryption.decode(dto.getUniversityId())));
+			ps.setInt(9, Integer.parseInt(Encryption.decode(dto.getDepartmentId())));
+			ps.setInt(10, Integer.parseInt(Encryption.decode(dto.getUserId())));
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean deleteUser(String id) {
-		// TODO Auto-generated method stub
+		String sql = "UPDATE TBLUSER SET userstatus=? WHERE userid=?";
+		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setInt(1, Integer.parseInt(Encryption.decode(id)));
+			if(ps.executeUpdate(sql)>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
-	public boolean insertCoverPhoto() {
-		// TODO Auto-generated method stub
+	public boolean insertCoverPhoto(String coverPhotoUrl , String userId) {
+		String sql= "insert into tblCoverPhoto values (NEXTVAL('seq_cover'),?,? )";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, coverPhotoUrl);
+			ps.setInt(2, Integer.parseInt(Encryption.decode(userId)));
+			if(ps.executeUpdate()>0){
+				return true;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
-	public boolean updateCoverPhoto(String coverId) {
-		// TODO Auto-generated method stub
+	public boolean updateCoverPhoto(String coverPhotoUrl , String userId) {
+		String sql= "Update tblCoverPhoto set coverphoto=? where userid=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			if(coverPhotoUrl!=null){
+				ps.setString(1, coverPhotoUrl);
+			}
+			ps.setInt(2, Integer.parseInt(Encryption.decode(userId)));			
+			if(ps.executeUpdate()>0)
+				return true;
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	@Override
 	public String getPasswordByEmail(String email) {
-		// TODO Auto-generated method stub
+		String sql = "select password from tbluser where email=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return email = rs.getString(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
-	public boolean resetPassword(String password) {
-		// TODO Auto-generated method stub
+	public boolean resetPassword(String newPassword , String oldPassword , String email) {
+		String sql="UPDATE TBLUSER SET Password=? WHERE email=? AND Password=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, newPassword);
+			ps.setString(2, email);
+			ps.setString(3, oldPassword);
+			if(ps.executeUpdate()>0){
+				return true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 		return false;
 	}
 
 	@Override
-	public boolean validateOldPassword(String password) {
-		// TODO Auto-generated method stub
+	public boolean checkOldPassword(String oldPassword, String userId) {
+		String sql= "select password from tbluser where userid=? and password=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, oldPassword);
+			ps.setString(2, userId);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return true;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		return false;
 	}
-
+	
+	
+	
 }
