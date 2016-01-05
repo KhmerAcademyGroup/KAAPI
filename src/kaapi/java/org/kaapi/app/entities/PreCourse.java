@@ -6,7 +6,7 @@ public class PreCourse {
 
 	private String id;
 	private Date dateCreate;
-	private int userId;;
+	private String userId;;
 	private String username;
 	private String email;
 	private String telephone;
@@ -34,10 +34,10 @@ public class PreCourse {
 	public void setDateCreate(Date dateCreate) {
 		this.dateCreate = dateCreate;
 	}
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public String getUsername() {
