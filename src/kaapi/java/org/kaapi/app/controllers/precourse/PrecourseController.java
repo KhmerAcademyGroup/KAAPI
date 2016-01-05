@@ -37,23 +37,7 @@ public class PrecourseController {
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD HAS BEEN INSERTED");		
 		
-		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
-		
-		
-//		ArrayList<Log> logs = service.listCategoryInUser(userid);
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		
-//		if(logs.isEmpty()){
-//			map.put("STATUS", false);
-//			map.put("MESSAGE", "RECORD NOT FOUND");
-//			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
-//		}
-//		
-//		map.put("STATUS", true);
-//		map.put("MESSAGE", "RECORD FOUND");
-//		map.put("RES_DATA", logs);
-//		
-//		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);			
+		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);			
 	}
 	
 	@RequestMapping(value="/deleteprecourse/{id}", method= RequestMethod.DELETE, headers= "Accept=application/json")
