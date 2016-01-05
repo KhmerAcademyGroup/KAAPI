@@ -7,10 +7,13 @@ import org.kaapi.app.entities.User;
 
 public interface UserService {
 
+	
 	public User mobileLogin(String email , String password);
 	public User webLogin(String email);
 	public List<User> listUser(Pagination pagination);
 	public int countUser();
+	public List<User> searchUser(String username,Pagination pagination);
+	public int countSearchUser(String username);
 	public boolean getUSer(String id);
 	public boolean validateEmail(String email);
 	public boolean insertUser(User user);
