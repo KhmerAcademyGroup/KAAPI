@@ -26,26 +26,24 @@ public class VideoControllers {
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideo(@PathVariable("id") String id, @RequestParam("view") String count) {
+	public ResponseEntity<Map<String, Object>> getVideo(
+			@PathVariable("id") String id, 
+			@RequestParam(value="view", required = false, defaultValue = "true") boolean view) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean view = false;
-		if(!count.equals("f") && !count.equals("t")){
+		try{
+			Video video = videoService.getVideo(id, view);
+			if (video==null) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
-			view = (count.equals("t"))?true:false;
 		}
-		System.out.println(view);
-		Video video = videoService.getVideo(id, view);
-		if (video==null) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
@@ -53,16 +51,19 @@ public class VideoControllers {
 	@RequestMapping(method = RequestMethod.PATCH, value = "/video/enable/v/{id}", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> toggleVideo(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(videoService.toggleVideo(id)) {
-			map.put("STATUS", true);
-			map.put("MESSAGE", "OPERATION SUCCESS!");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
-			map.put("STATUS", false);
+		try{
+			if(videoService.toggleVideo(id)) {
+				map.put("STATUS", true);
+				map.put("MESSAGE", "OPERATION SUCCESS!");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "OPERATION FAIL");
+			}
+		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			map.put("STATUS", false);
 		}
-		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
 	}
 		
 	//Insert Video
@@ -79,18 +80,12 @@ public class VideoControllers {
 			map.put("MESSAGE", "ERROR INPUT YOUTUBE URL");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		if(video.getUserId()<=0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT USER ID");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
 		boolean help = true;
 		int vid = videoService.insert(video);
 		String id = new Integer(vid).toString();
-		int []catid = video.getCategoryId();
+		String []catid = video.getCategoryId();
 		for(int i=0; i<catid.length; i++){
-			int cid = Integer.parseInt("0" + catid[i]);
-			if(!videoService.insertVideoToCategory(Encryption.encode(id), cid)){
+			if(!videoService.insertVideoToCategory(Encryption.encode(id), catid[i])){
 				videoService.delete(Encryption.encode(id));
 				help=false;
 				break;
@@ -125,7 +120,7 @@ public class VideoControllers {
 		boolean help = true;
 		boolean update = videoService.update(video);
 		if(update) videoService.removeVideoFromCategory(video.getVideoId());
-		int []catid = video.getCategoryId();
+		String []catid = video.getCategoryId();
 		for(int i=0; i<catid.length; i++){
 			if(!videoService.insertVideoToCategory(video.getVideoId(), catid[i])){
 				videoService.delete(video.getVideoId());
@@ -164,337 +159,395 @@ public class VideoControllers {
 	
 	//list all video with offset and limit: param(pagination)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list/all", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoList(Pagination page) {
+	public ResponseEntity<Map<String, Object>> getVideoList(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Video> video = videoService.listVideo(page);
-		if (video.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideo());
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideo(pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(videoService.countVideo());
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//List all video with status(enable or disable) and offset and limit: param(status, offset, limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListWithStatus(Pagination page , @RequestParam("status") String status) {
+	public ResponseEntity<Map<String, Object>> getVideoListWithStatus(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@RequestParam(value="status", required=false, defaultValue="true") boolean status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean help = false;
-		if(!status.equals("f") && !status.equals("t")){
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideo(status));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideo(status, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
-			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideo(help, page);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		page.setTotalCount(videoService.countVideo(help));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by name or search video by name: param(videoName,offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list/all/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByName(Pagination page, @PathVariable("name") String name) {
+	public ResponseEntity<Map<String, Object>> getVideoListByName(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@PathVariable("name") String name) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Video> video = videoService.listVideo(name, page);
-		if (video.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideo(name));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideo(name, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(videoService.countVideo(name));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by name with enable or disable or search video by name: param(videoName,status,offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/list/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByNameWithStatus(Pagination page,@PathVariable("name") String name, @RequestParam("status") String status) {
+	public ResponseEntity<Map<String, Object>> getVideoListByNameWithStatus(
+			@PathVariable("name") String name,
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@RequestParam(value="status", required=false, defaultValue="true") boolean status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean help = false;
-		if(!status.equals("f") && !status.equals("t")){
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideo(name, status));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideo(name, status, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
-			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideo(name, help, page);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		page.setTotalCount(videoService.countVideo(name, help));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by user id: param(userId, pagination)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/user/all/u/{id}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserId(Pagination page, @PathVariable("id") String userId) {
+	public ResponseEntity<Map<String, Object>> getVideoListByUserId(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@PathVariable("id") String userId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Video> video = videoService.listVideoUser(userId, page);
-		if (video.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideoUser(userId));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideoUser(userId, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(videoService.countVideoUser(userId));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by user id: param(userId, status, pagination)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/user/u/{id}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserIdWithStatus(Pagination page, @PathVariable("id") String userId, @RequestParam("status") String status) {
+	public ResponseEntity<Map<String, Object>> getVideoListByUserIdWithStatus(
+			@PathVariable("id") String userId,
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@RequestParam(value="status", required=false, defaultValue="true") boolean status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean help = false;
-		if(!status.equals("f") && !status.equals("t")){
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideoUser(userId, status));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideoUser(userId, status, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
-			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideoUser(userId, help, page);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		page.setTotalCount(videoService.countVideoUser(userId, help));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by user id and video name or search user video: param(userId, videoName, pagination)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/user/all/u/{id}/name/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndName(Pagination page, @PathVariable("name") String videoName, @PathVariable("id") String userId) {
+	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndName(
+			@PathVariable("id") String userId,
+			@PathVariable("name") String videoName,
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Video> video = videoService.listVideo(userId, videoName, page);
-		if (video.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideo(userId, videoName));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideo(userId, videoName, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(videoService.countVideo(userId, videoName));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list video by user id and video name or search user video: param(userId, videoName, status, pagination)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/user/u/{id}/name/{name}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndNameWithStatus(Pagination page, @PathVariable("name") String videoName, @RequestParam("status") String status, @PathVariable("id") String userId) {
+	public ResponseEntity<Map<String, Object>> getVideoListByUserIdAndNameWithStatus(
+			@PathVariable("id") String userId,
+			@PathVariable("name") String videoName,
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@RequestParam(value="status", required=false, defaultValue="true") boolean status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean help = false;
-		if(!status.equals("f") && !status.equals("t")){
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countVideo(userId, videoName, status));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.listVideo(userId, videoName, status, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
-			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.listVideo(userId, videoName, help, page);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		page.setTotalCount(videoService.countVideo(userId, videoName, help));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//list related video: param(categoryName, limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/related", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getRelatedVideo(@RequestParam("category") String categoryName, @RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getRelatedVideo(
+			@RequestParam("category") String categoryName,
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int i;
 		try{
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
+			List<Video> video = videoService.getRelateVideo(categoryName, item);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		List<Video> video = videoService.getRelateVideo(categoryName, i);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//get video category: param(categoryId,pagination);
 	@RequestMapping(method = RequestMethod.GET, value = "/video/category/all/c/{id}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getCategoryVideo(Pagination page, @PathVariable("id") String categoryId) {
+	public ResponseEntity<Map<String, Object>> getCategoryVideo(
+			@PathVariable("id") String categoryId,
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Video> video = videoService.categoryVideo(categoryId, page);
-		if (video.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countCategoryVideo(categoryId));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.categoryVideo(categoryId, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(videoService.countCategoryVideo(categoryId));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//get video category: param(categoryId,pagination);
 	@RequestMapping(method = RequestMethod.GET, value = "/video/category/c/{id}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getCategoryVideoWithStatus(Pagination page, @PathVariable("id") String categoryId, @RequestParam("status") String status) {
+	public ResponseEntity<Map<String, Object>> getCategoryVideoWithStatus(
+			@PathVariable("id") String categoryId,
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@RequestParam(value="status", required=false, defaultValue="true") boolean status) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		boolean help = false;
-		if(!status.equals("f") && !status.equals("t")){
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(videoService.countCategoryVideo(categoryId, status));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Video> video = videoService.categoryVideo(categoryId, status, pagination);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+				map.put("PAGINATION", page);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
-			help = (status.equals("t"))?true:false;
 		}
-		List<Video> video = videoService.categoryVideo(categoryId, help, page);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		page.setTotalCount(videoService.countCategoryVideo(categoryId, help));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//top vote video sort by postdate desc: param(limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/top_vote_recent", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getTopVoteAndRecent(@RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getTopVoteAndRecent(
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int i;
 		try{
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
+			List<Video> video = videoService.topVoteAndRecent(item);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		List<Video> video = videoService.topVoteAndRecent(i);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//top vote : param(limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/top_vote", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getTopVote(@RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getTopVote(
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int i;
 		try{
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
+			List<Video> video = videoService.topVote(item);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		if(i<0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		List<Video> video = videoService.topVote(i);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//recent video : param(limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/recent", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getRecent(@RequestParam("item") String item) {
+	public ResponseEntity<Map<String, Object>> getRecent(
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int i;
 		try{
-			i = Integer.parseInt(item);
-		}catch(NumberFormatException e){
+			List<Video> video = videoService.recentVideo(item);
+			if (video.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", video);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		if(i<0){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		List<Video> video = videoService.recentVideo(i);
-		if (video.isEmpty()) {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", video);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
