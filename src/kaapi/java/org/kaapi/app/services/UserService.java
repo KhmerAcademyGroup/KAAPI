@@ -7,6 +7,7 @@ import org.kaapi.app.entities.User;
 
 public interface UserService {
 
+	
 	public User mobileLogin(String email , String password);
 	public User webLogin(String email);
 	public List<User> listUser(Pagination pagination);
