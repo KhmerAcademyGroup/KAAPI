@@ -23,7 +23,7 @@ public interface VideosService {
 	public boolean update(Video video);
 	public boolean delete(String videoId);
 	public boolean toggleVideo(String videoId);
-	public boolean insertVideoToCategory(String videoId, int categoryId);
+	public boolean insertVideoToCategory(String videoId, String categoryId);
 	public boolean removeVideoFromCategory(String videoId);
 	public int countVideo();
 	public int countVideo(boolean status);
