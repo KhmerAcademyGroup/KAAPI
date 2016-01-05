@@ -22,7 +22,7 @@ public class LogController {
 		@Autowired
 		LogService service;
 		
-		@RequestMapping(value="/log_listcatebyuser/l/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+		@RequestMapping(value="/log_listcatebyuser/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> getCateByUser(@PathVariable("userid") int userid){
 						
 			ArrayList<Log> logs = service.listCategoryInUser(userid);
