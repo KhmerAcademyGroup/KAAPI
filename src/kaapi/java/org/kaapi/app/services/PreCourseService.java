@@ -7,11 +7,11 @@ import org.kaapi.app.entities.PreCourse;
 public interface PreCourseService {
 	
 	boolean addPreCourse(PreCourse preCourse);
-	boolean deletePreCourse(int id);
+	boolean deletePreCourse(String id);
 	boolean editPreCourse(PreCourse preCourse);
 	boolean updatePreCourse(PreCourse preCourse);
 	ArrayList<PreCourse> getAllPreCourses();
-	boolean checkPrecourseStudent(int id);
-	PreCourse getPreCourse(int id);
-	PreCourse getPreCourseStudent(int uid);
+	boolean checkPrecourseStudent(String id);
+	PreCourse getPreCourse(String id);
+	PreCourse getPreCourseStudent(String uid);
 }
