@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.History;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.HistoryService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +23,7 @@ public class HistoryServiceImplement implements HistoryService{
 	
 	//test well
 	@Override
-	public History list(String search, int uid, Pagination pagin) {
+	public History list(String search, String uid, Pagination pagin) {
 		try {
 			con = dataSource.getConnection();
 			ResultSet rs = null;
@@ -37,16 +38,16 @@ public class HistoryServiceImplement implements HistoryService{
 			
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+search+"%");
-			ps.setInt(2, uid);
+			ps.setInt(2, Integer.parseInt(Encryption.decode(uid)));
 			ps.setInt(3, pagin.getPage());
 			ps.setInt(4, pagin.getItem());
 			rs = ps.executeQuery();
 			if(rs.next()){
-				history.setUserId(rs.getInt("historyid"));
+				history.setUserId(Encryption.encode(rs.getString(rs.getInt("historyid"))));
 				history.setHistoryDate(rs.getDate("historydate"));
-				history.setUserId(rs.getInt("userid"));
+				history.setUserId(Encryption.encode(rs.getString(rs.getInt("userid"))));
 				history.setUsername(rs.getString("username"));
-				history.setVideoId(rs.getInt("videoid"));
+				history.setVideoId(Encryption.encode(rs.getString(rs.getInt("videoid"))));
 				history.setVideoName(rs.getString("videoname"));
 				history.setVideoUrl(rs.getString("youtubeurl"));
 				history.setVideoDescription(rs.getString("description"));
@@ -72,16 +73,16 @@ public class HistoryServiceImplement implements HistoryService{
 			con = dataSource.getConnection();
 			String sql = "UPDATE TBLHISTORY SET historydate=NOW() WHERE userid=? AND videoid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, dto.getUserId());
-			ps.setInt(2, dto.getVideoId());
+			ps.setInt(1, Integer.parseInt(Encryption.decode(dto.getUserId())));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getVideoId())));
 			if (ps.executeUpdate() > 0){
 				System.out.println("update new history");
 				return true;
 			}else{
 				sql = "INSERT INTO TBLHISTORY VALUES(NEXTVAL('seq_history'), NOW(), ?, ?)";
 				PreparedStatement ps2 = con.prepareStatement(sql);
-				ps2.setInt(1, dto.getUserId());
-				ps2.setInt(2, dto.getVideoId());
+				ps2.setInt(1, Integer.parseInt(Encryption.decode(dto.getUserId())));
+				ps2.setInt(2, Integer.parseInt(Encryption.decode(dto.getVideoId())));
 				if (ps2.executeUpdate() > 0)
 					System.out.println("insert new history");
 					return true;
@@ -100,12 +101,12 @@ public class HistoryServiceImplement implements HistoryService{
 
 	//well
 	@Override
-	public boolean delete(int historyid) {
+	public boolean delete(String historyid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "DELETE FROM TBLHISTORY WHERE historyid = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setInt(1, historyid);
+			stmt.setInt(1, Integer.parseInt(Encryption.decode(historyid)));
 			if (stmt.executeUpdate() > 0) {
 				return true;
 			}
@@ -122,12 +123,12 @@ public class HistoryServiceImplement implements HistoryService{
 	}
 	// well
 	@Override 
-	public boolean deleteAll(int userid) {
+	public boolean deleteAll(String userid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "DELETE FROM TBLHISTORY where userid=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setInt(1, userid);
+			stmt.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			if (stmt.executeUpdate() > 0) {
 				return true;
 			}
@@ -148,7 +149,7 @@ public class HistoryServiceImplement implements HistoryService{
 	 * video
 	 */
 	@Override
-	public int count(String search, int userid) {
+	public int count(String search, String userid) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "SELECT COUNT(H.historyid) FROM TBLHISTORY H INNER JOIN TBLUSER U  "
@@ -156,7 +157,7 @@ public class HistoryServiceImplement implements HistoryService{
 					+ "LOWER(v.videoname) like LOWER(?) and U.userid=?";
 			PreparedStatement ps=con.prepareStatement(sql);
 			ps.setString(1, "%"+search+"%");
-			ps.setInt(2, userid);
+			ps.setInt(2, Integer.parseInt(Encryption.decode(userid)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getInt(1); 
