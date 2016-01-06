@@ -18,7 +18,7 @@ public class BCryptPasswordEncoderTest {
 			// Encrypt Password basic authentication
 			//System.out.println(Base64.getUrlEncoder().encodeToString("123:123".getBytes()));
 		
-			String str = "28";
+			String str = "61";
 
 
 	        // encode data using BASE64
@@ -62,3 +62,4 @@ public class BCryptPasswordEncoderTest {
 	}
 	
 }
+

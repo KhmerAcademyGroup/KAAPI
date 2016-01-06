@@ -231,7 +231,6 @@
 		</dependency>
 	</dependencies>
 
-
 	<build>
 		<sourceDirectory>src/kaapi/java</sourceDirectory>
 		<plugins>
@@ -253,4 +252,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

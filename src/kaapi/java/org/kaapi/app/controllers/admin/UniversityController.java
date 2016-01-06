@@ -27,9 +27,11 @@ public class UniversityController {
 	// GetListAllUniversityByName
 	@RequestMapping(method = RequestMethod.GET, value = "/list", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> findAllUniversityByName(
-			Pagination pagination,
-			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
-
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value="page", defaultValue="1") int page, @RequestParam(value="item", defaultValue="10") int item) {
+		Pagination pagination= new Pagination();
+		pagination.setPage(page);
+		pagination.setItem(item);
 		List<University> lstUniversity = universityService
 				.findAllUniverstiyByName(pagination, keyword);
 		Map<String, Object> map = new HashMap<String, Object>();

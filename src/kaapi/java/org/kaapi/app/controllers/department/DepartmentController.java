@@ -46,7 +46,7 @@ public class DepartmentController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(departmentService.updateDepartment(department)){
-			map.put("MESSAGE", "DEPARTMENT HAS BEEN CREATED");
+			map.put("MESSAGE", "DEPARTMENT HAS BEEN UPDATED");
 			map.put("STATUS", true);
 			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 		}else{
@@ -75,9 +75,11 @@ public class DepartmentController {
 	// List Department
 	@RequestMapping(method = RequestMethod.GET, value = "/list", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listDepartment(
-			Pagination pagination,
-			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
-
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value="page", defaultValue="1") int page, @RequestParam(value="item", defaultValue="10") int item) {
+		Pagination pagination= new Pagination();
+		pagination.setPage(page);
+		pagination.setItem(item);
 		List<Department> listDepartment = departmentService
 				.listDepartment(pagination, keyword);
 		Map<String, Object> map = new HashMap<String, Object>();
