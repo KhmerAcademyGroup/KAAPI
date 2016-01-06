@@ -30,7 +30,7 @@ public class PlayListControllers {
 	 * we want to add new playlist detail 
 	 * we need playlist ID and video ID
 	 */
-	@RequestMapping(value="/addvideotoplaylist/pid-{playlistid}/vid-{videoid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	@RequestMapping(value="/addvideotoplaylist/{playlistid}/{videoid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> addVideoToPlayList(@PathVariable("playlistid") String pid,
 																	@PathVariable("videoid") String vid){
 		Map<String, Object> map= new HashMap<String, Object>();
@@ -82,7 +82,7 @@ public class PlayListControllers {
 	 * we want to delete playlist
 	 * we need only playlist ID
 	 */
-	@RequestMapping(value="/deleteplaylist-{playlistid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
+	@RequestMapping(value="/deleteplaylist/{playlistid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> deletePlayList(@PathVariable("playlistid") String pid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
@@ -107,7 +107,7 @@ public class PlayListControllers {
 	 * we want to delete playlistdetail
 	 * we need playlist id and video id
 	 */
-	@RequestMapping(value="/deletevideofromplaylistdetail/pid-{playlistid}/vid-{videoid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
+	@RequestMapping(value="/deletevideofromplaylistdetail/{playlistid}/{videoid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> deleteViedoFromPlayListDetail(@PathVariable("playlistid") String pid,
 																		@PathVariable("videoid") String vid){
 		Map<String, Object> map= new HashMap<String, Object>();
@@ -137,7 +137,7 @@ public class PlayListControllers {
 	 * action get playlist ->well
 	 * we want to list playlist
 	 */
-	@RequestMapping(value="/getplaylist/pid-{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	@RequestMapping(value="/getplaylist/{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getPlayList(	@PathVariable("playlistid") String pid,
 															@RequestParam(value ="page", required = false) int page,
 															@RequestParam(value ="item" , required = false) int item){
@@ -169,7 +169,7 @@ public class PlayListControllers {
 	/*
 	 * action get play list for update ->well
 	 */
-	@RequestMapping(value="/getplaylistforupdate/pid-{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	@RequestMapping(value="/getplaylistforupdate/{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getPlayListForUpdate(@PathVariable("playlistid") String pid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
@@ -195,7 +195,7 @@ public class PlayListControllers {
 	 * this method need user id and playlistname from session
 	 * not sure about this 
 	 */
-	@RequestMapping(value="/listplayList/uid-{userid}/playname-{playlistname}", method= RequestMethod.GET, headers= "Accept=application/json")
+	@RequestMapping(value="/listplayList/{userid}/{playlistname}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listPlayList(@PathVariable("userid") String uid,
 															@PathVariable("playlistname") String name,
 															@RequestParam("page") int page,
