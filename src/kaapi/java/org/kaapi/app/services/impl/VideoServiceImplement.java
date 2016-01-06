@@ -625,13 +625,30 @@ public class VideoServiceImplement implements VideosService{
 
 	@Override
 	public int countUser() {
-		// TODO Auto-generated method stub
+		String sql="Select count(userid) from tbluser";
+		try(Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {			
+			ResultSet rs= ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1);			
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
 	@Override
 	public int countPlaylist() {
-		// TODO Auto-generated method stub
+		String sql="Select count(playlistid) from tblplaylist";
+		try(Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(sql);){
+			ResultSet rs= ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1);
+			
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
@@ -655,7 +672,15 @@ public class VideoServiceImplement implements VideosService{
 
 	@Override
 	public int countForum() {
-		// TODO Auto-generated method stub
+		String sql="Select count(commentid) from tblforumcomment";
+		try(Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(sql);){
+			ResultSet rs= ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1);
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
