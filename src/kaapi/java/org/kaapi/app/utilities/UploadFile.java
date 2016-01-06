@@ -1,4 +1,4 @@
-package org.kaapi.app.controllers;
+package org.kaapi.app.utilities;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

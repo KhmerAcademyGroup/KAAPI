@@ -3,13 +3,14 @@ package org.kaapi.app.services;
 import java.util.List;
 
 import org.kaapi.app.entities.MainCategory;
+import org.kaapi.app.entities.addAndEdit.addMainCategory;
 
 public interface MainCategoryService {
 	public List<MainCategory> listMainCategory(String keyword);
 
 	public MainCategory getMainCategory(String maincategoryid);
 
-	public boolean insertMainCategory(MainCategory dto);
+	public boolean insertMainCategory(addMainCategory dto);
 
 	public boolean updateMainCategory(MainCategory dto);
 

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.kaapi.app.entities.MainCategory;
+import org.kaapi.app.entities.addAndEdit.addMainCategory;
 import org.kaapi.app.services.MainCategoryService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +98,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 	}
 
 	@Override
-	public boolean insertMainCategory(MainCategory dto) {
+	public boolean insertMainCategory(addMainCategory dto) {
 		try {
 			con = dataSource.getConnection();
 			PreparedStatement pstmt = con.prepareStatement("select max(maincategoryorder) from TBLMAINCATEGORY");

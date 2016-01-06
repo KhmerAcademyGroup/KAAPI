@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 
+
+
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.kaapi.app.controllers.UploadFile;
 import org.kaapi.app.entities.MainCategory;
+import org.kaapi.app.entities.addAndEdit.addMainCategory;
 import org.kaapi.app.services.MainCategoryService;
+import org.kaapi.app.utilities.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -33,8 +37,10 @@ public class MainCategoryController {
 	@RequestMapping(value = "/listmaincategory", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> listMainCategory(
 			@RequestParam(value = "name", required = false, defaultValue = "") String mainCategoryName) {
-		List<MainCategory> list = mainCategoryService.listMainCategory(mainCategoryName);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+		List<MainCategory> list = mainCategoryService.listMainCategory(mainCategoryName);
 		if (list.isEmpty()) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
@@ -43,13 +49,19 @@ public class MainCategoryController {
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
 		map.put("RES_DATA", list);
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/getmaincategory/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> getMainCategory(@PathVariable("id") String maincategoryid) {
-		MainCategory list = mainCategoryService.getMainCategory(maincategoryid);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+		MainCategory list = mainCategoryService.getMainCategory(maincategoryid);
 		if (list == null) {
 			map.put("STATUS", false);
 			map.put("MESSAGE", "RECORD NOT FOUND");
@@ -58,6 +70,10 @@ public class MainCategoryController {
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
 		map.put("RES_DATA", list);
+		}catch(Exception e) {
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
@@ -65,20 +81,26 @@ public class MainCategoryController {
 	public ResponseEntity<Map<String, Object>> deleteMainCategory(@PathVariable("id") String maincategoryid) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
+		try{
 		if (mainCategoryService.deleteMainCategory(maincategoryid)) {
 			map.put("STATUS", true);
 			map.put("MESSAGE", "DELETE SUCCESS");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
 		map.put("MESSAGE", "DELETE NOT SUCCESS");
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT)
 	public ResponseEntity<Map<String, Object>> updateMainCategory(@RequestBody MainCategory maincategory) {
 
-		System.err.println(maincategory.toString());
+		
 		Map<String, Object> map = new HashMap<String, Object>();
+		try{
 		if (mainCategoryService.updateMainCategory(maincategory)) {
 			map.put("STATUS", true);
 			map.put("MESSAGE", "UPDATE SUCCESS");
@@ -86,13 +108,18 @@ public class MainCategoryController {
 		}
 		map.put("STATUS", false);
 		map.put("MESSAGE", "UPDATE NOT SUCCESS");
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> addMainCategory(@RequestBody MainCategory maincategory) {
+	public ResponseEntity<Map<String, Object>> insertMainCategory(@RequestBody addMainCategory maincategory) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
+		try{
 		if (mainCategoryService.insertMainCategory(maincategory)) {
 			map.put("STATUS", true);
 			map.put("MESSAGE", "ADD SUCCESS");
@@ -100,6 +127,10 @@ public class MainCategoryController {
 		}
 		map.put("STATUS", false);
 		map.put("MESSAGE", "ADD NOT SUCCESS");
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.NOT_FOUND);
 	}
 	
@@ -108,95 +139,8 @@ public class MainCategoryController {
 	
 
 	
-/*	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
-	public ResponseEntity<Map<String, Object>> insertPhoto(@RequestParam(value="LOGO_IMG",required=false) MultipartFile logo,@RequestParam(value="BACKGROUND" ,required = false) MultipartFile backgound, HttpServletRequest request) {
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		String logoname = logo.getOriginalFilename();
-		String backgroundname=backgound.getOriginalFilename();
-		String mainCategoryLogo = "";
-		String mainCategoryBackground="";
-		
-		if (!logo.isEmpty() && !backgound.isEmpty()) {
-			
-			try {
 
-				String logofile_ramdomname = UUID.randomUUID() + ".jpg";
-				String backgroundfile_ramdomname = UUID.randomUUID() + ".jpg";
-				
-				
-				
-				byte[] logo_convert_byte_code = logo.getBytes();
-				byte[] background_convert_byte_code =backgound.getBytes();
-
-				// creating the directory to store file
-				String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/maincategory");
-				
-				System.out.println(savePath);
-				File path = new File(savePath);
-				if (!path.exists()) {
-					path.mkdir();
-				}
-				// creating the file on server
-				File serverFilelogo = new File(savePath + File.separator + logofile_ramdomname);
-				File serverFilebackground = new File(savePath + File.separator + backgroundfile_ramdomname);
-				BufferedOutputStream streamlogo = new BufferedOutputStream(new FileOutputStream(serverFilelogo));
-				BufferedOutputStream streambackground = new BufferedOutputStream(new FileOutputStream(serverFilebackground));
-				streamlogo.write(logo_convert_byte_code);
-				streambackground.write(background_convert_byte_code);
-				streambackground.close();
-				streamlogo.close();
-				
-				System.err.println(serverFilelogo.getAbsolutePath());
-				System.err.println(serverFilebackground.getAbsolutePath());
-				
-				System.out.println("You are successfully uploaded file " + logoname +" and "+ backgroundname);
-
-				mainCategoryLogo = "/resources/upload/image/maincategory/" + logofile_ramdomname;
-				mainCategoryBackground ="/resources/upload/image/maincategory/" + backgroundfile_ramdomname;
-			} catch (Exception e) {
-				System.out.println("You are failed to upload " + logoname + " => " + e.getMessage());
-			}
-		} else {
-			System.out.println("You are failed to upload " + logoname + " because the file was empty!");
-		}
-		
-		if (mainCategoryLogo != "" && mainCategoryBackground != "") {
-			map.put("STATUS", true);
-			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
-			map.put("LOGO_IMG", mainCategoryLogo);
-			map.put("BACKGROUND_IMAGE", mainCategoryBackground);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-	}
-	*/
-	@RequestMapping(method = RequestMethod.POST, value = "/upload_image")
-	public ResponseEntity<Map<String, Object>> uploadImageMainCategory(
-			@RequestParam(value="LOGO_IMG1",required=false) MultipartFile file1,
-			@RequestParam(value="LOGO_IMG",required=false) MultipartFile file, HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		MultipartFile[] c = {file1,file};
-		String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/maincategory");
-		UploadFile fileName = new UploadFile();					
-		if (file != null && file1 != null) {
-			String[] CategoryImage =fileName.multipleFileUpload(c,savePath);						
-			map.put("IMG_LOGO", CategoryImage[0]);
-			map.put("IMG_BG", CategoryImage[1]);			
-			map.put("STATUS", true);
-			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-		
-	}
+	
 	
 	
 	/*
