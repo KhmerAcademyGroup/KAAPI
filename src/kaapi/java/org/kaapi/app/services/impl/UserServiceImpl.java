@@ -442,6 +442,4 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 	
-	
-	
 }
