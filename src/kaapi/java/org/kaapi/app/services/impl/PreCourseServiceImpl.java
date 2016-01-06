@@ -14,7 +14,8 @@ import org.kaapi.app.entities.PreCourse;
 import org.kaapi.app.services.PreCourseService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Repository;
+@Repository
 public class PreCourseServiceImpl implements PreCourseService {
 
 	@Autowired
