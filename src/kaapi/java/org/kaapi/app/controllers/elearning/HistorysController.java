@@ -28,7 +28,7 @@ public class HistorysController {
 		 * base on user ID
 		 */
 		@RequestMapping(value="/deleteallhistory/uid-{userid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> deleteAllHistory(@PathVariable("userid") int uid){
+		public ResponseEntity<Map<String, Object>> deleteAllHistory(@PathVariable("userid") String uid){
 			Map<String, Object> map= new HashMap<String, Object>();
 			try{
 				if(historyservice.deleteAll(uid)){
@@ -51,7 +51,7 @@ public class HistorysController {
 		 * we want to delete history base on history ID
 		 */
 		@RequestMapping(value="/deletehistory-{historyid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> deleteHistory(@PathVariable("historyid") int hid){
+		public ResponseEntity<Map<String, Object>> deleteHistory(@PathVariable("historyid") String hid){
 			Map<String, Object> map= new HashMap<String, Object>();
 			try{
 				if(historyservice.delete(hid)){
@@ -76,7 +76,7 @@ public class HistorysController {
 		 */
 		@RequestMapping(value="/listhistory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> listHistory(	@PathVariable("videoname") String videoname,
-																@PathVariable("userid") int uid,
+																@PathVariable("userid") String uid,
 																@RequestParam("page") int page,
 																@RequestParam("item") int item){
 			Map<String, Object> map= new HashMap<String, Object>();
@@ -105,8 +105,8 @@ public class HistorysController {
 		
 		//action insert well
 		@RequestMapping(value="/inserthistory/uid-{userid}/vid-{videoid}", method= RequestMethod.POST, headers= "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> insertHistory(@PathVariable("userid") int uid, 
-																	@PathVariable("videoid") int vid){
+		public ResponseEntity<Map<String, Object>> insertHistory(@PathVariable("userid") String uid, 
+																	@PathVariable("videoid") String vid){
 		
 			Map<String, Object> map= new HashMap<String, Object>();
 			History dto = new History();
@@ -131,7 +131,7 @@ public class HistorysController {
 		
 		//action count user history
 		@RequestMapping(value="/countstory/uid-{userid}/videoname-{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> countUserHistory(@PathVariable("userid") int uid, 
+		public ResponseEntity<Map<String, Object>> countUserHistory(@PathVariable("userid") String uid, 
 																	@PathVariable("videoname") String name){
 			
 			Map<String, Object> map= new HashMap<String, Object>();
