@@ -27,7 +27,7 @@ public class HistorysController {
 		 * we want to delete all history in tblhistory
 		 * base on user ID
 		 */
-		@RequestMapping(value="/deleteallhistory/uid-{userid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
+		@RequestMapping(value="/deleteallhistory/{userid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> deleteAllHistory(@PathVariable("userid") String uid){
 			Map<String, Object> map= new HashMap<String, Object>();
 			try{
@@ -50,7 +50,7 @@ public class HistorysController {
 		/*action delete history ->well
 		 * we want to delete history base on history ID
 		 */
-		@RequestMapping(value="/deletehistory-{historyid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
+		@RequestMapping(value="/deletehistory/{historyid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> deleteHistory(@PathVariable("historyid") String hid){
 			Map<String, Object> map= new HashMap<String, Object>();
 			try{
@@ -79,6 +79,7 @@ public class HistorysController {
 																@PathVariable("userid") String uid,
 																@RequestParam("page") int page,
 																@RequestParam("item") int item){
+			
 			Map<String, Object> map= new HashMap<String, Object>();
 			try{
 				int begin = (item * page) - item;
@@ -104,7 +105,7 @@ public class HistorysController {
 		}
 		
 		//action insert well
-		@RequestMapping(value="/inserthistory/uid-{userid}/vid-{videoid}", method= RequestMethod.POST, headers= "Accept=application/json")
+		@RequestMapping(value="/inserthistory/{userid}/{videoid}", method= RequestMethod.POST, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> insertHistory(@PathVariable("userid") String uid, 
 																	@PathVariable("videoid") String vid){
 		
@@ -130,7 +131,7 @@ public class HistorysController {
 		
 		
 		//action count user history
-		@RequestMapping(value="/countstory/uid-{userid}/videoname-{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
+		@RequestMapping(value="/countstory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> countUserHistory(@PathVariable("userid") String uid, 
 																	@PathVariable("videoname") String name){
 			
