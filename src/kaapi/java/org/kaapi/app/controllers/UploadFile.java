@@ -29,11 +29,11 @@ public class UploadFile {
 		for(int i=0;i<file1.length;i++){
 			
 			if(!file1[i].isEmpty()){
-				MultipartFile file = file1[i];
+				//MultipartFile file = file1[i];
 				name[i] = file1[i].getOriginalFilename();
 				try{
 					ramdom_file_name[i] = UUID.randomUUID() + ".jpg";
-					byte[] bytes = file.getBytes();
+					byte[] bytes = file1[i].getBytes();
 					
 					// creating the directory to store file					
 					File path = new File(savePath);
@@ -43,7 +43,7 @@ public class UploadFile {
 					
 					// creating the file on server
 					
-					File serverFile = new File(savePath + File.separator + ramdom_file_name );
+					File serverFile = new File(savePath + File.separator + ramdom_file_name[i]);
 					BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 					stream.write(bytes);
 					stream.close();

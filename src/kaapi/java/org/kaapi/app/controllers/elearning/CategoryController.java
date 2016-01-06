@@ -205,17 +205,18 @@ public class CategoryController {
 	public ResponseEntity<Map<String, Object>> uploadImageCategory(
 			@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		System.err.println(file + " hello");
 		String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/category");
-		UploadFile fileName = new UploadFile();
-		String CategoryImage =fileName.sigleFileUpload(file,savePath);				
-		if (CategoryImage != "") {
+		UploadFile fileName = new UploadFile();						
+		if (file==null) {
+			map.put("STATUS", false);
+			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} else {			
+			String CategoryImage =fileName.sigleFileUpload(file,savePath);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
 			map.put("IMG_CATE", CategoryImage);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("STATUS", false);
-			map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}		
 		

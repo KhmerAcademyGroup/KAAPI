@@ -1,12 +1,9 @@
 package org.kaapi.app.controllers.elearning;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +29,6 @@ public class MainCategoryController {
 	@Autowired
 	@Qualifier("MainCategoryService")
 	MainCategoryService mainCategoryService;
-
 	
 	@RequestMapping(value = "/listmaincategory", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> listMainCategory(
@@ -187,12 +182,13 @@ public class MainCategoryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MultipartFile[] c = {file1,file};
 		String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/maincategory");
-		UploadFile fileName = new UploadFile();
-		String[] CategoryImage =fileName.multipleFileUpload(c,savePath);		
-		if (CategoryImage[1] != "") {
+		UploadFile fileName = new UploadFile();					
+		if (file != null && file1 != null) {
+			String[] CategoryImage =fileName.multipleFileUpload(c,savePath);						
+			map.put("IMG_LOGO", CategoryImage[0]);
+			map.put("IMG_BG", CategoryImage[1]);			
 			map.put("STATUS", true);
 			map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
-			map.put("IMG_CATE", CategoryImage);
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} else {
 			map.put("STATUS", false);
