@@ -42,16 +42,20 @@ public class HistoryServiceImplement implements HistoryService{
 			ps.setInt(3, pagin.getPage());
 			ps.setInt(4, pagin.getItem());
 			rs = ps.executeQuery();
+			System.out.println("arrive");
 			if(rs.next()){
-				history.setUserId(Encryption.encode(rs.getString(rs.getInt("historyid"))));
+				
+				history.setUserId(Encryption.encode(rs.getString("historyid")));
 				history.setHistoryDate(rs.getDate("historydate"));
-				history.setUserId(Encryption.encode(rs.getString(rs.getInt("userid"))));
+				history.setUserId(Encryption.encode(rs.getString("userid")));
 				history.setUsername(rs.getString("username"));
-				history.setVideoId(Encryption.encode(rs.getString(rs.getInt("videoid"))));
+				history.setVideoId(Encryption.encode(rs.getString("videoid")));
 				history.setVideoName(rs.getString("videoname"));
 				history.setVideoUrl(rs.getString("youtubeurl"));
 				history.setVideoDescription(rs.getString("description"));
 				history.setVideoViewCount(rs.getString("viewcount"));
+				System.out.println("Work well");
+			
 				return history;
 			}
 			
