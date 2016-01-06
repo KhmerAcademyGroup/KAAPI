@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User webLogin(String email) {
-		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , u.departmentid , co.coverphoto as coverphotourl,"
+		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , u.departmentid , u.point , co.coverphoto as coverphotourl,"
 					+ " ut.usertypeid, ut.usertypename  ,"
 					+ " COUNT(DISTINCT V.VIDEOID) COUNTVIDEOS, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS , "
 					+ " COUNT(DISTINCT pl.PLAYLISTID) COUNTPLAYLIST"
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 					+ " LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON u.USERID=vm.USERID"
 					+ " LEFT JOIN tblplaylist PL ON u.USERID=pl.userid "
 					+ " LEFT JOIN tblcoverphoto co ON u.userid = co.userid"
-					+ " WHERE LOWER(u.EMAIL)=LOWER(?)  AND u.userstatus = '1';"
+					+ " WHERE LOWER(u.EMAIL)=LOWER(?)  AND u.userstatus = '1'"
 					+ " GROUP BY u.USERID, ut.USERTYPEID, co.coverid";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setString(1, email);
