@@ -14,6 +14,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.entities.addAndEdit.addCategory;
 import org.kaapi.app.services.CategoryService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +119,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public boolean insertCategory(Category dto) {
+	public boolean insertCategory(addCategory dto) {
 		try {
 			String sql = "INSERT INTO TBLCATEGORY VALUES(NEXTVAL('seq_category'), ?, ?, ?)";
 			con = dataSource.getConnection();
