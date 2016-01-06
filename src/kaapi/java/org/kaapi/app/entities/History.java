@@ -4,38 +4,40 @@ import java.sql.Date;
 
 public class History {
 
-	private int historyId;
+	private String historyId;
 	private Date historyDate;
-	private int userId;
-	private int videoId;
+	private String userId;
+	private String videoId;
 	private String username;
 	private String videoName;
 	private String videoUrl;
 	private String videoDescription;
 	private String videoViewCount;
 	
-	public int getHistoryId() {
-		return historyId;
-	}
-	public void setHistoryId(int historyId) {
-		this.historyId = historyId;
-	}
+	
 	public Date getHistoryDate() {
 		return historyDate;
 	}
 	public void setHistoryDate(Date historyDate) {
 		this.historyDate = historyDate;
 	}
-	public int getUserId() {
+	
+	public String getHistoryId() {
+		return historyId;
+	}
+	public void setHistoryId(String historyId) {
+		this.historyId = historyId;
+	}
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public int getVideoId() {
+	public String getVideoId() {
 		return videoId;
 	}
-	public void setVideoId(int videoId) {
+	public void setVideoId(String videoId) {
 		this.videoId = videoId;
 	}
 	public String getUsername() {
