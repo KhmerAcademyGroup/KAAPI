@@ -3,7 +3,7 @@ package org.kaapi.app.entities;
 public class ForumVote {
 
 	private String userId;
-	private int commentId;
+	private String commentId;
 	private int voteType;
 	
 	public String getUserId() {
@@ -12,10 +12,10 @@ public class ForumVote {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public int getCommentId() {
+	public String getCommentId() {
 		return commentId;
 	}
-	public void setCommentId(int commentId) {
+	public void setCommentId(String commentId) {
 		this.commentId = commentId;
 	}
 	public int getVoteType() {

@@ -101,7 +101,7 @@ public class ForumCommentController {
 
 	@RequestMapping(value="/getquestion/{qid}" , method = RequestMethod.GET , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> getQuestionByIdListAnswerByQuestionId(
-			  @PathVariable("qid") int qid 
+			  @PathVariable("qid") String qid 
 			, @RequestParam(value = "page", required = false , defaultValue="1") int page 
 			, @RequestParam(value="item" , required = false , defaultValue="20") int item  ){
 		Map<String , Object> map = new HashMap<String , Object>();
@@ -161,7 +161,7 @@ public class ForumCommentController {
 	
 	@RequestMapping(value="/listquestion/u/{uid}" , method = RequestMethod.GET , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> listQuestionByUserId(
-			  @PathVariable("uid") int userid,
+			  @PathVariable("uid") String userid,
 			  @RequestParam(value = "page", required = false , defaultValue="1") int page ,
 			  @RequestParam(value="item" , required = false , defaultValue="20") int item  ){
 		Map<String , Object> map = new HashMap<String , Object>();
@@ -182,6 +182,7 @@ public class ForumCommentController {
 				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
+			e.printStackTrace();
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
 		}
@@ -190,7 +191,7 @@ public class ForumCommentController {
 
 	@RequestMapping(value="/listquestion/c/{cid}" , method = RequestMethod.GET , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> listQuestionByCategoryId(
-			  @PathVariable("cid") int cateid,
+			  @PathVariable("cid") String cateid,
 			  @RequestParam(value = "page", required = false , defaultValue="1") int page ,
 			  @RequestParam(value="item" , required = false , defaultValue="20") int item  ){
 		Map<String , Object> map = new HashMap<String , Object>();

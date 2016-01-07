@@ -5,8 +5,14 @@ import java.util.List;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
-
-
+import org.kaapi.app.forms.FrmMobileLogin;
+import org.kaapi.app.forms.FrmResetPassword;
+import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
+import org.kaapi.app.forms.FrmAddUser;
+import org.kaapi.app.forms.FrmChangePassword;
+import org.kaapi.app.forms.FrmUpdateUser;
+import org.kaapi.app.forms.FrmValidateEmail;
+import org.kaapi.app.forms.FrmWebLogin;
 
 import java.util.List;
 
@@ -16,23 +22,21 @@ import org.kaapi.app.entities.User;
 public interface UserService {
 
 	
-	public User mobileLogin(String email , String password);
-	public User webLogin(String email);
+	public User mobileLogin(FrmMobileLogin mFrm);
+	public User webLogin(FrmWebLogin wFrm);
 	public List<User> listUser(Pagination pagination);
 	public int countUser();
 	public List<User> searchUserByUsername(String username,Pagination pagination);
 	public int countSearchUserByUsername(String username);
 	public User getUSerById(String id);
-	public boolean validateEmail(String email);
-	public boolean insertUser(User user);
-	public boolean updateUser(User user);
+	public boolean validateEmail(FrmValidateEmail email);
+	public boolean insertUser(FrmAddUser user);
+	public boolean updateUser(FrmUpdateUser user);
 	public boolean deleteUser(String id);
-	public boolean insertCoverPhoto(String coverPhotoUrl , String userId);
-	public boolean updateCoverPhoto(String coverPhotoUrl , String userId);
-	
-	public String getPasswordByEmail(String email);
-	public boolean resetPassword(String newPassword , String oldPassword , String email);
-	public boolean checkOldPassword(String oldpassword , String userId);
+	public boolean insertCoverPhoto(FrmAddUpdateCoverPhoto coverPhoto);
+	public boolean updateCoverPhoto(FrmAddUpdateCoverPhoto coverPhoto);
+	public boolean resetPassword(FrmResetPassword resetPassword);
+	public boolean changePassword(FrmChangePassword changePassword);
 	
 }
 

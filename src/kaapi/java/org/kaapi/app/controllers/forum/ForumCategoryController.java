@@ -82,7 +82,7 @@ public class ForumCategoryController {
 	}
 	
 	@RequestMapping(value="/{cid}" , method = RequestMethod.GET)
-	public ResponseEntity<Map<String , Object>> getForumCate(@PathVariable("cid") int cid){
+	public ResponseEntity<Map<String , Object>> getForumCate(@PathVariable("cid") String cid){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
 			ForumCategory forumCate = forumCateService.getForumCate(cid);
@@ -122,11 +122,10 @@ public class ForumCategoryController {
 	}
 	
 	@RequestMapping(value="/{cid}" , method = RequestMethod.PUT)
-	public ResponseEntity<Map<String , Object>> updateForumCate(@PathVariable("cid") int cid , @RequestBody ForumCategory forumCate){
+	public ResponseEntity<Map<String , Object>> updateForumCate(@PathVariable("cid") String cid , @RequestBody ForumCategory forumCate){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
 			ForumCategory currentforumCate = forumCateService.getForumCate(cid);
-			
 			if(currentforumCate == null){
 				map.put("MESSAGE", "RECORD NOT FOUND");
 				map.put("STATUS", false);
