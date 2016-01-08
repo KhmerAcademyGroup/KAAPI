@@ -7,6 +7,8 @@ import java.util.Map;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.forms.FrmCreatePlaylist;
+import org.kaapi.app.forms.FrmUpdatePlaylist;
 import org.kaapi.app.services.PlayListServics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,7 +61,7 @@ public class PlayListControllers {
 	 *  and status will auto = true
 	 */
 	@RequestMapping(value="/createplaylist", method= RequestMethod.POST, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> createPlayList(@RequestBody Playlist playlist){
+	public ResponseEntity<Map<String, Object>> createPlayList(@RequestBody FrmCreatePlaylist playlist){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{	
 			if(playlistservice.insert(playlist)){
@@ -236,9 +238,13 @@ public class PlayListControllers {
 	 * we want to list playlist name 
 	 * we neen only (playlistName,userId)
 	 */
-	@RequestMapping(value="/listPlayListName", method= RequestMethod.POST, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> listPlayListName(@RequestBody Playlist playlist){
+	@RequestMapping(value="/listPlayListName/{playlistname}/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlayListName(@PathVariable("playlistname") String listName,
+																@PathVariable("userid") String uid){
 		Map<String, Object> map= new HashMap<String, Object>();
+		Playlist playlist =new Playlist();
+		playlist.setPlaylistName(listName);
+		playlist.setUserId(uid);
 		try{
 			Playlist  dto= playlistservice.listplaylistname(playlist);
 			if(dto != null){
@@ -258,11 +264,11 @@ public class PlayListControllers {
 	}
 	
 	/*action update play list ->well
-	 * we need (playlistName, description, userId, thumbnailUrl, publicView, maincategory,bgImage,color,status)
+	 * we need (playlistid,playlistName, description, userId, thumbnailUrl, publicView, maincategory,bgImage,color,status)
 	 *  
 	 */
 	@RequestMapping(value="/updatePlayList", method= RequestMethod.PUT, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> updatePlayList(@RequestBody Playlist playlist){
+	public ResponseEntity<Map<String, Object>> updatePlayList(@RequestBody FrmUpdatePlaylist playlist){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
 			if(playlistservice.update(playlist)){
