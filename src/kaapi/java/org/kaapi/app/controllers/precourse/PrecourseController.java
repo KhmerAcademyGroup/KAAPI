@@ -3,7 +3,11 @@ package org.kaapi.app.controllers.precourse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.kaapi.app.entities.PreCourse;
+import org.kaapi.app.forms.FrmAddPreCourse;
+import org.kaapi.app.forms.FrmEditPreCourse;
+import org.kaapi.app.forms.FrmUpdatePreCourse;
 import org.kaapi.app.services.PreCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +26,7 @@ public class PrecourseController {
 	PreCourseService service;
 	
 	@RequestMapping(value="/addprecourse", method= RequestMethod.POST, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> addPreCourse(@RequestBody PreCourse preCourse){
+	public ResponseEntity<Map<String, Object>> addPreCourse(@RequestBody FrmAddPreCourse preCourse){
 		
 			
 		boolean status = service.addPreCourse(preCourse);
@@ -59,7 +63,7 @@ public class PrecourseController {
 	}
 	
 	@RequestMapping(value="/editprecourse", method= RequestMethod.PUT, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> editPreCourse(@RequestBody PreCourse preCourse){
+	public ResponseEntity<Map<String, Object>> editPreCourse(@RequestBody FrmEditPreCourse preCourse){
 				
 		boolean status = service.editPreCourse(preCourse);
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -148,7 +152,7 @@ public class PrecourseController {
 	}
 	
 	@RequestMapping(value="/updateprecourse", method= RequestMethod.PUT, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> updatePreCourse(@RequestBody PreCourse preCourse){
+	public ResponseEntity<Map<String, Object>> updatePreCourse(@RequestBody FrmUpdatePreCourse preCourse){
 				
 		boolean status = service.updatePreCourse(preCourse);
 		Map<String,Object> map = new HashMap<String, Object>();
