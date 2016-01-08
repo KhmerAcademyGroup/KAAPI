@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.forms.FrmCreatePlaylist;
+import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
@@ -20,8 +22,8 @@ public interface PlayListServics {
 	public Playlist get(String playlistid);
 	public Playlist getPlaylistForUpdate(String playlistid);
 	public boolean addVideoToPlst(String pid , String vid );
-	public boolean insert(Playlist dto);
-	public boolean update(Playlist dto);
+	public boolean insert(FrmCreatePlaylist playlist);
+	public boolean update(FrmUpdatePlaylist playlist);
 	public boolean delete(String playlistid);
 	public int count(String keyword);
 	public int countUserPlaylist(String keyword, String userid);
