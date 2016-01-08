@@ -3,6 +3,8 @@ package org.kaapi.app.controllers.usertype;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.UserType;
 import org.kaapi.app.services.UserTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,16 @@ public class UserTypeController {
 	UserTypeService userTypeService;
 	
 	// List UserType
-	@RequestMapping(value="/listUserType", method = RequestMethod.GET, headers="Accept=application/json")
-	public ResponseEntity<Map<String,Object>> listUserType(){
-		
-		List<UserType> userType = userTypeService.listUserType();
+	@RequestMapping(value="/", method = RequestMethod.GET, headers="Accept=application/json")
+	public ResponseEntity<Map<String,Object>> listUserType(
+			  @RequestParam(value = "page", required = false , defaultValue="1") int page 
+			, @RequestParam(value="item" , required = false , defaultValue="20") int item){
+		Pagination pagination = new Pagination();
+		pagination.setItem(item);
+		pagination.setPage(page);
+		pagination.setTotalCount(userTypeService.countUserType());
+		pagination.setTotalPages(pagination.totalPages());
+		List<UserType> userType = userTypeService.listUserType(pagination);
 		Map<String,Object> map = new HashMap<String, Object>();
 		if(userType.isEmpty()){
 			map.put("STATUS", false);
@@ -36,69 +44,42 @@ public class UserTypeController {
 		map.put("STATUS", true);
 		map.put("MESSAGE", "RECORD FOUND");
 		map.put("RES_DATA", userType);
+		map.put("PAGINATION", pagination);
 		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 	}
 	
-	//Count UserType
-	@RequestMapping(value="/count", method=RequestMethod.GET, headers="Accept=appication/json")
-	public ResponseEntity<Map<String,Object>> countUserType(){
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		int count = userTypeService.countUserType();
-
-		if (count == 0) {
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("MESSAGE", "RECORD FOUND");
-			map.put("STATUS", true);
-			map.put("RES_DATA", count);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-	}
+	
 	
 	//List SearchUserType by Name
+	@RequestMapping(value="/search", method = RequestMethod.GET, headers="Accept=application/json")
 	public ResponseEntity<Map<String, Object>> searchUserType(
-			@RequestParam(value = "name", required = false, defaultValue = "") String name) {
-
-		List<UserType> searchUserType = userTypeService.searchUserType(name);
+			  @RequestParam(value = "name", required = false, defaultValue = "") String name
+			, @RequestParam(value = "page", required = false , defaultValue="1") int page 
+			, @RequestParam(value="item" , required = false , defaultValue="20") int item){
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(userTypeService.countSearchUserType(name));
+			pagination.setTotalPages(pagination.totalPages());
+		List<UserType> searchUserType = userTypeService.searchUserType(name,pagination);
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		if (searchUserType == null) {
 			map.put("MESSAGE", "RECORD NOT FOUND!");
 			map.put("STATUS", false);
 			return new ResponseEntity<Map<String, Object>>(map,
-					HttpStatus.NOT_FOUND);
+					HttpStatus.OK);
 		}	
 		map.put("MESSAGE", "RECORD FOUND!");
 		map.put("STATUS", true);
 		map.put("RESP_DATA", searchUserType);
+		map.put("PAGINATION", pagination);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
-	//Count Search UserType By Name
-	@RequestMapping(value="/countSearchUserType", method=RequestMethod.GET, headers="Accept=appication/json")
-	public ResponseEntity<Map<String,Object>> countSearchUserType(@RequestParam(value = "name", required = false, defaultValue = "") String name){
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		int countSearchUserType = userTypeService.countUserType();
-
-		if (countSearchUserType == 0) {
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("MESSAGE", "RECORD FOUND");
-			map.put("STATUS", true);
-			map.put("RES_DATA", countSearchUserType);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}
-	}
-	
 	//Get UserType By ID
-	@RequestMapping(value="/getUserType/{id}",method = RequestMethod.GET,headers="Accept=application/json")
-	public ResponseEntity<Map<String,Object>> getDepartment(@PathVariable("id") String id){
+	@RequestMapping(value="/{id}",method = RequestMethod.GET,headers="Accept=application/json")
+	public ResponseEntity<Map<String,Object>> getUserTypeById(@PathVariable("id") String id){
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		UserType userType = userTypeService.getUserType(id);		
@@ -107,7 +88,7 @@ public class UserTypeController {
 			map.put("MESSAGE", "RECORD NOT FOUND!");
 			map.put("STATUS", false);
 			return new ResponseEntity<Map<String, Object>>(map,
-					HttpStatus.NOT_FOUND);
+					HttpStatus.OK);
 		}	
 		map.put("MESSAGE", "RECORD FOUND!");
 		map.put("STATUS", true);
@@ -116,8 +97,8 @@ public class UserTypeController {
 	}
 	
 	//Insert UserType
-	@RequestMapping(method = RequestMethod.POST, value = "/insert", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> insertDepartment(@RequestBody UserType userType){
+	@RequestMapping(method = RequestMethod.POST, value = "/", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> insertUserType(@RequestBody UserType userType){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(userTypeService.insertUserType(userType)){
@@ -132,8 +113,8 @@ public class UserTypeController {
 	}
 	
 	//Update UserType
-	@RequestMapping(method = RequestMethod.PUT, value = "/update" , headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> updateDepartment(@RequestBody UserType userType){
+	@RequestMapping(method = RequestMethod.PUT, value = "/" , headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> updateUserType(@RequestBody UserType userType){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(userTypeService.updateUserType(userType)){
@@ -148,8 +129,8 @@ public class UserTypeController {
 	}
 	
 	//Delete UserType
-	@RequestMapping(method = RequestMethod.DELETE, value="/delete/{id}", headers="Accept=application/json")
-	public ResponseEntity<Map<String, Object>> deleteDepartment(@PathVariable("id") String id) {
+	@RequestMapping(method = RequestMethod.DELETE, value="/{id}", headers="Accept=application/json")
+	public ResponseEntity<Map<String, Object>> deleteUserType(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if (userTypeService.deleteUserType(id)) {			

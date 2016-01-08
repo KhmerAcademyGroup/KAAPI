@@ -4,14 +4,14 @@ import java.sql.Date;
 
 public class ForumComment {
 
-	private int commentId;
+	private String commentId;
 	private Date postDate;
 	private String title;
 	private String detail;
 	private String tag;
-	private int parentId;
-	private Integer categoryId;
-	private int userId;
+	private String parentId;
+	private String categoryId;
+	private String userId;
 	private boolean selected;
 	private String categoryName;
 	private String username;
@@ -19,10 +19,10 @@ public class ForumComment {
 	private int commentCount;
 	private int vote;
 	
-	public int getCommentId() {
+	public String getCommentId() {
 		return commentId;
 	}
-	public void setCommentId(int commentId) {
+	public void setCommentId(String commentId) {
 		this.commentId = commentId;
 	}
 	public Date getPostDate() {
@@ -49,22 +49,22 @@ public class ForumComment {
 	public void setTag(String tag) {
 		this.tag = tag;
 	}
-	public int getParentId() {
+	public String getParentId() {
 		return parentId;
 	}
-	public void setParentId(int parentId) {
+	public void setParentId(String parentId) {
 		this.parentId = parentId;
 	}
-	public Integer getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(Integer categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public boolean isSelected() {

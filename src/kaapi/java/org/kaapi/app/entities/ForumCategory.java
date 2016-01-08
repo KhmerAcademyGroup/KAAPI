@@ -2,14 +2,14 @@ package org.kaapi.app.entities;
 
 public class ForumCategory {
 
-	private int categoryId;
+	private String categoryId;
 	private String categoryName;
 	private int commentCount;
 	
-	public int getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 	public String getCategoryName() {

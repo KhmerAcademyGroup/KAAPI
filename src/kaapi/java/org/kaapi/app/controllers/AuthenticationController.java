@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kaapi.app.entities.User;
+import org.kaapi.app.forms.FrmMobileLogin;
+import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +24,11 @@ public class AuthenticationController {
 	
 	@RequestMapping(value="/mobilelogin" , method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> mobileLogin(
-			@RequestBody User user
+			@RequestBody FrmMobileLogin mobileLoginFrm
 		){
 		Map<String, Object> map = new HashMap<String , Object>();
 		try{
-			User u = userService.mobileLogin(user.getEmail(), user.getPassword());
+			User u = userService.mobileLogin(mobileLoginFrm);
 			if(u != null){
 				map.put("MESSAGE", "Logined success");
 				map.put("STATUS", true);
@@ -48,11 +50,11 @@ public class AuthenticationController {
 	
 	@RequestMapping(value="/weblogin" , method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> webLogin(
-			@RequestBody User user
+			@RequestBody FrmWebLogin wFrm
 		){
 		Map<String, Object> map = new HashMap<String , Object>();
 		try{
-			User u = userService.webLogin(user.getEmail());
+			User u = userService.webLogin(wFrm);
 			if(u != null){
 				map.put("MESSAGE", "Logined success!");
 				map.put("STATUS", true);
@@ -67,5 +69,6 @@ public class AuthenticationController {
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
 	}
+	
 	
 }

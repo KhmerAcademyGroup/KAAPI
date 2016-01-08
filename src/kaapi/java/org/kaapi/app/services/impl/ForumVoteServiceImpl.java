@@ -7,7 +7,10 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.kaapi.app.forms.FrmSelectAnswer;
+import org.kaapi.app.forms.FrmVote;
 import org.kaapi.app.services.ForumVoteService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,15 +21,15 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 	DataSource dataSource;
 	
 	@Override
-	public int votePlus(int userId, int commentId) {
-		return vote(userId, commentId, 1); 
+	public int votePlus(FrmVote vote) {
+		return vote(vote.getUserId(), vote.getCommentId(), 1); 
 	}
 
 	@Override
-	public int vote(int userId, int commentId, int voteType) {
+	public int vote(String userId, String commentId, int voteType) {
 		String sql = "INSERT INTO TBLFORUMVOTE VALUES(?, ?, ?)";
 		String sql2 = "UPDATE TBLFORUMVOTE SET votetype=? WHERE userid=? AND commentid=?";
-		String sql3 = "SELECT SUM(VoteType) FROM TBLFORUMVOTE WHERE commentid="+ commentId;
+		String sql3 = "SELECT SUM(VoteType) FROM TBLFORUMVOTE WHERE commentid=?";
 		Connection cnn = null;
 		try {
 			cnn = dataSource.getConnection();
@@ -35,16 +38,16 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 		}
 		try{ 
 			PreparedStatement ps = cnn.prepareStatement(sql);
-			ps.setInt(1, userId);
-			ps.setInt(2, commentId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userId)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(commentId)));
 			ps.setInt(3, voteType);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			try{
 				PreparedStatement ps2 = cnn.prepareStatement(sql2);
 				ps2.setInt(1, voteType);
-				ps2.setInt(2, userId);
-				ps2.setInt(3, commentId);
+				ps2.setInt(2, Integer.parseInt(Encryption.decode(userId)));
+				ps2.setInt(3, Integer.parseInt(Encryption.decode(commentId)));
 				ps2.executeUpdate();
 			} catch (SQLException ex) {
 				ex.printStackTrace();
@@ -52,6 +55,7 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 		} finally {
 			try{
 				PreparedStatement ps3 = cnn.prepareStatement(sql3);
+				ps3.setInt(1, Integer.parseInt(Encryption.decode(commentId)));
 				ResultSet rs = ps3.executeQuery();
 				if (rs.next()) {
 					return rs.getInt(1);
@@ -70,13 +74,13 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 	}
 
 	@Override
-	public int voteMinus(int userId, int commentId) {
-		return vote(userId, commentId, -1);
+	public int voteMinus(FrmVote vote) {
+		return vote(vote.getUserId(), vote.getCommentId(), -1);
 	}
 
 	@Override
-	public int unvote(int userId, int commentId) {
-		return vote(userId, commentId, 0);
+	public int unvote(FrmVote vote) {
+		return vote(vote.getUserId(), vote.getCommentId(), 0);
 	}
 
 	@Override
@@ -114,13 +118,13 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 	}
 
 	@Override
-	public int count(int commentid) {
+	public int count(String commentId) {
 		String sql = "SELECT SUM(VoteType) FROM TBLFORUMVOTE WHERE commentid=?";
 		try (
 			Connection cnn = dataSource.getConnection();
 			PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-			ps.setInt(1, commentid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(commentId)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getInt(1); 
@@ -132,7 +136,7 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 	}
 
 	@Override
-	public int checkUserVote(int userId, int commentId) {
+	public int checkUserVote(FrmVote vote) {
 		String sql = "SELECT VP.*, VM.* FROM "
 				+ "(SELECT COUNT(commentid) COUNTMINUS FROM TBLFORUMVOTE WHERE userid=? AND commentid=? AND votetype=1) VP, "
 				+ "(SELECT COUNT(commentid) COUNTPLUS FROM TBLFORUMVOTE WHERE userid=? AND commentid=? AND votetype=-1) VM";
@@ -140,10 +144,10 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 			Connection cnn = dataSource.getConnection();
 			PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-			ps.setInt(1, userId);
-			ps.setInt(2, commentId);
-			ps.setInt(3, userId);
-			ps.setInt(4, commentId);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(vote.getUserId())));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(vote.getCommentId())));
+			ps.setInt(3, Integer.parseInt(Encryption.decode(vote.getUserId())));
+			ps.setInt(4, Integer.parseInt(Encryption.decode(vote.getCommentId())));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				if(rs.getInt(1)>0)
@@ -158,20 +162,19 @@ public class ForumVoteServiceImpl implements ForumVoteService{
 	}
 
 	@Override
-	public boolean selectAnswer(int commentId, int parentId) {System.out.println("I am here");
+	public boolean selectAnswer(FrmSelectAnswer selectAnswer) {
 		String sql1 = "UPDATE TBLFORUMCOMMENT SET selected=false WHERE parentid =?";
 		String sql2 = "UPDATE TBLFORUMCOMMENT SET selected=true WHERE parentid = ? and commentid = ?";
 		Connection cnn = null;
 		try{
 			cnn = dataSource.getConnection();
 			PreparedStatement ps1 = cnn.prepareStatement(sql1);
-			ps1.setInt(1, parentId);
+			ps1.setInt(1, Integer.parseInt(Encryption.decode(selectAnswer.getQuestionId())));
 			if(ps1.executeUpdate()>0){
 				PreparedStatement ps2 = cnn.prepareStatement(sql2);		
-				ps2.setInt(1, parentId);
-				ps2.setInt(2, commentId);
+				ps2.setInt(1, Integer.parseInt(Encryption.decode(selectAnswer.getQuestionId())));
+				ps2.setInt(2, Integer.parseInt(Encryption.decode(selectAnswer.getAnswerId())));
 				if(ps2.executeUpdate()>0){
-					System.out.println("I am here");
 					return true;
 				}
 			}

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.entities.addAndEdit.addCategory;
 import org.kaapi.app.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -142,7 +143,7 @@ public class CategoryController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> addCategory(@RequestBody Category category) {
+	public ResponseEntity<Map<String, Object>> insertCategory(@RequestBody addCategory category) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			if (categoryService.insertCategory(category)) {

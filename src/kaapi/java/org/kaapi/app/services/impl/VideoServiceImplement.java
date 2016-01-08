@@ -423,7 +423,6 @@ public class VideoServiceImplement implements VideosService{
 		Video video = null;
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, limit);
-			ps.setInt(2, limit);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				video = new Video();
@@ -557,7 +556,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+			System.out.println("Delete Error Convert ID To Integer!");
 			return false;
 		}
 		return false;

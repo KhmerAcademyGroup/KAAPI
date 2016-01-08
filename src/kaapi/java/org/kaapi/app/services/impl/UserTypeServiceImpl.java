@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
+
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.UserType;
 import org.kaapi.app.services.UserTypeService;
 import org.kaapi.app.utilities.Encryption;
@@ -20,7 +22,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 	private DataSource dataSource;
 	
 	@Override
-	public List<UserType> listUserType() {
+	public List<UserType> listUserType(Pagination pagination) {
 		String sql = "SELECT "
 				+ "UT.*, "
 			+ "COUNT(DISTINCT USERID) COUNTUSERS "
@@ -28,7 +30,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 			+ "TBLUSERTYPE UT "
 				+ "LEFT JOIN "
 			+ "TBLUSER U ON UT.USERTYPEID=U.USERTYPEID "
-				+ "GROUP BY UT.USERTYPEID ";
+				+ "GROUP BY UT.USERTYPEID ORDER BY UT.USERTYPEID DESC LIMIT ? OFFSET ?";
 		
 		List<UserType> list = new ArrayList<UserType>();
 		UserType userType = null;
@@ -36,6 +38,8 @@ public class UserTypeServiceImpl  implements UserTypeService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
+			ps.setInt(1, pagination.getItem());
+			ps.setInt(2, pagination.offset());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				userType = new UserType();
@@ -78,7 +82,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 	}
 	
 	@Override
-	public List<UserType> searchUserType(String name) {
+	public List<UserType> searchUserType(String name,Pagination pagination) {
 		String sql = "SELECT "
 				+ "UT.*, "
 			+ "COUNT(DISTINCT USERID) COUNTUSERS "
@@ -88,7 +92,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 			+ "TBLUSER U ON UT.USERTYPEID=U.USERTYPEID "
 				+ "GROUP BY UT.USERTYPEID "
 			+ "WHERE "
-				+ "LOWER(UT.USERTYPENAME) LIKE LOWER(?) ";
+				+ "LOWER(UT.USERTYPENAME) LIKE LOWER(?) ORDER BY UT.USERTYPEID DESC LIMIT ? OFFSET ? ";
 		List<UserType> list = new ArrayList<UserType>();
 		UserType userType = null;
 		try(
@@ -96,6 +100,8 @@ public class UserTypeServiceImpl  implements UserTypeService{
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
 			ps.setString(1, "%" + name + "%");
+			ps.setInt(2, pagination.getItem());
+			ps.setInt(3, pagination.offset());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				userType = new UserType();
