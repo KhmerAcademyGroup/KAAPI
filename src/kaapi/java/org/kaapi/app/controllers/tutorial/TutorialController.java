@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
+import org.kaapi.app.forms.FrmTutorial;
 import org.kaapi.app.services.TutorialService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +120,7 @@ public class TutorialController {
 	}
 	
 	@RequestMapping(method= RequestMethod.POST, headers="Accept=application/json")
-	public ResponseEntity<Map<String, Object>> add(@RequestBody Tutorial tutorial){
+	public ResponseEntity<Map<String, Object>> add(@RequestBody FrmTutorial tutorial){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{		
 			if(service.insert(tutorial)){
@@ -130,6 +131,7 @@ public class TutorialController {
 				map.put("MESSAGE", "INSERT UNSUCCESSFULLY");
 			}
 		}catch(Exception e){
+			e.printStackTrace();
 			map.put("STATUS", false);
 			map.put("MESSAGE", "ERROR OCCURRING!");
 		}

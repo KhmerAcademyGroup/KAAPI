@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
+import org.kaapi.app.forms.FrmTutorial;
 import org.kaapi.app.services.TutorialService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,7 +167,7 @@ public class TutorialServiceImpl implements TutorialService{
 	}
 
 	@Override
-	public boolean insert(Tutorial dto) {
+	public boolean insert(FrmTutorial dto) {
 		try {
 			con = ds.getConnection();
 			String sql = "INSERT INTO TBLTUTORIAL VALUES(NEXTVAL('seq_tutorial'), ?, ?, ?, ?, ?)";
