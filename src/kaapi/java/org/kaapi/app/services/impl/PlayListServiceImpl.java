@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.forms.FrmCreatePlaylist;
+import org.kaapi.app.forms.FrmUpdatePlaylist;
 import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,7 +236,7 @@ public class PlayListServiceImpl implements PlayListServics{
 		return null;
 	}
 	
-	//well
+	//well but i don't see where this fucntion was used
 	@Override
 	public ArrayList<Playlist> listplaylistbyPublicView(boolean publicview) {
 		try {
@@ -494,19 +496,19 @@ public class PlayListServiceImpl implements PlayListServics{
 	}
 	//well
 	@Override
-	public boolean insert(Playlist dto) {
+	public boolean insert(FrmCreatePlaylist playlist) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "INSERT INTO TBLPLAYLIST VALUES(nextval('seq_playlist'), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, dto.getPlaylistName());
-			ps.setString(2, dto.getDescription());
-			ps.setInt(3, Integer.parseInt(Encryption.decode(dto.getUserId())));
-			ps.setString(4, dto.getThumbnailUrl());
-			ps.setBoolean(5, dto.isPublicView());
-			ps.setInt(6, dto.getMaincategory());
-			ps.setString(7, dto.getBgImage());
-			ps.setString(8, dto.getColor());
+			ps.setString(1, playlist.getPlaylistName());
+			ps.setString(2, playlist.getDescription());
+			ps.setInt(3, Integer.parseInt(Encryption.decode(playlist.getUserId())));
+			ps.setString(4, playlist.getThumbnailUrl());
+			ps.setBoolean(5, playlist.isPublicView());
+			ps.setInt(6, playlist.getMaincategory());
+			ps.setString(7, playlist.getBgImage());
+			ps.setString(8, playlist.getColor());
 			ps.setBoolean(9, true);
 			if(ps.executeUpdate()>0){
 				return true;
@@ -524,20 +526,20 @@ public class PlayListServiceImpl implements PlayListServics{
 	}
 	//well
 	@Override
-	public boolean update(Playlist dto) {
+	public boolean update(FrmUpdatePlaylist playlist) {
 		try {
 			con = dataSource.getConnection();
 			String sql = "UPDATE TBLPLAYLIST SET playlistname=?, description=?, thumbnailurl=?, publicview=?, maincategory=?, bgimage=?, color=?, status=? WHERE playlistid=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, dto.getPlaylistName());
-			ps.setString(2, dto.getDescription());
-			ps.setString(3, dto.getThumbnailUrl());
-			ps.setBoolean(4, dto.isPublicView());
-			ps.setInt(5, dto.getMaincategory());
-			ps.setString(6, dto.getBgImage());
-			ps.setString(7, dto.getColor());
-			ps.setBoolean(8, dto.isStatus());
-			ps.setInt(9, Integer.parseInt(Encryption.decode(dto.getPlaylistId())));
+			ps.setString(1, playlist.getPlaylistName());
+			ps.setString(2, playlist.getDescription());
+			ps.setString(3, playlist.getThumbnailUrl());
+			ps.setBoolean(4, playlist.isPublicView());
+			ps.setInt(5, playlist.getMaincategory());
+			ps.setString(6, playlist.getBgImage());
+			ps.setString(7, playlist.getColor());
+			ps.setBoolean(8, playlist.isStatus());
+			ps.setInt(9, Integer.parseInt(Encryption.decode(playlist.getPlaylistId())));
 			if(ps.executeUpdate()>0){
 				System.out.println();
 				return true;
