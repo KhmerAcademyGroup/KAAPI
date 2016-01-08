@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.UserType;
+import org.kaapi.app.forms.FrmAddUserType;
+import org.kaapi.app.forms.FrmUpdateUserType;
 import org.kaapi.app.services.UserTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,7 @@ public class UserTypeController {
 	UserTypeService userTypeService;
 	
 	// List UserType
-	@RequestMapping(value="/", method = RequestMethod.GET, headers="Accept=application/json")
+	@RequestMapping(value="/list", method = RequestMethod.GET, headers="Accept=application/json")
 	public ResponseEntity<Map<String,Object>> listUserType(
 			  @RequestParam(value = "page", required = false , defaultValue="1") int page 
 			, @RequestParam(value="item" , required = false , defaultValue="20") int item){
@@ -78,7 +80,7 @@ public class UserTypeController {
 	}
 	
 	//Get UserType By ID
-	@RequestMapping(value="/{id}",method = RequestMethod.GET,headers="Accept=application/json")
+	@RequestMapping(value="/list/{id}",method = RequestMethod.GET,headers="Accept=application/json")
 	public ResponseEntity<Map<String,Object>> getUserTypeById(@PathVariable("id") String id){
 		
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -97,8 +99,8 @@ public class UserTypeController {
 	}
 	
 	//Insert UserType
-	@RequestMapping(method = RequestMethod.POST, value = "/", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> insertUserType(@RequestBody UserType userType){
+	@RequestMapping(method = RequestMethod.POST, value = "/insert", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> insertUserType(@RequestBody FrmAddUserType userType){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(userTypeService.insertUserType(userType)){
@@ -113,8 +115,8 @@ public class UserTypeController {
 	}
 	
 	//Update UserType
-	@RequestMapping(method = RequestMethod.PUT, value = "/" , headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> updateUserType(@RequestBody UserType userType){
+	@RequestMapping(method = RequestMethod.PUT, value = "/update" , headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> updateUserType(@RequestBody FrmUpdateUserType userType){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(userTypeService.updateUserType(userType)){
