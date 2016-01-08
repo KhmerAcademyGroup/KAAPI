@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
+import org.kaapi.app.forms.FrmAddUniversity;
+import org.kaapi.app.forms.FrmUpdateUniversity;
 import org.kaapi.app.services.UniversityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,7 +58,7 @@ public class UniversityController {
 	// Create university
 	@RequestMapping(method = RequestMethod.POST, value = "/insert", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> insertUniversity(
-			@RequestBody University university) {
+			@RequestBody FrmAddUniversity university) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		if (universityService.createUniverstiy(university)) {
@@ -73,7 +75,7 @@ public class UniversityController {
 	// Update University
 	@RequestMapping(method = RequestMethod.PUT, value = "/update", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> updateUniversity(
-			@RequestBody University university) {
+			@RequestBody FrmUpdateUniversity university) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		if (universityService.updateUniversityById(university)) {
