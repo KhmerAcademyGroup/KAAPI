@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.forms.FrmTutorial;
+import org.kaapi.app.forms.FrmUpdateTutorial;
 import org.kaapi.app.services.TutorialService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,7 +263,7 @@ public class TutorialServiceImpl implements TutorialService{
 	}
 
 	@Override
-	public boolean update(Tutorial dto) {
+	public boolean update(FrmUpdateTutorial dto) {
 		try {
 			con = ds.getConnection();
 			String sql = "UPDATE TBLTUTORIAL SET title=?, description=?, index=?, userid=?, categoryid=? WHERE tutorialid=?";
