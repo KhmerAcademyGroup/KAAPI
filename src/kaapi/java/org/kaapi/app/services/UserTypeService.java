@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.UserType;
+import org.kaapi.app.forms.FrmAddUserType;
+import org.kaapi.app.forms.FrmUpdateUserType;
 
 public interface UserTypeService {
 
@@ -13,8 +15,8 @@ public interface UserTypeService {
 	public List<UserType> searchUserType(String name,Pagination pagination);
 	public int countSearchUserType(String name);
 	public UserType getUserType(String userTypeId);
-	public boolean insertUserType(UserType userType);
-	public boolean updateUserType(UserType userType);
+	public boolean insertUserType(FrmAddUserType userType);
+	public boolean updateUserType(FrmUpdateUserType userType);
 	public boolean deleteUserType(String userTypeId);
 	
 }
