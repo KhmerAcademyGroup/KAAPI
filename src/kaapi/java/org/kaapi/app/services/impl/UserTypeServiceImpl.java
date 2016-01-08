@@ -151,22 +151,22 @@ public class UserTypeServiceImpl  implements UserTypeService{
 
 	@Override
 	public UserType getUserType(String userTypeId) {
-		String sql = "SELECT "
+		/*String sql = "SELECT "
 				+ "UT.* "
 					+ "COUNT(DISTINCT USERID) COUNTUSERS "
 				+ "FROM "
 					+ "TBLUSERTYPE UT "
 				+ "WHERE "
 					+ "UT.USERTYPEID ='+usertypeid+' "
-				+ "GROUP BY UT.USERTYPEID ";
+				+ "GROUP BY UT.USERTYPEID ";*/
+		String sql = "SELECT UT.*, COUNT(DISTINCT USERID) COUNTUSERS FROM TBLUSERTYPE UT LEFT JOIN TBLUSER U ON UT.USERTYPEID=U.USERTYPEID WHERE UT.USERTYPEID="+userTypeId+" GROUP BY UT.USERTYPEID";
 		UserType userType = null;
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			ps.setInt(1, Integer.parseInt(Encryption.decode(userTypeId)));
 			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
+			if(rs.next()){
 				userType = new UserType();
 				userType.setUserTypeId(Encryption.encode(rs.getString("usertypeid")));
 				userType.setUserTypeName(rs.getString("usertypename"));
