@@ -6,10 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.UserType;
+import org.kaapi.app.forms.FrmAddUserType;
+import org.kaapi.app.forms.FrmUpdateUserType;
 import org.kaapi.app.services.UserTypeService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,7 +185,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 
 
 	@Override
-	public boolean insertUserType(UserType userType) {
+	public boolean insertUserType(FrmAddUserType userType) {
 		String sql = "INSERT "
 				+ "INTO "
 					+ "TBLUSERTYPE VALUES(NEXTVAL('seq_usertype'), ?, ?, ?, ?, ?, ?)";
@@ -204,7 +207,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 		return false;
 	}
 	@Override
-	public boolean updateUserType(UserType userType) {
+	public boolean updateUserType(FrmUpdateUserType userType) {
 		String sql = "UPDATE "
 					+ "TBLUSERTYPE "
 				+ "SET "
