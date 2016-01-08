@@ -124,7 +124,7 @@ public class UserTypeController {
 			map.put("STATUS", true);
 			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 		}else{
-			map.put("MESSAGE", "USERTYPE HAS NOT BEEN CREATED");
+			map.put("MESSAGE", "USERTYPE HAS NOT BEEN UPDATED");
 			map.put("STATUS", false);
 			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 		}
