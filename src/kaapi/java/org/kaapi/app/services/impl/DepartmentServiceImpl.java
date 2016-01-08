@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.FrmAddDepartment;
+import org.kaapi.app.forms.FrmUpdateDepartment;
 import org.kaapi.app.services.DepartmentService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	private DataSource dataSource;
 
 	@Override
-	public boolean createDepartment(Department department) {
+	public boolean createDepartment(FrmAddDepartment department) {
 		String sql = "INSERT "
 				+ "INTO "
 					+ "tbldepartment(departmentid,departmentname) "
@@ -42,7 +44,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
-	public boolean updateDepartment(Department department) {
+	public boolean updateDepartment(FrmUpdateDepartment department) {
 		String sql = "UPDATE "
 				+ "tbldepartment "
 					+ "SET "
