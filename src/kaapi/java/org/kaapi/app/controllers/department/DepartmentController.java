@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.FrmAddDepartment;
+import org.kaapi.app.forms.FrmUpdateDepartment;
 import org.kaapi.app.services.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +28,7 @@ public class DepartmentController {
 	
 	//Create university
 	@RequestMapping(method = RequestMethod.POST, value = "/insert", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> insertDepartment(@RequestBody Department department){
+	public ResponseEntity<Map<String, Object>> insertDepartment(@RequestBody FrmAddDepartment department){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(departmentService.createDepartment(department)){
@@ -42,7 +44,7 @@ public class DepartmentController {
 	
 	//Update Department
 	@RequestMapping(method = RequestMethod.PUT, value = "/update" , headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> updateDepartment(@RequestBody Department department){
+	public ResponseEntity<Map<String, Object>> updateDepartment(@RequestBody FrmUpdateDepartment department){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		if(departmentService.updateDepartment(department)){
@@ -50,7 +52,7 @@ public class DepartmentController {
 			map.put("STATUS", true);
 			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 		}else{
-			map.put("MESSAGE", "DEPARTMENT HAS NOT BEEN CREATED");
+			map.put("MESSAGE", "DEPARTMENT HAS NOT BEEN UPDATED");
 			map.put("STATUS", false);
 			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 		}
