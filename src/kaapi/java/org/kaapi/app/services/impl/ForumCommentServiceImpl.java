@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.ForumCommentService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -42,14 +43,18 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				ForumComment dto = null;
 				while(rs.next()){
 					dto  = new ForumComment();
-					dto.setCommentId(rs.getInt("commentid"));
+					dto.setCommentId(Encryption.encode(rs.getString("commentid")));
 					dto.setPostDate(rs.getDate("postdate"));
 					dto.setTitle(rs.getString("title"));
 					dto.setDetail(rs.getString("detail"));
 					dto.setTag(rs.getString("tag"));
-					dto.setParentId(rs.getInt("parentid"));
-					dto.setCategoryId(rs.getInt("categoryid"));
-					dto.setUserId(rs.getInt("userid"));
+					if(rs.getString("parentid") != null){
+						dto.setParentId(Encryption.encode(rs.getString("parentid")));
+					}
+					if(rs.getString("categoryid") != null){
+						dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+					}
+					dto.setUserId(Encryption.encode(rs.getString("userid")));
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
@@ -81,7 +86,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public List<ForumComment> listQuestionByUserid(int userid, Pagination pagination) {
+	public List<ForumComment> listQuestionByUserid(String userid, Pagination pagination) {
 		String sql =  " SELECT DISTINCT(C1.*), U.Username, COUNT(C2.Commentid) COMMENTCOUNT, COUNT(FV.Commentid) VOTECOUNT "
 					+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid "
 					+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid "
@@ -93,7 +98,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1, userid);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 				ps.setInt(2, pagination.getItem());
 				ps.setInt(3, pagination.offset());
 				ResultSet rs = ps.executeQuery();
@@ -101,14 +106,18 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				ForumComment dto = null;
 				while(rs.next()){
 					dto  = new ForumComment();
-					dto.setCommentId(rs.getInt("commentid"));
+					dto.setCommentId(Encryption.encode(rs.getString("commentid")));
 					dto.setPostDate(rs.getDate("postdate"));
 					dto.setTitle(rs.getString("title"));
 					dto.setDetail(rs.getString("detail"));
 					dto.setTag(rs.getString("tag"));
-					dto.setParentId(rs.getInt("parentid"));
-					dto.setCategoryId(rs.getInt("categoryid"));
-					dto.setUserId(rs.getInt("userid"));
+					if(rs.getString("parentid") != null){
+						dto.setParentId(Encryption.encode(rs.getString("parentid")));
+					}
+					if(rs.getString("categoryid") != null){
+						dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+					}
+					dto.setUserId(Encryption.encode(rs.getString("userid")));
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
@@ -123,13 +132,13 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public int countQuestionByUserid(int userid) {
+	public int countQuestionByUserid(String userid) {
 		String sql = "SELECT COUNT(commentid) FROM tblforumcomment WHERE userid = ? AND Parentid IS NULL";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1, userid);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 				ResultSet rs = ps.executeQuery();
 				if(rs.next()){
 					return rs.getInt(1);
@@ -141,7 +150,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public List<ForumComment> listQuestionByCategoryId(int cateid , Pagination pagination) {
+	public List<ForumComment> listQuestionByCategoryId(String cateid , Pagination pagination) {
 		String sql =  " SELECT DISTINCT(C1.*), U.Username, U.UserImageUrl, COUNT(C2.Commentid) COMMENTCOUNT, SUM(VOTETYPE) VOTECOUNT "
 					+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid "
 					+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid "
@@ -153,7 +162,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1, cateid);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(cateid)));
 				ps.setInt(2, pagination.getItem());
 				ps.setInt(3, pagination.offset());
 				ResultSet rs = ps.executeQuery();
@@ -161,14 +170,18 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				ForumComment dto = null;
 				while(rs.next()){
 					dto  = new ForumComment();
-					dto.setCommentId(rs.getInt("commentid"));
+					dto.setCommentId(Encryption.encode(rs.getString("commentid")));
 					dto.setPostDate(rs.getDate("postdate"));
 					dto.setTitle(rs.getString("title"));
 					dto.setDetail(rs.getString("detail"));
 					dto.setTag(rs.getString("tag"));
-					dto.setParentId(rs.getInt("parentid"));
-					dto.setCategoryId(rs.getInt("categoryid"));
-					dto.setUserId(rs.getInt("userid"));
+					if(rs.getString("parentid") != null){
+						dto.setParentId(Encryption.encode(rs.getString("parentid")));
+					}
+					if(rs.getString("categoryid") != null){
+						dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+					}
+					dto.setUserId(Encryption.encode(rs.getString("userid")));
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
@@ -183,13 +196,13 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public int countQuestionByCategoryId(int cateid) {
+	public int countQuestionByCategoryId(String cateid) {
 		String sql = "SELECT COUNT(commentid) FROM tblforumcomment WHERE categoryid = ?";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1, cateid);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(cateid)));
 				ResultSet rs = ps.executeQuery();
 				if(rs.next()){
 					return rs.getInt(1);
@@ -223,14 +236,18 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				ForumComment dto = null;
 				while(rs.next()){
 					dto  = new ForumComment();
-					dto.setCommentId(rs.getInt("commentid"));
+					dto.setCommentId(Encryption.encode(rs.getString("commentid")));
 					dto.setPostDate(rs.getDate("postdate"));
 					dto.setTitle(rs.getString("title"));
 					dto.setDetail(rs.getString("detail"));
 					dto.setTag(rs.getString("tag"));
-					dto.setParentId(rs.getInt("parentid"));
-					dto.setCategoryId(rs.getInt("categoryid"));
-					dto.setUserId(rs.getInt("userid"));
+					if(rs.getString("parentid") != null){
+						dto.setParentId(Encryption.encode(rs.getString("parentid")));
+					}
+					if(rs.getString("categoryid") != null){
+						dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+					}
+					dto.setUserId(Encryption.encode(rs.getString("userid")));
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
@@ -264,7 +281,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public List<ForumComment> listAnswerByQuestionId(int parendId, Pagination pagination) {
+	public List<ForumComment> listAnswerByQuestionId(String parendId, Pagination pagination) {
 		String sql =  " SELECT DISTINCT(C1.*), U.Username, U.UserImageURL, C1.SELECTED, COUNT(C2.Commentid) COMMENTCOUNT, SUM(VOTETYPE) VOTECOUNT "
 					+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid "
 					+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid "
@@ -276,21 +293,25 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1, parendId);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(parendId)));
 				ps.setInt(2, pagination.offset()); 
 				ps.setInt(3, pagination.getItem());	ResultSet rs = ps.executeQuery();
 				List<ForumComment> list = new ArrayList<ForumComment>();
 				ForumComment dto = null;
 				while(rs.next()){
 					dto  = new ForumComment();
-					dto.setCommentId(rs.getInt("commentid"));
+					dto.setCommentId(Encryption.encode(rs.getString("commentid")));
 					dto.setPostDate(rs.getDate("postdate"));
 					dto.setTitle(rs.getString("title"));
 					dto.setDetail(rs.getString("detail"));
 					dto.setTag(rs.getString("tag"));
-					dto.setParentId(rs.getInt("parentid"));
-					dto.setCategoryId(rs.getInt("categoryid"));
-					dto.setUserId(rs.getInt("userid"));
+					if(rs.getString("parentid") != null){
+						dto.setParentId(Encryption.encode(rs.getString("parentid")));
+					}
+					if(rs.getString("categoryid") != null){
+						dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+					}
+					dto.setUserId(Encryption.encode(rs.getString("userid")));
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
@@ -305,13 +326,13 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public int countAnswerByQuestionId(int parentId) {
+	public int countAnswerByQuestionId(String parentId) {
 		String sql = "SELECT COUNT(*)  FROM tblforumcomment  WHERE Parentid=?";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1,parentId);
+				ps.setInt(1,Integer.parseInt(Encryption.decode(parentId)));
 				ResultSet rs = ps.executeQuery();
 				if(rs.next()){
 					return rs.getInt(1);
@@ -340,7 +361,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public ForumComment getQuestionById(int commentId) {
+	public ForumComment getQuestionById(String commentId) {
 		String sql =  " SELECT C1.*, U.Username, U.UserImageURL, COUNT(C2.Commentid) COMMENTCOUNT, COUNT(DISTINCT(V.Userid)) VOTECOUNT "
 					+ " FROM TBLFORUMCOMMENT C1 INNER JOIN TBLUSER U ON C1.Userid=U.Userid "
 					+ " LEFT JOIN (SELECT * FROM TBLFORUMCOMMENT WHERE Parentid=?) C2 ON C1.Commentid=C2.Parentid "
@@ -350,18 +371,20 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1, commentId);
-				ps.setInt(2, commentId);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(commentId)));
+				ps.setInt(2, Integer.parseInt(Encryption.decode(commentId)));
 				ResultSet rs = ps.executeQuery();
 				if(rs!=null && rs.next()){
 					ForumComment q= new ForumComment();
-					q.setCommentId(rs.getInt("commentid"));
+					q.setCommentId(Encryption.encode(rs.getString("commentid")));
 					q.setPostDate(rs.getDate("postdate"));
 					q.setTitle(rs.getString("title"));
 					q.setDetail(rs.getString("detail"));
 					q.setTag(rs.getString("tag"));
-					q.setCategoryId(rs.getInt("categoryid"));
-					q.setUserId(rs.getInt("userid"));
+					if(rs.getString("categoryid") != null){
+						q.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+					}
+					q.setUserId(Encryption.encode(rs.getString("userid")));
 					q.setUsername(rs.getString("username"));
 					q.setUserImageUrl(rs.getString("userimageurl"));
 					q.setCommentCount(rs.getInt("commentcount"));
@@ -385,9 +408,9 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 			ps.setString(2, dto.getTitle());
 			ps.setString(3, dto.getDetail());
 			ps.setString(4, dto.getTag());
-			ps.setInt(5, dto.getParentId());
-			ps.setInt(6, dto.getCategoryId());
-			ps.setInt(7, dto.getUserId());
+			ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getParentId())));
+			ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getCategoryId())));
+			ps.setInt(7, Integer.parseInt(Encryption.decode(dto.getUserId())));
 			ps.setBoolean(8, false);
 			if (ps.executeUpdate() > 0)
 				return true;
@@ -408,8 +431,8 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				ps.setString(2, dto.getTitle());
 				ps.setString(3, dto.getDetail());
 				ps.setString(4, dto.getTag());
-				ps.setInt(5, dto.getParentId());
-				ps.setInt(6, dto.getUserId());
+				ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getParentId())));
+				ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getUserId())));
 				ps.setBoolean(7, false);
 				if (ps.executeUpdate() > 0)
 					return true;
@@ -427,12 +450,12 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			   ps.setDate(1, (Date) dto.getPostDate());
+			    ps.setDate(1, (Date) dto.getPostDate());
 				ps.setString(2, dto.getTitle());
 				ps.setString(3, dto.getDetail());
 				ps.setString(4, dto.getTag());
-				ps.setInt(5, dto.getCategoryId());
-				ps.setInt(6, dto.getUserId());
+				ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getCategoryId())));
+				ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getUserId())));
 				ps.setBoolean(7, dto.isSelected());
 				if (ps.executeUpdate() > 0)
 					return true;
@@ -443,13 +466,13 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public boolean deleteComment(int commentId) {
+	public boolean deleteComment(String commentId) {
 		String sql = "DELETE FROM TBLFORUMCOMMENT WHERE categoryid=?";
 		 try(
 					Connection cnn = dataSource.getConnection();
 					PreparedStatement ps = cnn.prepareStatement(sql);
 		 ){
-				  ps.setInt(1, commentId);
+				  ps.setInt(1, Integer.parseInt(Encryption.decode(commentId)));
 				  if (ps.executeUpdate() > 0)
 						return true;
 				}catch(SQLException e){

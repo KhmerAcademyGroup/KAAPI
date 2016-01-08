@@ -141,12 +141,12 @@ public class VideoControllers {
 	}
 	
 	//Delete video
-	@RequestMapping(method = RequestMethod.DELETE, value = "/video", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> deleteVideo(@RequestBody Video video) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/video/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> deleteVideo(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		
-		if (videoService.delete(video.getVideoId())) {
-			videoService.removeVideoFromCategory(video.getVideoId());
+		System.out.println(id);
+		if (videoService.delete(id)) {
+			videoService.removeVideoFromCategory(id);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "RECORD HAS BEEN DELETED");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -555,7 +555,14 @@ public class VideoControllers {
 	@RequestMapping(method = RequestMethod.GET, value = "/video/count", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> countVideo() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("RES_DATA", videoService.countVideo());
+		try{
+			map.put("RES_DATA", videoService.countVideo());
+			map.put("MESSAGE", "OPERATION SUCCESS");
+			map.put("STATUS", true);
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 }

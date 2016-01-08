@@ -43,7 +43,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 			ForumCategory fCate = null;
 			while(rs.next()){
 				fCate = new ForumCategory();
-				fCate.setCategoryId(rs.getInt("categoryid"));
+				fCate.setCategoryId(Encryption.encode(rs.getString("categoryid")));
 				fCate.setCategoryName(rs.getString("categoryname"));
 				fCate.setCommentCount(rs.getInt("countvideos"));
 				list.add(fCate);
@@ -73,7 +73,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 			ForumCategory fCate = null;
 			while(rs.next()){
 				fCate = new ForumCategory();
-				fCate.setCategoryId(rs.getInt("categoryid"));
+				fCate.setCategoryId(Encryption.encode(rs.getString("categoryid")));
 				fCate.setCategoryName(rs.getString("categoryname"));
 				fCate.setCommentCount(rs.getInt("countvideos"));
 				list.add(fCate);
@@ -86,7 +86,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 	}
 
 	@Override
-	public ForumCategory getForumCate(int id) {
+	public ForumCategory getForumCate(String id) {
 		String sql = 	  " SELECT"
 						+ " CA.*, COUNT(C.categoryid) COUNTCOMMENTS"
 						+ " FROM"
@@ -98,12 +98,12 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 			Connection cnn = dataSource.getConnection();
 			PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-			ps.setInt(1, id);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(id)));
 			ResultSet rs = ps.executeQuery();
 			ForumCategory dto  = null;
 			if(rs.next()){
 				dto = new ForumCategory();
-				dto.setCategoryId(rs.getInt("categoryid"));
+				dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
 				dto.setCategoryName(rs.getString("categoryname"));
 				dto.setCommentCount(rs.getInt("countcomments"));
 				return dto;
@@ -115,13 +115,13 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 	}
 
 	@Override
-	public boolean deleteForumCate(int id) {
+	public boolean deleteForumCate(String id) {
 		String sql = "DELETE FROM tblforumcategory WHERE categoryid=?";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
-				ps.setInt(1, id);
+				ps.setInt(1, Integer.parseInt(Encryption.decode(id)));
 				if(ps.executeUpdate() > 0) return true;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -155,7 +155,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 				PreparedStatement ps  =  cnn.prepareStatement(sql);
 		){
 				ps.setString(1, forumCate.getCategoryName());
-				ps.setInt(2, forumCate.getCategoryId());
+				ps.setInt(2, Integer.parseInt(Encryption.decode(forumCate.getCategoryId())));
 				if(ps.executeUpdate() > 0 ) return true;
 		}catch(SQLException e){
 			e.printStackTrace();
