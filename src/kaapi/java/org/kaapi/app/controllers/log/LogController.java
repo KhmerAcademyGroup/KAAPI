@@ -23,7 +23,7 @@ public class LogController {
 		LogService service;
 		
 		@RequestMapping(value="/listcatebyuser/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> getCateByUser(@PathVariable("userid") int userid){
+		public ResponseEntity<Map<String, Object>> getCateByUser(@PathVariable("userid") String userid){
 						
 			ArrayList<Log> logs = service.listCategoryInUser(userid);
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -58,7 +58,7 @@ public class LogController {
 		}
 		
 		@RequestMapping(value="/listdepartment/{univid}",method = RequestMethod.GET,headers="Accept=application/json")
-		public ResponseEntity<Map<String,Object>> getDepartment(@PathVariable("univid")int universityid){
+		public ResponseEntity<Map<String,Object>> getDepartment(@PathVariable("univid")String universityid){
 			
 			ArrayList<Log> logs = service.listDeparmentByUniversity(universityid);
 			Map<String,Object> map = new HashMap<String, Object>();
@@ -91,7 +91,7 @@ public class LogController {
 		}		
 
 		@RequestMapping(value="/listuserbydept/d/{deptid}/u/{univid}", method=RequestMethod.GET, headers = "Accept=application/json")
-		public ResponseEntity<Map<String,Object>> getUserByDept(@PathVariable("deptid")int departmentid,@PathVariable("univid")int universityid){
+		public ResponseEntity<Map<String,Object>> getUserByDept(@PathVariable("deptid")String departmentid,@PathVariable("univid")String universityid){
 			
 			ArrayList<Log> logs = service.listUserInDepartmentAndUniversity(departmentid, universityid);
 			Map<String,Object> map = new HashMap<String, Object>();
@@ -108,7 +108,7 @@ public class LogController {
 		}
 
 		@RequestMapping(value="/listuserbycate/{cateid}", method=RequestMethod.GET, headers = "Accept=application/json")
-		public ResponseEntity<Map<String,Object>> getUserByCate(@PathVariable("cateid")int categoryid){
+		public ResponseEntity<Map<String,Object>> getUserByCate(@PathVariable("cateid")String categoryid){
 			
 			ArrayList<Log> logs = service.listUserInCategory(categoryid);
 			Map<String,Object> map = new HashMap<String, Object>();

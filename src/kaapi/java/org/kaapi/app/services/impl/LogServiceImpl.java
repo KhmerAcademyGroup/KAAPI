@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Log;
 import org.kaapi.app.services.LogService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,8 +28,8 @@ public class LogServiceImpl implements LogService{
 			con = ds.getConnection();
 			String sql = "INSERT INTO TBLLOG VALUES(NEXTVAL('seq_log'), ?, ?, NOW(), NOW())";
 			PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-			ps.setInt(1, dto.getUserId());
-			ps.setInt(2, dto.getVideoId());
+			ps.setInt(1, Integer.parseInt(Encryption.decode(dto.getUserId())));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getVideoId())));
 			if(ps.executeUpdate()>0){
 				ResultSet rs=ps.getGeneratedKeys();
 				if(rs.next()){
@@ -55,8 +56,8 @@ public class LogServiceImpl implements LogService{
 			con = ds.getConnection();
 			String sql = "UPDATE TBLLOG Set stoptime=NOW() WHERE LOGID=? AND USERID=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, dto.getLogId());
-			ps.setInt(2, dto.getUserId());
+			ps.setInt(1, Integer.parseInt(Encryption.decode(dto.getLogId())));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getUserId())));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
@@ -74,19 +75,19 @@ public class LogServiceImpl implements LogService{
 	}
 
 	@Override
-	public ArrayList<Log> listUserInCategory(int categoryid) {
+	public ArrayList<Log> listUserInCategory(String categoryid) {
 		
 		try {
 			con = ds.getConnection();
 			String sql = "SELECT U.Userid, U.Username, COUNT(L.Videoid) Views, SUM(L.Stoptime-L.Starttime) Duration FROM TBLUser U INNER JOIN TBLLog L ON U.Userid=L.Userid INNER JOIN TBLVideo V ON L.Videoid=V.Videoid INNER JOIN TBLCategoryVideo CV ON V.Videoid=CV.Videoid WHERE CV.Categoryid=? GROUP BY U.Userid";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, categoryid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
 			ResultSet rs = ps.executeQuery();
 			
 			ArrayList<Log> logs = new ArrayList<Log>(); 
 			while(rs.next()){
 				Log log = new Log();
-				log.setUserId(rs.getInt("userid"));
+				log.setUserId(Encryption.encode((rs.getInt("userid")+"")));
 				log.setUsername(rs.getString("username"));
 				log.setViews(rs.getInt("views"));
 				log.setDuration(rs.getString("duration"));
@@ -118,7 +119,7 @@ public class LogServiceImpl implements LogService{
 			ArrayList<Log> logs = new ArrayList<Log>(); 
 			while(rs.next()){
 				Log log = new Log();
-				log.setCategoryId(rs.getInt("categoryid"));
+				log.setCategoryId(Encryption.encode(rs.getInt("categoryid")+""));
 				log.setCategoryName(rs.getString("categoryname"));
 				log.setViews(rs.getInt("views"));
 				log.setDuration(rs.getString("duration"));
@@ -139,19 +140,19 @@ public class LogServiceImpl implements LogService{
 	}
 
 	@Override
-	public ArrayList<Log> listCategoryInUser(int userid) {
+	public ArrayList<Log> listCategoryInUser(String userid) {
 		
 		try {
 			con = ds.getConnection();
 			String sql = "SELECT C.Categoryid, C.CategoryName, COUNT(L.Videoid) Views, SUM(L.Stoptime-L.Starttime) Duration FROM TBLLog L INNER JOIN TBLVideo V ON L.Videoid=V.Videoid INNER JOIN TBLCategoryVideo CV ON V.Videoid=CV.Videoid INNER JOIN TBLCategory C ON C.Categoryid=CV.Categoryid WHERE L.Userid=? GROUP BY C.Categoryid";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, userid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ResultSet rs = ps.executeQuery();
 
 			ArrayList<Log> logs = new ArrayList<Log>(); 
 			while(rs.next()){
 				Log log = new Log();
-				log.setCategoryId(rs.getInt("categoryid"));
+				log.setCategoryId(Encryption.encode(rs.getInt("categoryid")+""));
 				log.setCategoryName(rs.getString("categoryname"));
 				log.setViews(rs.getInt("views"));
 				log.setDuration(rs.getString("duration"));
@@ -172,21 +173,21 @@ public class LogServiceImpl implements LogService{
 	}
 
 	@Override
-	public ArrayList<Log> listUserInDepartmentAndUniversity(int departmentid,
-			int universityid) {
+	public ArrayList<Log> listUserInDepartmentAndUniversity(String departmentid,
+			String universityid) {
 		
 		try {
 			con = ds.getConnection();
 			String sql = "SELECT U.Userid, U.Username, COUNT(L.Videoid) Views, SUM(L.Stoptime-L.Starttime) duration FROM TBLUser U INNER JOIN TBLLog L ON U.Userid=L.Userid WHERE U.Departmentid=? AND U.Universityid=? GROUP BY U.Userid";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, departmentid);
-			ps.setInt(2, universityid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(departmentid)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(universityid)));
 			ResultSet rs = ps.executeQuery();
 			
 			ArrayList<Log> logs = new ArrayList<Log>(); 
 			while(rs.next()){
 				Log log = new Log();
-				log.setUserId(rs.getInt("userid"));
+				log.setUserId(Encryption.encode(rs.getInt("userid")+""));
 				log.setUsername(rs.getString("username"));
 				log.setViews(rs.getInt("views"));
 				log.setDuration(rs.getString("duration"));
@@ -207,20 +208,20 @@ public class LogServiceImpl implements LogService{
 	}
 
 	@Override
-	public ArrayList<Log> listDeparmentByUniversity(int universityid) {
+	public ArrayList<Log> listDeparmentByUniversity(String universityid) {
 		
 		try {
 			con = ds.getConnection();
 			String sql = "SELECT T1.*, Views, Duration FROM (SELECT D.Departmentid, D.Departmentname, Count(U.Userid) Users FROM TBLDepartment D LEFT JOIN TBLUser U ON D.Departmentid=U.Departmentid AND U.Universityid=? GROUP BY D.Departmentid) T1 LEFT JOIN (SELECT U2.DepartmentID, COUNT(L.Logid) Views, SUM(L.Stoptime-L.Starttime) Duration FROM TBLLog L INNER JOIN TBLUser U2 ON L.Userid=U2.Userid WHERE U2.Departmentid IN (SELECT Departmentid FROM TBLDepartment) AND U2.Universityid=? GROUP BY U2.Departmentid) T2 ON T1.Departmentid=T2.Departmentid";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, universityid);
-			ps.setInt(2, universityid);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(universityid)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(universityid)));
 			ResultSet rs = ps.executeQuery();
 			
 			ArrayList<Log> logs = new ArrayList<Log>(); 
 			while(rs.next()){
 				Log log = new Log();
-				log.setDepartmentId(rs.getInt("departmentid"));
+				log.setDepartmentId(Encryption.encode(rs.getInt("departmentid")+""));
 				log.setDepartmentName(rs.getString("departmentname"));
 				log.setUsers(rs.getInt("users"));
 				log.setViews(rs.getInt("views"));
@@ -253,7 +254,7 @@ public class LogServiceImpl implements LogService{
 			ArrayList<Log> logs = new ArrayList<Log>(); 
 			while(rs.next()){
 				Log log = new Log();
-				log.setUniversityId(rs.getInt("universityid"));
+				log.setUniversityId(Encryption.encode(rs.getInt("universityid")+""));
 				log.setUniversityName(rs.getString("universityname"));
 				log.setUsers(rs.getInt("users"));
 				log.setViews(rs.getInt("views"));

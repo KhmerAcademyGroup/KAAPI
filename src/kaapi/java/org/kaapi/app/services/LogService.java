@@ -8,11 +8,11 @@ public interface LogService {
 	
 	public int insert(Log dto);
 	public boolean stopWatching(Log dto);
-	public ArrayList<Log> listUserInCategory(int categoryid);
+	public ArrayList<Log> listUserInCategory(String categoryid);
 	public ArrayList<Log> listCategory();
-	public ArrayList<Log> listCategoryInUser(int userid);
-	public ArrayList<Log> listUserInDepartmentAndUniversity(int departmentid, int universityid);
-	public ArrayList<Log> listDeparmentByUniversity(int universityid);
+	public ArrayList<Log> listCategoryInUser(String userid);
+	public ArrayList<Log> listUserInDepartmentAndUniversity(String departmentid, String universityid);
+	public ArrayList<Log> listDeparmentByUniversity(String universityid);
 	public ArrayList<Log> listUniversity();
 
 }

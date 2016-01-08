@@ -4,14 +4,14 @@ import java.sql.Date;
 
 public class Log {
 
-	private int logId;
-	private int userId;
-	private int videoId;
+	private String logId;
+	private String userId;
+	private String videoId;
 	private Date logTime;
 	
-	private int departmentId;
-	private int universityId;
-	private int categoryId;
+	private String departmentId;
+	private String universityId;
+	private String categoryId;
 	private String username;
 	private String videoName;
 	private String departmentName;
@@ -21,22 +21,23 @@ public class Log {
 	private String duration;
 	private int users;
 	
-	public int getLogId() {
+	
+	public String getLogId() {
 		return logId;
 	}
-	public void setLogId(int logId) {
+	public void setLogId(String logId) {
 		this.logId = logId;
 	}
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public int getVideoId() {
+	public String getVideoId() {
 		return videoId;
 	}
-	public void setVideoId(int videoId) {
+	public void setVideoId(String videoId) {
 		this.videoId = videoId;
 	}
 	public Date getLogTime() {
@@ -45,22 +46,22 @@ public class Log {
 	public void setLogTime(Date logTime) {
 		this.logTime = logTime;
 	}
-	public int getDepartmentId() {
+	public String getDepartmentId() {
 		return departmentId;
 	}
-	public void setDepartmentId(int departmentId) {
+	public void setDepartmentId(String departmentId) {
 		this.departmentId = departmentId;
 	}
-	public int getUniversityId() {
+	public String getUniversityId() {
 		return universityId;
 	}
-	public void setUniversityId(int universityId) {
+	public void setUniversityId(String universityId) {
 		this.universityId = universityId;
 	}
-	public int getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 	public String getUsername() {
