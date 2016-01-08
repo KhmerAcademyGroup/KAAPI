@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
+import org.kaapi.app.forms.FrmAddUniversity;
+import org.kaapi.app.forms.FrmUpdateUniversity;
 import org.kaapi.app.services.UniversityService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ public class UniversityServiceImpl implements UniversityService{
 	private DataSource dataSource;
 	
 	@Override
-	public boolean createUniverstiy(University university) {
+	public boolean createUniverstiy(FrmAddUniversity university) {
 
 		String sql = "INSERT INTO tbluniversity(universityid,universityname) VALUES(NEXTVAL('seq_university'),?);";
 
@@ -41,7 +43,7 @@ public class UniversityServiceImpl implements UniversityService{
 	}
 
 	@Override
-	public boolean updateUniversityById(University university) {
+	public boolean updateUniversityById(FrmUpdateUniversity university) {
 
 		String sql = "UPDATE "
 				+ "tbluniversity "
