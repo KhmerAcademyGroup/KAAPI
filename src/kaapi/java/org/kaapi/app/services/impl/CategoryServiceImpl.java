@@ -14,7 +14,8 @@ import javax.xml.bind.DatatypeConverter;
 import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Video;
-import org.kaapi.app.entities.addAndEdit.addCategory;
+import org.kaapi.app.forms.FrmAddCategory;
+import org.kaapi.app.forms.FrmUpdateCategory;
 import org.kaapi.app.services.CategoryService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +120,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public boolean insertCategory(addCategory dto) {
+	public boolean insertCategory(FrmAddCategory dto) {
 		try {
 			String sql = "INSERT INTO TBLCATEGORY VALUES(NEXTVAL('seq_category'), ?, ?, ?)";
 			con = dataSource.getConnection();
@@ -143,7 +144,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public boolean updateCategory(Category dto) {
+	public boolean updateCategory(FrmUpdateCategory dto) {
 		try {
 			String sql = "UPDATE TBLCATEGORY SET categoryname=?, categorylogourl=?, maincategoryid=? WHERE categoryid=?";
 			con = dataSource.getConnection();
@@ -253,7 +254,6 @@ public class CategoryServiceImpl implements CategoryService {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				dto = new Video();
-//				dto.setVideoId(rs.getInt("videoid"));
 				dto.setVideoName(rs.getString("videoname"));
 				dto.setDescription(rs.getString("description"));
 				dto.setYoutubeUrl(rs.getString("youtubeurl"));

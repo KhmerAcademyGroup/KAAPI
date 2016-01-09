@@ -3,6 +3,7 @@ package org.kaapi.app.entities;
 public class MainCategory {
 	
 	private String mainCategoryId;
+	
 	private String mainCategoryName;
 	private String mainCategoryLogoUrl;
 	private int mainCategoryOrder;

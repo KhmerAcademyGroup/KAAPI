@@ -1,6 +1,6 @@
-package org.kaapi.app.entities.addAndEdit;
+package org.kaapi.app.forms;
 
-public class addMainCategory {
+public class FrmAddMainCategory {
 	
 	private String mainCategoryName;
 	private String mainCategoryLogoUrl;		
