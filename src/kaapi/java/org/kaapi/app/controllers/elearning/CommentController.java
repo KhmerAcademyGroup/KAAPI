@@ -27,15 +27,20 @@ public class CommentController {
 	@RequestMapping(method = RequestMethod.GET, value = "/comment", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getComment(@RequestParam("commentId") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Comment comment = commentService.getComment(id);
-		if (comment==null) {
+		try{
+			Comment comment = commentService.getComment(id);
+			if (comment==null) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", comment);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", comment);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
@@ -43,158 +48,224 @@ public class CommentController {
 	@RequestMapping(method = RequestMethod.POST, value = "/comment", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> insertComment(@RequestBody Comment comment) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (commentService.insert(comment)) {
-			map.put("STATUS", true);
-			map.put("MESSAGE", "RECORD HAS BEEN INSERTED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
+		try{
+			if (commentService.insert(comment)) {
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN INSERTED");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN INSERTED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD HAS NOT BEEN INSERTED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//Reply Comment
 	@RequestMapping(method = RequestMethod.POST, value = "/comment/reply", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> replyComment(@RequestBody Comment comment) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (commentService.reply(comment)) {
-			map.put("STATUS", true);
-			map.put("MESSAGE", "RECORD HAS BEEN REPLYED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
+		try{
+			if (commentService.reply(comment)) {
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN REPLYED");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN REPLYED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD HAS NOT BEEN REPLYED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//Update Comment
 	@RequestMapping(method = RequestMethod.PUT, value = "/comment", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> updateComment(@RequestBody Comment comment) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (commentService.update(comment)) {
-			map.put("STATUS", true);
-			map.put("MESSAGE", "RECORD HAS BEEN UPDATED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
+		try{
+			if (commentService.update(comment)) {
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN UPDATED");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN UPDATED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD HAS NOT BEEN UPDATED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//Delete Comment
-	@RequestMapping(method = RequestMethod.DELETE, value = "/comment", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> deleteComment(@RequestBody Comment comment) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/comment/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> deleteComment(@PathVariable("id") String commentId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (commentService.delete(comment.getCommentId())) {
-			map.put("STATUS", true);
-			map.put("MESSAGE", "RECORD HAS BEEN DELETED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		}else{
+		try{
+			if (commentService.delete(commentId)) {
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN DELETED");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN DELETED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD HAS NOT BEEN DELETED");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//get comment on video: param(videoId,offset,limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/comment/video/{videoId}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getVideoComment(Pagination page, @PathVariable("videoId") String videoId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/comment/video/v/{videoId}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getVideoComment(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@PathVariable("videoId") String videoId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Comment> comment = commentService.listCommentOnVideo(videoId, page);
-		if (comment.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(commentService.countCommentOnVideo(videoId));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Comment> comment = commentService.listCommentOnVideo(videoId, pagination);
+			if (comment.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", comment);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(commentService.countCommentOnVideo(videoId));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", comment);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//Get List comment: param(offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/comment/list", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getListComment(Pagination page) {
+	public ResponseEntity<Map<String, Object>> getListComment(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Comment> comment = commentService.listComment(page);
-		if (comment.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(commentService.countComment());
+			pagination.setTotalPages(pagination.totalPages());
+			List<Comment> comment = commentService.listComment(pagination);
+			if (comment.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", comment);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(commentService.countComment());
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", comment);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//Get List comment with comment text: param(commentText,offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/comment/list/{commentText}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getListCommentWithCommentText(Pagination page, @PathVariable("commentText") String commentText) {
+	public ResponseEntity<Map<String, Object>> getListCommentWithCommentText(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@PathVariable("commentText") String commentText) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Comment> comment = commentService.listComment(commentText, page);
-		if (comment.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(commentService.countComment(commentText));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Comment> comment = commentService.listComment(commentText, pagination);
+			if (comment.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", comment);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(commentService.countComment(commentText));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", comment);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//Get List super comment with comment text: param(offset,limit)
 	@RequestMapping(method = RequestMethod.GET, value = "/comment/super", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getListSuperComment(Pagination page) {
+	public ResponseEntity<Map<String, Object>> getListSuperComment(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Comment> comment = commentService.listSuperComment(page);
-		if (comment.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(commentService.countSuperComment());
+			pagination.setTotalPages(pagination.totalPages());
+			List<Comment> comment = commentService.listSuperComment(pagination);
+			if (comment.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", comment);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(commentService.countSuperComment());
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", comment);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
 	//Get List comment with comment text: param(commentText,offset,limit)
-	@RequestMapping(method = RequestMethod.GET, value = "/comment/reply/list", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getListReplyComment(Pagination page, @RequestParam("videoId") String videoId, @RequestParam("replyId") String replyId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/comment/reply/list/v/{videoId}/r/{replyId}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getListReplyComment(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@PathVariable("videoId") String videoId,
+			@PathVariable("replyId") String replyId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Comment> comment = commentService.listReplyComment(videoId, replyId, page);
-		if (comment.isEmpty()) {
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(commentService.countReplyComment(videoId, replyId));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Comment> comment = commentService.listReplyComment(videoId, replyId, pagination);
+			if (comment.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", comment);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			map.put("MESSAGE", "RECORD NOT FOUND");
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		page.setTotalCount(commentService.countReplyComment(videoId, replyId));
-		page.setTotalPages(page.totalPages());
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("RES_DATA", comment);
-		map.put("PAGINATION", page);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 		
