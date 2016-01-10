@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.kaapi.app.entities.ForumCategory;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.FrmAddForumCategory;
+import org.kaapi.app.forms.FrmUpdateForumCategory;
 import org.kaapi.app.services.ForumCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -102,7 +104,7 @@ public class ForumCategoryController {
 	}
 	
 	@RequestMapping( method = RequestMethod.POST)
-	public ResponseEntity<Map<String , Object>> addForumCate(@RequestBody ForumCategory forumCate){
+	public ResponseEntity<Map<String , Object>> addForumCate(@RequestBody FrmAddForumCategory forumCate){
 		System.out.println(forumCate.getCategoryName());
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
@@ -121,17 +123,16 @@ public class ForumCategoryController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/{cid}" , method = RequestMethod.PUT)
-	public ResponseEntity<Map<String , Object>> updateForumCate(@PathVariable("cid") String cid , @RequestBody ForumCategory forumCate){
+	@RequestMapping(method = RequestMethod.PUT)
+	public ResponseEntity<Map<String , Object>> updateForumCate(@RequestBody FrmUpdateForumCategory forumCate){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
-			ForumCategory currentforumCate = forumCateService.getForumCate(cid);
+			ForumCategory currentforumCate = forumCateService.getForumCate(forumCate.getCategoryId());
 			if(currentforumCate == null){
 				map.put("MESSAGE", "RECORD NOT FOUND");
 				map.put("STATUS", false);
 				return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 			}
-			forumCate.setCategoryId(currentforumCate.getCategoryId());
 			if(forumCateService.updateForumCate(forumCate)){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD HAS BEEN UPDATED");
