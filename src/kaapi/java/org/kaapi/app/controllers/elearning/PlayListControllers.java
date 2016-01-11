@@ -266,8 +266,8 @@ public class PlayListControllers {
 	 * we want to list playlist name 
 	 * we neen only (playlistName,userId)
 	 */
-	@RequestMapping(value="/listPlayListName/{playlistname}/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> listPlayListName(@PathVariable("playlistname") String listName,
+	@RequestMapping(value="/listPlayStatusByListName/{playlistname}/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlayStatusByListName(@PathVariable("playlistname") String listName,
 																@PathVariable("userid") String uid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		Playlist playlist =new Playlist();
