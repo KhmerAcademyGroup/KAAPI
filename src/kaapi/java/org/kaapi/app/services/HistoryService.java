@@ -1,9 +1,12 @@
 package org.kaapi.app.services;
 
+import java.util.ArrayList;
+
 import org.kaapi.app.entities.History;
 import org.kaapi.app.entities.Pagination;
 
 public interface HistoryService {
+	public ArrayList<History> listAllHistory(Pagination pagin);
 	public History list(String search ,String uid , Pagination pagin);
 	public boolean insert(History dto);
 	public boolean delete(String historyid);

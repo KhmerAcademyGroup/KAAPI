@@ -24,8 +24,8 @@ public class CommentController {
 	@Autowired CommentService commentService;
 
 	//get comment
-	@RequestMapping(method = RequestMethod.GET, value = "/comment", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getComment(@RequestParam("commentId") String id) {
+	@RequestMapping(method = RequestMethod.GET, value = "/comment/c/{id}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getComment(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			Comment comment = commentService.getComment(id);

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -177,6 +178,39 @@ public class HistoryServiceImplement implements HistoryService{
 		}
 		return 0;
 	
+	}
+	@Override
+	public ArrayList<History> listAllHistory(Pagination pagin) {
+		try {
+			ArrayList<History> histories = new ArrayList<History>();
+			con = dataSource.getConnection();
+			ResultSet rs = null;
+			String sql =	 "SELECT * FROM tblhistory offset ? limit ?";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, pagin.getPage());
+			ps.setInt(2, pagin.getItem());
+			rs = ps.executeQuery();
+			
+			while(rs.next()){
+				History history = new History();
+				history.setHistoryId(Encryption.encode(rs.getString("historyid")));
+				history.setHistoryDate(rs.getDate("historydate"));
+				history.setUserId(Encryption.encode(rs.getString("userid")));
+				history.setVideoId(Encryption.encode(rs.getString("videoid")));
+				histories.add(history);
+			}
+			return histories;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 }
