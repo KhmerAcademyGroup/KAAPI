@@ -254,6 +254,7 @@ public class CategoryServiceImpl implements CategoryService {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				dto = new Video();
+				dto.setVideoId(Encryption.encode(rs.getString("videoid")));
 				dto.setVideoName(rs.getString("videoname"));
 				dto.setDescription(rs.getString("description"));
 				dto.setYoutubeUrl(rs.getString("youtubeurl"));

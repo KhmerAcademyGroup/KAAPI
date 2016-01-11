@@ -29,7 +29,7 @@ public class CategoryController {
 	@Qualifier("CategoryService")
 	CategoryService categoryService;
 
-	@RequestMapping(value = "/listcategory", method = RequestMethod.GET, headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listCategory(
 			@RequestParam(value = "name", required = false, defaultValue = "") String categoryName,
 			@RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -60,7 +60,7 @@ public class CategoryController {
 
 	}
 
-	@RequestMapping(value = "{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable("id") String id) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -103,8 +103,8 @@ public class CategoryController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getcategory", method = RequestMethod.GET, headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getCategory(@RequestParam("categoryId") String categoryId) {
+	@RequestMapping(value = "/{cid}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getCategory(@PathVariable String categoryId) {
 
 		Category getcategory = categoryService.getCategory(categoryId);
 		Map<String, Object> map = new HashMap<String, Object>();

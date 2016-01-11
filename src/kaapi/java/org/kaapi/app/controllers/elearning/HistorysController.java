@@ -165,7 +165,7 @@ public class HistorysController {
 		
 		
 		//action count user history
-		@RequestMapping(value="/countstory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
+		@RequestMapping(value="/counthistory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> countUserHistory(@PathVariable("userid") String uid, 
 																	@PathVariable("videoname") String name){
 			
