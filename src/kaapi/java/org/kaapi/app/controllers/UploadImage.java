@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("api/uploadimage")
 public class UploadImage {
 
-	@RequestMapping(method = RequestMethod.POST, value = "/category")
+	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<Map<String, Object>> uploadImageCategory(
 			@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
