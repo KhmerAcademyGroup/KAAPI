@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.PreCourse;
 import org.kaapi.app.forms.FrmAddPreCourse;
 import org.kaapi.app.forms.FrmEditPreCourse;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -99,9 +101,17 @@ public class PrecourseController {
 	}
 	
 	@RequestMapping(value="/listprecourse", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> listPreCourse(){
+	public ResponseEntity<Map<String, Object>> listPreCourse(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item){
 				
-		ArrayList<PreCourse> preCourses = service.getAllPreCourses();
+		Pagination pagination = new Pagination();
+		pagination.setItem(item);
+		pagination.setPage(page);
+		pagination.setTotalCount(service.countPreCourse());
+		pagination.setTotalPages(pagination.totalPages());
+		
+		ArrayList<PreCourse> preCourses = service.getAllPreCourses(pagination);
 		Map<String,Object> map = new HashMap<String, Object>();
 			
 		if(preCourses.isEmpty()){
@@ -111,7 +121,8 @@ public class PrecourseController {
 		}
 		
 		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD FOUND");		
+		map.put("MESSAGE", "RECORD FOUND");
+		map.put("PAGINATION", pagination);
 		map.put("RES_DATA", preCourses);
 		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 	}
