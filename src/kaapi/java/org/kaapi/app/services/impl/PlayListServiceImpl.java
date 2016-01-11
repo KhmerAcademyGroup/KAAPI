@@ -776,6 +776,43 @@ public class PlayListServiceImpl implements PlayListServics{
 		return false;
 	}
 	
+	//well
+	@Override
+	public ArrayList<Playlist> listAllPlaylist() {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			ResultSet rs = null;
+			String sql = " SELECT * FROM tblplaylist WHERE status=true";
+			PreparedStatement ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				Playlist playlist = new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	
 	/*public static void main(String[] args) {
 		PlayListServiceImplement p =new PlayListServiceImplement();
