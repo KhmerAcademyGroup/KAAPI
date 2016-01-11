@@ -5,11 +5,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
-import javax.swing.text.Utilities;
 
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.PreCourse;
 import org.kaapi.app.forms.FrmAddPreCourse;
 import org.kaapi.app.forms.FrmEditPreCourse;
@@ -23,8 +24,24 @@ public class PreCourseServiceImpl implements PreCourseService {
 
 	@Autowired
 	DataSource ds;
-	Encryption en;
 		
+	@Override
+	public int countPreCourse(){
+		
+		String sql = "SELECT count(pr.pc_id) from pre_course pr";
+		try(Connection cnn = ds.getConnection(); Statement stm = cnn.createStatement();){
+			
+			ResultSet rs = stm.executeQuery(sql);
+			if(rs.next())
+				return rs.getInt("count");
+			
+			return 0;
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return 0;
+		}		
+	}
+	
 	@Override
 	public boolean addPreCourse(FrmAddPreCourse preCourse) {
 		
@@ -134,12 +151,15 @@ public class PreCourseServiceImpl implements PreCourseService {
 	}
 
 	@Override
-	public ArrayList<PreCourse> getAllPreCourses() {
+	public ArrayList<PreCourse> getAllPreCourses(Pagination pg) {
 		
 		ArrayList<PreCourse> preCourses = new ArrayList<PreCourse>();
-		final String SQL = "SELECT * FROM precourse.pre_course;";
+		final String SQL = "SELECT * FROM precourse.pre_course; offset ? limit ?";
 		
 		try(Connection cnn = ds.getConnection(); PreparedStatement pstmt = cnn.prepareStatement(SQL);) {
+			
+			pstmt.setInt(1, pg.offset());
+			pstmt.setInt(2, pg.getItem());
 			
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()){

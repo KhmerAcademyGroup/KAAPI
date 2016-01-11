@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.ForumCategory;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.FrmAddForumCategory;
+import org.kaapi.app.forms.FrmUpdateForumCategory;
 import org.kaapi.app.services.ForumCategoryService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,14 +132,14 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 	}
 
 	@Override
-	public boolean addForumCategory(ForumCategory froumCate) {
+	public boolean addForumCategory(FrmAddForumCategory froumCategory) {
 		String sql = "INSERT INTO tblforumcategory VALUES (NEXTVAL('seq_forumcategory'), ?)";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 				
 		) {
-				ps.setString(1, froumCate.getCategoryName());
+				ps.setString(1, froumCategory.getCategoryName());
 				if (ps.executeUpdate() > 0)
 					return true;
 		} catch (SQLException e) {
@@ -148,7 +150,7 @@ public class ForumCategoryServiceImpl implements ForumCategoryService {
 	}
 	
 	@Override
-	public boolean updateForumCate(ForumCategory forumCate) {
+	public boolean updateForumCate(FrmUpdateForumCategory forumCate) {
 		String sql = "UPDATE tblforumcategory SET categoryname=? WHERE categoryid=?";
 		try(
 				Connection cnn = dataSource.getConnection();

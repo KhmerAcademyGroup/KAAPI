@@ -50,7 +50,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 					+ "SET "
 				+ "departmentname = ? "
 					+ "WHERE "
-				+ "departmentid = ?;";
+				+ "departmentid = ?";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -71,7 +71,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 			+ "FROM "
 				+ "tbldepartment "
 			+ "WHERE "
-				+ "departmentid = ?;";
+				+ "departmentid = ?";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -119,16 +119,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
-	public int countDepartment() {
+	public int countDepartment(String keyword) {
 		String sql = "SELECT "
 				+ "COUNT(departmentid) as count "
 			+ "FROM "
-				+ "tbldepartment;";
+				+ "tbldepartment WHERE departmentname LIKE ?";
 
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
+				ps.setString(1, "%" + keyword  + "%");
 				ResultSet rs = ps.executeQuery();
 				if(rs.next()){
 					return rs.getInt(1);

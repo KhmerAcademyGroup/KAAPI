@@ -225,7 +225,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public boolean delete(String commentId) {
-		String sql = "DELETE TBLCOMMENT WHERE commentid=?";
+		String sql = "DELETE FROM TBLCOMMENT WHERE commentid=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, Integer.parseInt(Encryption.decode(commentId)));
 			if(ps.executeUpdate()>0){

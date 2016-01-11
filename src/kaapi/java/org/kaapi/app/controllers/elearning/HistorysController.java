@@ -1,8 +1,8 @@
 package org.kaapi.app.controllers.elearning;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.kaapi.app.entities.History;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.HistoryService;
@@ -23,6 +23,40 @@ public class HistorysController {
 	HistoryService historyservice;
 	
 		
+	
+	/*
+	 * action get listall history
+	 * we want to 
+	 */
+	@RequestMapping(value="/listallhistory", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listallhistory(@RequestParam(value ="page", required = false) int page,
+															@RequestParam(value ="item" , required = false) int item){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			int begin = (item * page) - item;
+			Pagination pagin = new Pagination();
+			pagin.setItem(item);
+			pagin.setPage(begin);
+			
+
+			ArrayList<History>  dto= historyservice.listAllHistory(pagin);
+			if(dto != null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	
 		/*action delete all history well
 		 * we want to delete all history in tblhistory
 		 * base on user ID
@@ -131,7 +165,7 @@ public class HistorysController {
 		
 		
 		//action count user history
-		@RequestMapping(value="/countstory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
+		@RequestMapping(value="/counthistory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> countUserHistory(@PathVariable("userid") String uid, 
 																	@PathVariable("videoname") String name){
 			

@@ -2,6 +2,7 @@ package org.kaapi.app.services;
 
 import java.util.ArrayList;
 
+import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.PreCourse;
 import org.kaapi.app.forms.FrmAddPreCourse;
 import org.kaapi.app.forms.FrmEditPreCourse;
@@ -13,9 +14,10 @@ public interface PreCourseService {
 	boolean deletePreCourse(String id);
 	boolean editPreCourse(FrmEditPreCourse preCourse);
 	boolean updatePreCourse(FrmUpdatePreCourse preCourse);
-	ArrayList<PreCourse> getAllPreCourses();
+	ArrayList<PreCourse> getAllPreCourses(Pagination pg);
 	boolean checkPrecourseStudent(String id);
 	PreCourse getPreCourse(String id);
 	PreCourse getPreCourseStudent(String uid);
+	int countPreCourse();
 	
 }

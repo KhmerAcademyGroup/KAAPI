@@ -26,14 +26,41 @@ public class PlayListControllers {
 	
 	@Autowired
 	PlayListServics playlistservice;
+	
+	/*
+	 * action get listallplaylist
+	 * we want to listallplaylist
+	 */
+	@RequestMapping(value="/listallplaylist", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listAllPlayList(){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			
+			ArrayList<Playlist>  dto= playlistservice.listAllPlaylist();
+			if(dto != null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
 
 	//
 	/*actionaddvideoToplayistdetail ->well
 	 * we want to add new playlist detail 
 	 * we need playlist ID and video ID
 	 */
-	@RequestMapping(value="/addvideotoplaylist/{playlistid}/{videoid}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> addVideoToPlayList(@PathVariable("playlistid") String pid,
+	@RequestMapping(value="/addvideotoplaylistDetail/{playlistid}/{videoid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> addVideoToPlayListDetail(@PathVariable("playlistid") String pid,
 																	@PathVariable("videoid") String vid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{		
@@ -138,9 +165,10 @@ public class PlayListControllers {
 	/*
 	 * action get playlist ->well
 	 * we want to list playlist
+	 * change from getplaylist to listVideoInPlaylist
 	 */
-	@RequestMapping(value="/getplaylist/{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getPlayList(	@PathVariable("playlistid") String pid,
+	@RequestMapping(value="/listVideoInPlaylist/{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listVideoInPlaylist(	@PathVariable("playlistid") String pid,
 															@RequestParam(value ="page", required = false) int page,
 															@RequestParam(value ="item" , required = false) int item){
 		Map<String, Object> map= new HashMap<String, Object>();
@@ -238,8 +266,8 @@ public class PlayListControllers {
 	 * we want to list playlist name 
 	 * we neen only (playlistName,userId)
 	 */
-	@RequestMapping(value="/listPlayListName/{playlistname}/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> listPlayListName(@PathVariable("playlistname") String listName,
+	@RequestMapping(value="/listPlayStatusByListName/{playlistname}/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlayStatusByListName(@PathVariable("playlistname") String listName,
 																@PathVariable("userid") String uid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		Playlist playlist =new Playlist();

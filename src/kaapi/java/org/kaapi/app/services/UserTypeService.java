@@ -14,7 +14,7 @@ public interface UserTypeService {
 	public int countUserType();
 	public List<UserType> searchUserType(String name,Pagination pagination);
 	public int countSearchUserType(String name);
-	public UserType getUserType(String userTypeId);
+	public UserType getUserType(String usertypeid);
 	public boolean insertUserType(FrmAddUserType userType);
 	public boolean updateUserType(FrmUpdateUserType userType);
 	public boolean deleteUserType(String userTypeId);

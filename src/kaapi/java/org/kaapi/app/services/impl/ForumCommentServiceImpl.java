@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.FrmAddAnswer;
+import org.kaapi.app.forms.FrmAddQuestion;
 import org.kaapi.app.services.ForumCommentService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -398,42 +400,18 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 	
 	@Override
-	public boolean inserForumComment(ForumComment dto) {
-		String sql = "INSERT INTO tblforumcomment VALUES (NEXTVAL('seq_forumcomment'), ?, ?, ?, ?, ?, ?, ?, ?)";
-		try(
-			Connection cnn = dataSource.getConnection();
-			PreparedStatement ps = cnn.prepareStatement(sql);
-		){
-			ps.setDate(1, (Date) dto.getPostDate());
-			ps.setString(2, dto.getTitle());
-			ps.setString(3, dto.getDetail());
-			ps.setString(4, dto.getTag());
-			ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getParentId())));
-			ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getCategoryId())));
-			ps.setInt(7, Integer.parseInt(Encryption.decode(dto.getUserId())));
-			ps.setBoolean(8, false);
-			if (ps.executeUpdate() > 0)
-				return true;
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	@Override
-	public boolean insertAnswer(ForumComment dto) {
-		String sql = "INSERT INTO tblforumcomment VALUES (NEXTVAL('seq_forumcomment'), ?, ?, ?, ?, ?, NULL, ?, ?)";
+	public boolean insertAnswer(FrmAddAnswer dto) {
+		String sql = " INSERT INTO tblforumcomment (commentid, postdate, title, detail, tag, parentid , categoryid, userid, selected)"
+					+" VALUES (NEXTVAL('seq_forumcomment'), NOW(), ? , ? , ? , ? , NULL , ? , false);";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-				ps.setDate(1, (Date) dto.getPostDate());
-				ps.setString(2, dto.getTitle());
-				ps.setString(3, dto.getDetail());
-				ps.setString(4, dto.getTag());
-				ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getParentId())));
-				ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getUserId())));
-				ps.setBoolean(7, false);
+				ps.setString(1, dto.getTitle());
+				ps.setString(2, dto.getDetail());
+				ps.setString(3, dto.getTags());
+				ps.setInt(4, Integer.parseInt(Encryption.decode(dto.getParentId())));
+				ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getUserId())));
 				if (ps.executeUpdate() > 0)
 					return true;
 			}catch(SQLException e){
@@ -443,20 +421,18 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public boolean insetQuestion(ForumComment dto) {
+	public boolean insetQuestion(FrmAddQuestion dto) {
 		String sql = " INSERT INTO tblforumcomment (commentid, postdate, title, detail, tag, categoryid, userid, selected)"
-				   + " values (NEXTVAL('seq_forumcomment'), ?, ?, ?, ?, ?, ?, ?)";
+				   + " values (NEXTVAL('seq_forumcomment'), now(), ?, ?, ?,?,?, true)";
 		   try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			    ps.setDate(1, (Date) dto.getPostDate());
-				ps.setString(2, dto.getTitle());
-				ps.setString(3, dto.getDetail());
-				ps.setString(4, dto.getTag());
-				ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getCategoryId())));
-				ps.setInt(6, Integer.parseInt(Encryption.decode(dto.getUserId())));
-				ps.setBoolean(7, dto.isSelected());
+				ps.setString(1, dto.getTitle());
+				ps.setString(2, dto.getDetail());
+				ps.setString(3, dto.getTags());
+				ps.setInt(4, Integer.parseInt(Encryption.decode(dto.getCategoryId())));
+				ps.setInt(5, Integer.parseInt(Encryption.decode(dto.getUserId())));
 				if (ps.executeUpdate() > 0)
 					return true;
 			}catch(SQLException e){

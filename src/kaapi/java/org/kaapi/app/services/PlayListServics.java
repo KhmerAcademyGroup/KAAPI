@@ -10,6 +10,7 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
+	public ArrayList<Playlist> listAllPlaylist();
 	public ArrayList<Playlist> list(Pagination pagin , Playlist dto);
 	public ArrayList<Video> listVideoInPlaylist(String playlistid , Pagination pagin );
 	public String getPlaylistName(String playlistid);
