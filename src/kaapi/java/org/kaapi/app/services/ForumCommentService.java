@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.FrmAddAnswer;
+import org.kaapi.app.forms.FrmAddQuestion;
 
 public interface ForumCommentService {
 	
@@ -21,9 +23,8 @@ public interface ForumCommentService {
 	public int countComment();
 	public ForumComment getQuestionById(String commentId);
 	
-	public boolean inserForumComment(ForumComment forumcomment);
-	public boolean insertAnswer(ForumComment forumcomment);
-	public boolean insetQuestion(ForumComment forumcomment);
+	public boolean insertAnswer(FrmAddAnswer addAnswer);
+	public boolean insetQuestion(FrmAddQuestion addQuestion);
 	public boolean deleteComment(String commentId);
 	
 	public String[] getAllTags();

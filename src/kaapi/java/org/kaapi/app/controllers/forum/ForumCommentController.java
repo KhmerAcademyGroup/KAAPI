@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.FrmAddAnswer;
+import org.kaapi.app.forms.FrmAddQuestion;
 import org.kaapi.app.services.ForumCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,13 +27,10 @@ public class ForumCommentController {
 	ForumCommentService forumCommentService;
 	
 	@RequestMapping(value="/addanswer" , method=RequestMethod.POST , headers = "Accept=application/json")
-	public ResponseEntity<Map<String,Object>> addAnswer(@RequestBody ForumComment forumComment){
+	public ResponseEntity<Map<String,Object>> addAnswer(@RequestBody FrmAddAnswer addAnswer){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
-			forumComment.setPostDate(new java.sql.Date(new java.util.Date().getTime()));
-			forumComment.setCategoryId(null);
-			forumComment.setSelected(true);
-			if(forumCommentService.insertAnswer(forumComment)){
+			if(forumCommentService.insertAnswer(addAnswer)){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD HAS BEEN INSERTED");
 			}
@@ -47,12 +46,10 @@ public class ForumCommentController {
 	}
 	
 	@RequestMapping(value="/addquestion" , method=RequestMethod.POST , headers = "Accept=application/json")
-	public ResponseEntity<Map<String,Object>> addQuestion(@RequestBody ForumComment forumComment){
+	public ResponseEntity<Map<String,Object>> addQuestion(@RequestBody FrmAddQuestion addQuestion){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
-			forumComment.setPostDate(new java.sql.Date(new java.util.Date().getTime()));
-			forumComment.setSelected(true);
-			if(forumCommentService.insetQuestion(forumComment)){
+			if(forumCommentService.insetQuestion(addQuestion)){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD HAS BEEN INSERTED");
 			}
