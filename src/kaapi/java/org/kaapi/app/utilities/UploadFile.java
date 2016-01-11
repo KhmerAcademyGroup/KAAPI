@@ -65,12 +65,12 @@ public class UploadFile {
 
 	}
 */
-	public String sigleFileUpload(MultipartFile file, String savePath) {
+	public String UploadFiles(MultipartFile file, String savePath,String fileName) {
 		String filename = file.getOriginalFilename();
-		String ramdom_file_name = "";
+		
 		if (!file.isEmpty()) {
 			try {
-				ramdom_file_name = UUID.randomUUID() + ".jpg";
+				
 
 				byte[] bytes = file.getBytes();
 
@@ -80,22 +80,22 @@ public class UploadFile {
 				}
 
 				// creating the file on server
-				File serverFile = new File(savePath + File.separator + ramdom_file_name);
+				File serverFile = new File(savePath + File.separator + fileName);
 				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
 
 				System.out.println(serverFile.getAbsolutePath());
-				System.out.println("You are successfully uploaded file " + ramdom_file_name);
+				System.out.println("You are successfully uploaded file " + fileName);
 
 			} catch (Exception e) {
-				System.out.println("You are failed to upload " + ramdom_file_name + " => " + e.getMessage());
+				System.out.println("You are failed to upload " + fileName + " => " + e.getMessage());
 			}
 		} else {
 			System.out.println("You are failed to upload " + filename + " because the file was empty!");
 		}
 
-		return ramdom_file_name;
+		return fileName;
 	}
 
 }

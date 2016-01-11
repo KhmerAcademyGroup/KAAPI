@@ -2,6 +2,7 @@ package org.kaapi.app.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,12 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("api/uploadimage")
-public class UploadImage {
+public class UploadFiles {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<Map<String, Object>> uploadImageCategory(
 			@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value="url") String url, HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();		
+		Map<String, Object> map = new HashMap<String, Object>();
+		String ramdom_file_name="";
 		try {
 			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/"+url);
 			UploadFile fileName = new UploadFile();
@@ -31,9 +33,38 @@ public class UploadImage {
 				map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			} else {
-				String CategoryImage = fileName.sigleFileUpload(file, savePath);
+				ramdom_file_name = UUID.randomUUID() + ".jpg";
+				String CategoryImage = fileName.UploadFiles(file, savePath,ramdom_file_name);
 				map.put("STATUS", true);
 				map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
+				map.put("IMG", CategoryImage);
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/update")
+	public ResponseEntity<Map<String, Object>> updateFile(
+			@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value="url") String url,@RequestParam("filename") String filename, HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		try {
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/"+url);
+			UploadFile fileName = new UploadFile();
+			if (file == null) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "IMAGE HAS NOT BEEN UPDATED");
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			} else {
+				
+				String CategoryImage = fileName.UploadFiles(file, savePath,filename);
+				map.put("STATUS", true);
+				map.put("MESSAGE", "IMAGE HAS BEEN UPDATED");
 				map.put("IMG", CategoryImage);
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			}
