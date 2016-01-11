@@ -50,7 +50,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 					+ "SET "
 				+ "departmentname = ? "
 					+ "WHERE "
-				+ "departmentid = ?;";
+				+ "departmentid = ?";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -71,7 +71,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 			+ "FROM "
 				+ "tbldepartment "
 			+ "WHERE "
-				+ "departmentid = ?;";
+				+ "departmentid = ?";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -123,7 +123,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 		String sql = "SELECT "
 				+ "COUNT(departmentid) as count "
 			+ "FROM "
-				+ "tbldepartment;";
+				+ "tbldepartment";
 
 		try(
 				Connection cnn = dataSource.getConnection();
