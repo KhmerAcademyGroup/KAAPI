@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.UserType;
 import org.kaapi.app.forms.FrmAddUserType;
@@ -24,6 +22,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 	@Autowired
 	private DataSource dataSource;
 	
+	// List All UserType
 	@Override
 	public List<UserType> listUserType(Pagination pagination) {
 		String sql = "SELECT "
@@ -63,6 +62,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 		return null;
 	}
 
+	// Count UserType
 	@Override
 	public int countUserType() {
 		String sql = "SELECT "
@@ -84,18 +84,11 @@ public class UserTypeServiceImpl  implements UserTypeService{
 
 	}
 	
+	//List Search UserType by name
 	@Override
 	public List<UserType> searchUserType(String name,Pagination pagination) {
-		String sql = "SELECT "
-				+ "UT.*, "
-			+ "COUNT(DISTINCT USERID) COUNTUSERS "
-				+ "FROM "
-			+ "TBLUSERTYPE UT "
-				+ "LEFT JOIN "
-			+ "TBLUSER U ON UT.USERTYPEID=U.USERTYPEID "
-				+ "GROUP BY UT.USERTYPEID "
-			+ "WHERE "
-				+ "LOWER(UT.USERTYPENAME) LIKE LOWER(?) ORDER BY UT.USERTYPEID DESC LIMIT ? OFFSET ? ";
+		String sql = "SELECT UT.*, COUNT(DISTINCT USERID) COUNTUSERS FROM TBLUSERTYPE "
+				+ "UT LEFT JOIN TBLUSER U ON UT.USERTYPEID=U.USERTYPEID WHERE LOWER(UT.USERTYPENAME) LIKE LOWER(?) GROUP BY UT.USERTYPEID ORDER BY UT.USERTYPEID DESC LIMIT ? OFFSET ?";
 		List<UserType> list = new ArrayList<UserType>();
 		UserType userType = null;
 		try(
@@ -123,8 +116,38 @@ public class UserTypeServiceImpl  implements UserTypeService{
 				e.printStackTrace();
 			}
 	return null;
+	}	
+
+	// List UserType By Id
+	@Override
+	public UserType getUserType(String usertypeid) {
+		String sql = "SELECT UT.*, COUNT(DISTINCT USERID) COUNTUSERS FROM TBLUSERTYPE UT LEFT JOIN TBLUSER U ON UT.USERTYPEID=U.USERTYPEID WHERE UT.USERTYPEID=? GROUP BY UT.USERTYPEID";
+		UserType userType = null;
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+			){
+			ps.setInt(1, Integer.parseInt(Encryption.decode(usertypeid)));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				userType = new UserType();
+				userType.setUserTypeId(Encryption.encode(rs.getString("usertypeid")));
+				userType.setUserTypeName(rs.getString("usertypename"));
+				userType.setViewable(rs.getBoolean("viewable"));
+				userType.setCommentable(rs.getBoolean("commentable"));
+				userType.setPostable(rs.getBoolean("postable"));
+				userType.setDeleteable(rs.getBoolean("deleteable"));
+				userType.setUserable(rs.getBoolean("userable"));
+				userType.setCountUsers(rs.getInt("countusers"));
+			}
+			return userType;
+		}catch(SQLException e){
+				e.printStackTrace();
+			}
+	return null;
 	}
 
+	// Count SearchUserType by name
 	@Override
 	public int countSearchUserType(String name) {
 		String sql = "SELECT "
@@ -133,7 +156,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 					+ "TBLUSERTYPE UT "
 						+ "WHERE "
 					+ "LOWER(UT.USERTYPENAME) "
-						+ "LIKE LOWER('?') ";
+						+ "LIKE LOWER(?) ";
 		try (
 				Connection cnn = dataSource.getConnection(); 
 				PreparedStatement ps = cnn.prepareStatement(sql);
@@ -149,41 +172,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 		return 0;
 	}
 
-	@Override
-	public UserType getUserType(String userTypeId) {
-		/*String sql = "SELECT "
-				+ "UT.* "
-					+ "COUNT(DISTINCT USERID) COUNTUSERS "
-				+ "FROM "
-					+ "TBLUSERTYPE UT "
-				+ "WHERE "
-					+ "UT.USERTYPEID ='+usertypeid+' "
-				+ "GROUP BY UT.USERTYPEID ";*/
-		String sql = "SELECT UT.*, COUNT(DISTINCT USERID) COUNTUSERS FROM TBLUSERTYPE UT LEFT JOIN TBLUSER U ON UT.USERTYPEID=U.USERTYPEID WHERE UT.USERTYPEID="+userTypeId+" GROUP BY UT.USERTYPEID";
-		UserType userType = null;
-		try(
-				Connection cnn = dataSource.getConnection();
-				PreparedStatement ps = cnn.prepareStatement(sql);
-			){
-			ResultSet rs = ps.executeQuery();
-			if(rs.next()){
-				userType = new UserType();
-				userType.setUserTypeId(Encryption.encode(rs.getString("usertypeid")));
-				userType.setUserTypeName(rs.getString("usertypename"));
-				userType.setViewable(rs.getBoolean("viewable"));
-				userType.setCommentable(rs.getBoolean("commentable"));
-				userType.setPostable(rs.getBoolean("postable"));
-				userType.setDeleteable(rs.getBoolean("deleteable"));
-				userType.setUserable(rs.getBoolean("userable"));
-				userType.setCountUsers(rs.getInt("countusers"));
-			}
-		}catch(SQLException e){
-				e.printStackTrace();
-			}
-	return null;
-	}
-
-
+	// Insert new UserType
 	@Override
 	public boolean insertUserType(FrmAddUserType userType) {
 		String sql = "INSERT "
@@ -206,6 +195,8 @@ public class UserTypeServiceImpl  implements UserTypeService{
 		}
 		return false;
 	}
+	
+	// Update UserType
 	@Override
 	public boolean updateUserType(FrmUpdateUserType userType) {
 		String sql = "UPDATE "
@@ -238,6 +229,7 @@ public class UserTypeServiceImpl  implements UserTypeService{
 		return false;
 	}
 
+	// Delete UserType
 	@Override
 	public boolean deleteUserType(String userTypeId) {
 		String sql = "DELETE "
