@@ -21,11 +21,38 @@ public class UploadImage {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<Map<String, Object>> uploadImageCategory(
-			@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request) {
+			@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value="url") String url, HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();		
+		try {
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/"+url);
+			UploadFile fileName = new UploadFile();
+			if (file == null) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			} else {
+				String CategoryImage = fileName.sigleFileUpload(file, savePath);
+				map.put("STATUS", true);
+				map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
+				map.put("IMG", CategoryImage);
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+	}
+
+	
+	/*@RequestMapping(method = RequestMethod.POST, value = "/upload")
+	public ResponseEntity<Map<String, Object>> updateImage(
+			@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value="url") String url, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		try {
-			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/category");
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/"+url);
 			UploadFile fileName = new UploadFile();
 			if (file == null) {
 				map.put("STATUS", false);
@@ -45,8 +72,9 @@ public class UploadImage {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 
 	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/maincategory")
+	*/
+	
+	/*@RequestMapping(method = RequestMethod.POST, value = "/maincategory")
 	public ResponseEntity<Map<String, Object>> uploadImageMainCategory(
 			@RequestParam(value = "LOGO_IMG1", required = false) MultipartFile file1,
 			@RequestParam(value = "LOGO_IMG", required = false) MultipartFile file, HttpServletRequest request) {
@@ -72,6 +100,6 @@ public class UploadImage {
 			map.put("STATUS", false);
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-	}
+	}*/
 
 }

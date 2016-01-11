@@ -19,7 +19,7 @@ public class UploadFile {
 		this.files = files;
 	}
 
-	public String[] multipleFileUpload(MultipartFile[] file1,String savePath) {
+	/*public String[] multipleFileUpload(MultipartFile[] file1,String savePath) {
 
 		
 		System.err.println(file1.toString());
@@ -64,7 +64,7 @@ public class UploadFile {
 		return ramdom_file_name;
 
 	}
-
+*/
 	public String sigleFileUpload(MultipartFile file, String savePath) {
 		String filename = file.getOriginalFilename();
 		String ramdom_file_name = "";
@@ -74,9 +74,9 @@ public class UploadFile {
 
 				byte[] bytes = file.getBytes();
 
-				File path = new File(savePath);
+				File path = new File(savePath);				
 				if (!path.exists()) {
-					path.mkdir();
+					path.mkdirs();
 				}
 
 				// creating the file on server
