@@ -5,15 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 
-
-
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.kaapi.app.entities.MainCategory;
-import org.kaapi.app.entities.addAndEdit.addMainCategory;
+import org.kaapi.app.forms.FrmAddMainCategory;
+import org.kaapi.app.forms.FrmUpdateMainCategory;
 import org.kaapi.app.services.MainCategoryService;
-import org.kaapi.app.utilities.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -24,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/elearning/maincategory")
@@ -96,7 +90,7 @@ public class MainCategoryController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT)
-	public ResponseEntity<Map<String, Object>> updateMainCategory(@RequestBody MainCategory maincategory) {
+	public ResponseEntity<Map<String, Object>> updateMainCategory(@RequestBody FrmUpdateMainCategory maincategory) {
 
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -116,7 +110,7 @@ public class MainCategoryController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> insertMainCategory(@RequestBody addMainCategory maincategory) {
+	public ResponseEntity<Map<String, Object>> insertMainCategory(@RequestBody FrmAddMainCategory maincategory) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{

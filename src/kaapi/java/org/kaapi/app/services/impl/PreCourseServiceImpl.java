@@ -11,6 +11,9 @@ import javax.sql.DataSource;
 import javax.swing.text.Utilities;
 
 import org.kaapi.app.entities.PreCourse;
+import org.kaapi.app.forms.FrmAddPreCourse;
+import org.kaapi.app.forms.FrmEditPreCourse;
+import org.kaapi.app.forms.FrmUpdatePreCourse;
 import org.kaapi.app.services.PreCourseService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ public class PreCourseServiceImpl implements PreCourseService {
 	Encryption en;
 		
 	@Override
-	public boolean addPreCourse(PreCourse preCourse) {
+	public boolean addPreCourse(FrmAddPreCourse preCourse) {
 		
 		final String SQL = "INSERT INTO precourse.pre_course VALUES(nextval('pre_course_id'),now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 		
@@ -67,7 +70,7 @@ public class PreCourseServiceImpl implements PreCourseService {
 	}
 
 	@Override
-	public boolean editPreCourse(PreCourse preCourse) {
+	public boolean editPreCourse(FrmEditPreCourse preCourse) {
 		
 		final String SQL = "UPDATE precourse.pre_course SET pc_dob = ?, pc_email = ?, "
 				+ "pc_java = ?, pc_payment = ?, pc_pob = ?, pc_web = ?, pc_tel = ?, "
@@ -98,7 +101,7 @@ public class PreCourseServiceImpl implements PreCourseService {
 	}
 
 	@Override
-	public boolean updatePreCourse(PreCourse preCourse) {
+	public boolean updatePreCourse(FrmUpdatePreCourse preCourse) {
 		
 		final String SQL = "UPDATE precourse.pre_course SET pc_dob = ?, pc_email = ?, "
 				+ "pc_java = ?, pc_pob = ?, pc_web = ?, pc_tel = ?, "

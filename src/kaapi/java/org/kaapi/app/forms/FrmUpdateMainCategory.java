@@ -1,0 +1,55 @@
+package org.kaapi.app.forms;
+
+public class FrmUpdateMainCategory {
+
+	private String mainCategoryId;
+	private String mainCategoryName;
+	private String mainCategoryLogoUrl;
+	private int mainCategoryOrder;	
+	private String backgroundImage;
+	private String Color;
+	private boolean status;
+	public String getMainCategoryId() {
+		return mainCategoryId;
+	}
+	public void setMainCategoryId(String mainCategoryId) {
+		this.mainCategoryId = mainCategoryId;
+	}
+	public String getMainCategoryName() {
+		return mainCategoryName;
+	}
+	public void setMainCategoryName(String mainCategoryName) {
+		this.mainCategoryName = mainCategoryName;
+	}
+	public String getMainCategoryLogoUrl() {
+		return mainCategoryLogoUrl;
+	}
+	public void setMainCategoryLogoUrl(String mainCategoryLogoUrl) {
+		this.mainCategoryLogoUrl = mainCategoryLogoUrl;
+	}
+	public int getMainCategoryOrder() {
+		return mainCategoryOrder;
+	}
+	public void setMainCategoryOrder(int mainCategoryOrder) {
+		this.mainCategoryOrder = mainCategoryOrder;
+	}
+	public String getBackgroundImage() {
+		return backgroundImage;
+	}
+	public void setBackgroundImage(String backgroundImage) {
+		this.backgroundImage = backgroundImage;
+	}
+	public String getColor() {
+		return Color;
+	}
+	public void setColor(String color) {
+		Color = color;
+	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+}

@@ -3,13 +3,16 @@ package org.kaapi.app.services;
 import java.util.ArrayList;
 
 import org.kaapi.app.entities.PreCourse;
+import org.kaapi.app.forms.FrmAddPreCourse;
+import org.kaapi.app.forms.FrmEditPreCourse;
+import org.kaapi.app.forms.FrmUpdatePreCourse;
 
 public interface PreCourseService {
 	
-	boolean addPreCourse(PreCourse preCourse);
+	boolean addPreCourse(FrmAddPreCourse preCourse);
 	boolean deletePreCourse(String id);
-	boolean editPreCourse(PreCourse preCourse);
-	boolean updatePreCourse(PreCourse preCourse);
+	boolean editPreCourse(FrmEditPreCourse preCourse);
+	boolean updatePreCourse(FrmUpdatePreCourse preCourse);
 	ArrayList<PreCourse> getAllPreCourses();
 	boolean checkPrecourseStudent(String id);
 	PreCourse getPreCourse(String id);
