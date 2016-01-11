@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/elearning")
-public class VideoControllers {
+public class VideoController {
 
 	@Autowired VideosService videoService;
 
@@ -177,7 +177,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -207,7 +207,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -237,7 +237,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -268,7 +268,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -298,7 +298,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -329,7 +329,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -360,7 +360,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -392,7 +392,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -445,7 +445,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -476,7 +476,7 @@ public class VideoControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", video);
-				map.put("PAGINATION", page);
+				map.put("PAGINATION", pagination);
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
