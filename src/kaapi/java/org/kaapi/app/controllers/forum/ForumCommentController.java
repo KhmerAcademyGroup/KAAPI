@@ -8,6 +8,8 @@ import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.forms.FrmAddAnswer;
 import org.kaapi.app.forms.FrmAddQuestion;
+import org.kaapi.app.forms.FrmUpdateAnswer;
+import org.kaapi.app.forms.FrmUpdateQuestion;
 import org.kaapi.app.services.ForumCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,6 +47,44 @@ public class ForumCommentController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/updateanswer" , method=RequestMethod.PUT , headers = "Accept=application/json")
+	public ResponseEntity<Map<String,Object>> updateAnswer(@RequestBody FrmUpdateAnswer answer){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			if(forumCommentService.updateAnswer(answer)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN UPDATED");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN UPDATED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/deleteanswer/{answerid}" , method=RequestMethod.DELETE , headers = "Accept=application/json")
+	public ResponseEntity<Map<String,Object>> deleteAnswer(@PathVariable("answerid") String answerId){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			if(forumCommentService.deleteAnswer(answerId)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN DELETED");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN DELETED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
 	@RequestMapping(value="/addquestion" , method=RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String,Object>> addQuestion(@RequestBody FrmAddQuestion addQuestion){
 		Map<String , Object> map = new HashMap<String , Object>();
@@ -56,6 +96,45 @@ public class ForumCommentController {
 			else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD HAS NOT BEEN INSERTED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/updatequestion" , method=RequestMethod.PUT , headers = "Accept=application/json")
+	public ResponseEntity<Map<String,Object>> updateQuestion(@RequestBody FrmUpdateQuestion question){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			if(forumCommentService.updateQuestion(question)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN UPDATED");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN UPDATED");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/deletequestion/{questionid}" , method=RequestMethod.DELETE , headers = "Accept=application/json")
+	public ResponseEntity<Map<String,Object>> deleteQuestion(@PathVariable("questionid") String questionid){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			if(forumCommentService.deleteQuestion(questionid)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN DELETED");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN DELETED");
 			}
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
@@ -79,24 +158,7 @@ public class ForumCommentController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/getFooter" , method = RequestMethod.GET , headers = "Accept=application/json")
-	public ResponseEntity<Map<String , Object>> getFooterCountCommentCountQuestionGetTags(){
-		Map<String , Object> map = new HashMap<String , Object>();
-		try{
-			String tags[] = forumCommentService.getAllTags();
-			map.put("MESSAGE", "RECORD FOUND");
-			map.put("STATUS", true);
-			map.put("TAGS",tags);
-			map.put("TOTAL_COMMENT",forumCommentService.countComment());
-			map.put("TOTAL_QUESTION",forumCommentService.countQuestion());
-		}catch(Exception e){
-			map.put("MESSAGE", "OPERATION FAIL");
-			map.put("STATUS", false);
-		}
-		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
-	}
-
-	@RequestMapping(value="/getquestion/{qid}" , method = RequestMethod.GET , headers = "Accept=application/json")
+	@RequestMapping(value="/getquestionlistanswer/{qid}" , method = RequestMethod.GET , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> getQuestionByIdListAnswerByQuestionId(
 			  @PathVariable("qid") String qid 
 			, @RequestParam(value = "page", required = false , defaultValue="1") int page 
@@ -186,7 +248,6 @@ public class ForumCommentController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 
-	@RequestMapping(value="/listquestion/c/{cid}" , method = RequestMethod.GET , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> listQuestionByCategoryId(
 			  @PathVariable("cid") String cateid,
 			  @RequestParam(value = "page", required = false , defaultValue="1") int page ,
@@ -243,4 +304,31 @@ public class ForumCommentController {
 		}
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
+	
+	@RequestMapping(value="/totalquestion" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> totalQuestion(){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			map.put("STATUS", true);
+			map.put("TOTAL_QUESTION", forumCommentService.countQuestion());
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/totalanswer" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> totalAnswer(){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			map.put("STATUS", true);
+			map.put("TOTAL_ANSWER", forumCommentService.countAnswer());
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
 }

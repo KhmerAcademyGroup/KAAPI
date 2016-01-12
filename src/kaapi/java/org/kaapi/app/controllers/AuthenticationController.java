@@ -38,7 +38,7 @@ public class AuthenticationController {
 				map.put("PROFILE_IMG_URL", u.getUserImageUrl());
 				map.put("COVER_IMG_URL", u.getCoverphoto());
 			}else{
-				map.put("MESSAGE", "Logined unsuccess! Invalid username or password!");
+				map.put("MESSAGE", "Logined unsuccess! Invalid email or password!");
 				map.put("STATUS", false);
 			}
 		}catch(Exception e){
