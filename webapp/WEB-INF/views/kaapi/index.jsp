@@ -78,7 +78,7 @@
         if(key && key.trim() != "") {
            /*  var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
             window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth); */
-            var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("Authorization", "Basic a2FhcGk6MTIz", "header");
+            var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("Authorization", "Basic ${kaapi}", "header");
             window.swaggerUi.api.clientAuthorizations.add("Authorization", apiKeyAuth);
             log("added key " + key);
         }
@@ -109,7 +109,7 @@
     <a id="logo" href="http://khmeracademy.org">KA API UI</a>
     <form id='api_selector'>
       <div class='input'><input placeholder="${pageContext.request.contextPath}/api-docs" value="${pageContext.request.contextPath}/api-docs" id="input_baseUrl" name="baseUrl" type="hidden"/></div>
-      <div class='input'><input placeholder="api_key" value="Basic a2FhcGk6MTIz" id="input_apiKey" name="apiKey" type="hidden"/></div>
+      <div class='input'><input placeholder="api_key" value="Basic S0FBUEkhQCMkOiFAIyRLQUFQSQ==" id="input_apiKey" name="apiKey" type="hidden"/></div>
      <!--  <div class='input'><a id="explore" href="#" data-sw-translate >Explore</a></div> -->
     </form>
   </div>
