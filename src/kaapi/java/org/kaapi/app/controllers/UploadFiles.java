@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("api/uploadimage")
+@RequestMapping("api/uploadfile")
 public class UploadFiles {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
-	public ResponseEntity<Map<String, Object>> uploadImageCategory(
+	public ResponseEntity<Map<String, Object>> uploadfile(
 			@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value="url") String url, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String ramdom_file_name="";
