@@ -72,7 +72,7 @@ public class KAAPISecurityWebConfiguration extends WebSecurityConfigurerAdapter{
 		
 		http
 			.authorizeRequests()
-			.antMatchers("/webserviceapi/**").hasAnyRole("USER","ADMIN")
+			.antMatchers("/wsapi/**").hasAnyRole("USER","ADMIN")
 			.antMatchers("/user/**").hasAnyRole("USER" , "ADMIN")
 			.antMatchers("/admin/**").hasRole("ADMIN");
 		http
@@ -91,6 +91,7 @@ public class KAAPISecurityWebConfiguration extends WebSecurityConfigurerAdapter{
 //			.sessionFixation()
 //			.changeSessionId()
 			.maximumSessions(1)
+			.maxSessionsPreventsLogin(true)
 			.expiredUrl("/login")
 			.sessionRegistry(sessionRegistryImpl());
 		http

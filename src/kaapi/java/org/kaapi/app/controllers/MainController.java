@@ -45,9 +45,10 @@ public class MainController {
 	}
 	
 	@ApiIgnore
-	@RequestMapping(value={"/webserviceapi",} , method = RequestMethod.GET)
+	@RequestMapping(value={"/wsapi",} , method = RequestMethod.GET)
 	public String kaAPIPage(ModelMap m){
 		m.addAttribute("msg","API PAGE");
+		m.addAttribute("kaapi" , header);
 		return "kaapi/index";
 	}
 	
