@@ -16,7 +16,7 @@
 	<h1>${msg }</h1>
 	
 	<% 
-		response.sendRedirect("webserviceapi");
+		response.sendRedirect("wsapi");
 	%>
 
 

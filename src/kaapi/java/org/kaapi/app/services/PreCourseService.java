@@ -12,7 +12,6 @@ public interface PreCourseService {
 	
 	boolean addPreCourse(FrmAddPreCourse preCourse);
 	boolean deletePreCourse(String id);
-	boolean editPreCourse(FrmEditPreCourse preCourse);
 	boolean updatePreCourse(FrmUpdatePreCourse preCourse);
 	ArrayList<PreCourse> getAllPreCourses(Pagination pg);
 	boolean checkPrecourseStudent(String id);

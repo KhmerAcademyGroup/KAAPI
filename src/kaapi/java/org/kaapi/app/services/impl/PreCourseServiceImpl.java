@@ -87,37 +87,6 @@ public class PreCourseServiceImpl implements PreCourseService {
 	}
 
 	@Override
-	public boolean editPreCourse(FrmEditPreCourse preCourse) {
-		
-		final String SQL = "UPDATE precourse.pre_course SET pc_dob = ?, pc_email = ?, "
-				+ "pc_java = ?, pc_payment = ?, pc_pob = ?, pc_web = ?, pc_tel = ?, "
-				+ "pc_university = ?, pc_userimage = ?, pc_username = ?, pc_comment = ?, "
-				+ "pc_gender = ?, pc_year = ? WHERE pc_id = ?;";
-		try(Connection cnn = ds.getConnection(); PreparedStatement pstmt = cnn.prepareStatement(SQL);) {
-			
-			pstmt.setDate(1, (Date) preCourse.getDob());
-			pstmt.setString(2, preCourse.getEmail());
-			pstmt.setString(3, preCourse.getJavaCourse());
-			pstmt.setInt(4, preCourse.getPayment());
-			pstmt.setString(5, preCourse.getPob());
-			pstmt.setString(6, preCourse.getWebCourse());
-			pstmt.setString(7, preCourse.getTelephone());
-			pstmt.setString(8, preCourse.getUniversity());
-			pstmt.setString(9, preCourse.getUserImage());
-			pstmt.setString(10, preCourse.getUsername());
-			pstmt.setString(11, preCourse.getComment());
-			pstmt.setString(12, preCourse.getGender());
-			pstmt.setString(13, preCourse.getYear());
-			pstmt.setInt(14, Integer.parseInt(Encryption.decode(preCourse.getId())));
-			if(pstmt.executeUpdate() > 0)
-				return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	@Override
 	public boolean updatePreCourse(FrmUpdatePreCourse preCourse) {
 		
 		final String SQL = "UPDATE precourse.pre_course SET pc_dob = ?, pc_email = ?, "
