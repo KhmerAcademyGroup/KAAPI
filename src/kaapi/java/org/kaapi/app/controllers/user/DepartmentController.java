@@ -1,4 +1,4 @@
-package org.kaapi.app.controllers.department;
+package org.kaapi.app.controllers.user;
 
 import java.util.HashMap;
 import java.util.List;
