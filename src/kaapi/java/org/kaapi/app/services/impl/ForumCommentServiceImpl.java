@@ -14,6 +14,8 @@ import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.forms.FrmAddAnswer;
 import org.kaapi.app.forms.FrmAddQuestion;
+import org.kaapi.app.forms.FrmUpdateAnswer;
+import org.kaapi.app.forms.FrmUpdateQuestion;
 import org.kaapi.app.services.ForumCommentService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,22 +72,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 		return null;
 	}
 
-	@Override
-	public int countQuestion() {
-		String sql = "SELECT COUNT(*) FROM TBLFORUMCOMMENT WHERE Parentid IS NULL";
-		try(
-				Connection cnn = dataSource.getConnection();
-				PreparedStatement ps = cnn.prepareStatement(sql);
-		){
-				ResultSet rs = ps.executeQuery();
-				if(rs.next()){
-					return rs.getInt(1);
-				}
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-		return 0;
-	}
+	
 
 	@Override
 	public List<ForumComment> listQuestionByUserid(String userid, Pagination pagination) {
@@ -346,7 +333,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	}
 
 	@Override
-	public int countComment() {
+	public int countAnswer() {
 		String sql = "SELECT COUNT(*) FROM tblforumcomment WHERE Parentid IS NOT NULL";
 		try(
 				Connection cnn = dataSource.getConnection();
@@ -362,6 +349,23 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 		return 0;
 	}
 
+	@Override
+	public int countQuestion() {
+		String sql = "SELECT COUNT(*) FROM TBLFORUMCOMMENT WHERE Parentid IS NULL";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ResultSet rs = ps.executeQuery();
+				if(rs.next()){
+					return rs.getInt(1);
+				}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	@Override
 	public ForumComment getQuestionById(String commentId) {
 		String sql =  " SELECT C1.*, U.Username, U.UserImageURL, COUNT(C2.Commentid) COMMENTCOUNT, COUNT(DISTINCT(V.Userid)) VOTECOUNT "
@@ -441,21 +445,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 			return false;
 	}
 
-	@Override
-	public boolean deleteComment(String commentId) {
-		String sql = "DELETE FROM TBLFORUMCOMMENT WHERE categoryid=?";
-		 try(
-					Connection cnn = dataSource.getConnection();
-					PreparedStatement ps = cnn.prepareStatement(sql);
-		 ){
-				  ps.setInt(1, Integer.parseInt(Encryption.decode(commentId)));
-				  if (ps.executeUpdate() > 0)
-						return true;
-				}catch(SQLException e){
-					e.printStackTrace();
-				}
-				return false;
-	}
+	
 
 	@Override
 	public String[] getAllTags() {
@@ -472,6 +462,76 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+
+	@Override
+	public boolean deleteAnswer(String answerId) {
+		String sql = "UPDATE tblforumcomment SET status = ? WHERE commentid = ?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+		   ps.setBoolean(1, false);
+		   ps.setInt(2, Integer.parseInt(Encryption.decode(answerId)));
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+
+
+	@Override
+	public boolean updateAnswer(FrmUpdateAnswer updateAnswer) {
+		String sql = "UPDATE tblforumcomment SET title=?, detail=?, tag=? , categoryid = ? WHERE commentid = ?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+			ps.setString(1, updateAnswer.getTitle());
+			ps.setString(2, updateAnswer.getDetail());
+			ps.setString(3, updateAnswer.getTags());
+			ps.setInt(4, Integer.parseInt(Encryption.decode(updateAnswer.getCategoryId())));
+			ps.setInt(5, Integer.parseInt(Encryption.decode(updateAnswer.getAnswerId())));
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+
+
+	@Override
+	public boolean deleteQuestion(String questionId) {
+		String sql = "UPDATE tblforumcomment SET status = ? WHERE commentid = ?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+			 ps.setBoolean(1, false);
+			ps.setInt(2, Integer.parseInt(Encryption.decode(questionId)));
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+
+
+	@Override
+	public boolean updateQuestion(FrmUpdateQuestion updateQuestion) {
+		String sql = "UPDATE tblforumcomment SET title=?, detail=?, tag=? , categoryid = ? WHERE commentid = ?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+			ps.setString(1, updateQuestion.getTitle());
+			ps.setString(2, updateQuestion.getDetail());
+			ps.setString(3, updateQuestion.getTags());
+			ps.setInt(4, Integer.parseInt(Encryption.decode(updateQuestion.getCategoryId())));
+			ps.setInt(5, Integer.parseInt(Encryption.decode(updateQuestion.getQuestionId())));
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

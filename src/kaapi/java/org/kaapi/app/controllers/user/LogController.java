@@ -1,4 +1,4 @@
-package org.kaapi.app.controllers.log;
+package org.kaapi.app.controllers.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;
