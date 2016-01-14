@@ -31,28 +31,35 @@ public class UniversityController {
 	public ResponseEntity<Map<String, Object>> findAllUniversityByName(
 			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
 			@RequestParam(value="page", defaultValue="1") int page, @RequestParam(value="item", defaultValue="10") int item) {
-		Pagination pagination= new Pagination();
-		pagination.setPage(page);
-		pagination.setItem(item);
-		List<University> lstUniversity = universityService
-				.findAllUniverstiyByName(pagination, keyword);
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (lstUniversity == null) {
-			map.put("MESSAGE", "RECORD NOT FOUND!");
+		try{
+			Pagination pagination= new Pagination();
+			pagination.setPage(page);
+			pagination.setItem(item);
+			List<University> lstUniversity = universityService
+					.findAllUniverstiyByName(pagination, keyword);
+			
+	
+			if (lstUniversity == null) {
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+				map.put("STATUS", false);
+				return new ResponseEntity<Map<String, Object>>(map,
+						HttpStatus.NOT_FOUND);
+			}
+			pagination.setTotalCount(universityService.countUniversity());
+			pagination.setTotalPages(pagination.totalPages());
+			map.put("MESSAGE", "RECORD FOUND!");
+			map.put("STATUS", true);
+			map.put("RESP_DATA", lstUniversity);
+			map.put("TOTAL_RECORD", pagination.getTotalCount());
+			map.put("TOTAL_PAGE", pagination.getTotalPages());
+			map.put("CURRENT_PAGE", pagination.getPage());
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map,
-					HttpStatus.NOT_FOUND);
 		}
-		pagination.setTotalCount(universityService.countUniversity());
-		pagination.setTotalPages(pagination.totalPages());
-		map.put("MESSAGE", "RECORD FOUND!");
-		map.put("STATUS", true);
-		map.put("RESP_DATA", lstUniversity);
-		map.put("TOTAL_RECORD", pagination.getTotalCount());
-		map.put("TOTAL_PAGE", pagination.getTotalPages());
-		map.put("CURRENT_PAGE", pagination.getPage());
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	
 	}
 
 	// Create university
@@ -60,16 +67,19 @@ public class UniversityController {
 	public ResponseEntity<Map<String, Object>> insertUniversity(
 			@RequestBody FrmAddUniversity university) {
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (universityService.createUniverstiy(university)) {
-			map.put("MESSAGE", "UNIVERSITY HAS BEEN CREATED");
-			map.put("STATUS", true);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN CREATED");
+		try{
+			if (universityService.createUniverstiy(university)) {
+				map.put("MESSAGE", "UNIVERSITY HAS BEEN CREATED");
+				map.put("STATUS", true);
+			} else {
+				map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN CREATED");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
 	// Update University
@@ -77,16 +87,19 @@ public class UniversityController {
 	public ResponseEntity<Map<String, Object>> updateUniversity(
 			@RequestBody FrmUpdateUniversity university) {
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (universityService.updateUniversityById(university)) {
-			map.put("MESSAGE", "UNIVERSITY HAS BEEN UPDATED");
-			map.put("STATUS", true);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN  UPDATED");
+		try{
+			if (universityService.updateUniversityById(university)) {
+				map.put("MESSAGE", "UNIVERSITY HAS BEEN UPDATED");
+				map.put("STATUS", true);
+			} else {
+				map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN  UPDATED");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
 	// Delete University
@@ -94,16 +107,19 @@ public class UniversityController {
 	public ResponseEntity<Map<String, Object>> deleteUniversity(
 			@PathVariable("id") String universityId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (universityService.deleteUniversityById(universityId)) {
-			map.put("MESSAGE", "UNIVERSITY HAS BEEN DELETED");
-			map.put("STATUS", true);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN DELETED");
-			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		try{
+			if (universityService.deleteUniversityById(universityId)) {
+				map.put("MESSAGE", "UNIVERSITY HAS BEEN DELETED");
+				map.put("STATUS", true);
+			} else {
+				map.put("MESSAGE", "UNIVERSITY HAS NOT BEEN DELETED");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+				map.put("MESSAGE", "OPERATION FAIL");
+				map.put("STATUS", false);
 		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
 	// ListFindUniversityByID
@@ -112,16 +128,21 @@ public class UniversityController {
 			@PathVariable("id") String universityId) {
 
 		Map<String, Object> map = new HashMap<String, Object>();
-		String university = universityService.findUniversityById(universityId);
-		System.out.println(university);
-		if (university == null) {
-			map.put("MESSAGE", "RECORD  NOT FOUND");
+		try{
+			String university = universityService.findUniversityById(universityId);
+			System.out.println(university);
+			if (university == null) {
+				map.put("MESSAGE", "RECORD  NOT FOUND");
+				map.put("STATUS", false);
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("STATUS", true);
+			map.put("REST_DATA", university);
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
-		map.put("MESSAGE", "RECORD FOUND");
-		map.put("STATUS", true);
-		map.put("REST_DATA", university);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
@@ -129,18 +150,20 @@ public class UniversityController {
 	@RequestMapping(method = RequestMethod.GET, value = "/count", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> countUniversity() {
 		Map<String, Object> map = new HashMap<String, Object>();
-
-		int university = universityService.countUniversity();
-
-		if (university == 0) {
-			map.put("MESSAGE", "RECORD NOT FOUND");
+		try{
+			int university = universityService.countUniversity();
+			if (university == 0) {
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			} else {
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RES_DATA", university);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-		} else {
-			map.put("MESSAGE", "RECORD FOUND");
-			map.put("STATUS", true);
-			map.put("RES_DATA", university);
-			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 }
