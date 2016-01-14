@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
 import javax.sql.DataSource;
-
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
@@ -52,7 +50,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
@@ -100,6 +98,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				
 				dto = new Video();
 //				dto.setVideoId(rs.getInt("videoid"));
+				dto.setVideoId(Encryption.encode(rs.getString("videoid")));
 				dto.setVideoName(rs.getString("videoname"));
 				dto.setDescription(rs.getString("description"));
 				dto.setYoutubeUrl(rs.getString("youtubeurl"));
@@ -370,7 +369,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
@@ -414,7 +413,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				dto.setPublicView(rs.getBoolean("publicview"));
 				dto.setUsername(rs.getString("username"));
 				dto.setCountVideos(rs.getInt("countvideos"));
-				dto.setMaincategory(rs.getInt("maincategory"));
+				dto.setMaincategory(Encryption.encode(rs.getString("maincategory")));
 				dto.setBgImage(rs.getString("bgimage"));
 				dto.setColor(rs.getString("color"));
 				dto.setStatus(rs.getBoolean("status"));
@@ -448,7 +447,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
@@ -677,7 +676,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
@@ -783,7 +782,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			con = dataSource.getConnection();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
-			String sql = " SELECT * FROM tblplaylist WHERE status=true";
+			String sql = " SELECT * FROM tblplaylist WHERE maincategory NOTNULL AND status=TRUE";
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -794,10 +793,88 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(rs.getInt("maincategory"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	@Override
+	public ArrayList<Playlist> listMainPlaylist() {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			ResultSet rs = null;
+			String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, P.thumbnailurl, P.publicview, P.maincategory, P.bgimage, p.color, " 
+							+ "P.status, M.maincategoryname " 
+							+ "FROM tblplaylist P " 
+									+ "INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid " 
+									+ "WHERE P.maincategory NOTNULL AND P.status=TRUE " 
+									+ "ORDER BY M.maincategoryorder";
+				
+			PreparedStatement ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				
+				Playlist playlist = new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setMaincategoryname(rs.getString("maincategoryname"));
+				
+				System.out.println("===================");
+				System.out.println(rs.getString("maincategoryname"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	@Override
+	public ArrayList<Playlist> litsMainElearning() {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			ResultSet rs = null;
+			String sql = "SELECT DISTINCT(P.maincategory), M.maincategoryname "
+							+"FROM tblplaylist P "
+								+"INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid "
+								+"WHERE P.maincategory NOTNULL AND P.status=TRUE";
+				
+			PreparedStatement ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				
+				Playlist playlist = new Playlist();
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				playlist.setMaincategoryname(rs.getString("maincategoryname"));
 				playlists.add(playlist);
 			}
 			return playlists;

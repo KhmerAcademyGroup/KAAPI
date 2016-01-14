@@ -28,6 +28,39 @@ public class PlayListControllers {
 	PlayListServics playlistservice;
 	
 	/*
+	 * action get List all playlist for elearning home page
+	 * 
+	 */
+	@RequestMapping(value="/listmianplaylist", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listMainPlayList(){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			
+			ArrayList<Map>  dto= new ArrayList<Map>();
+			Map<String, Object> playlist= new HashMap<String, Object>();
+			Map<String, Object> mainCategory= new HashMap<String, Object>();
+			playlist.put("PLAYLIST", playlistservice.listMainPlaylist());
+			mainCategory.put("MAIN_CATEGORY", playlistservice.litsMainElearning());
+			
+			dto.add(playlist);
+			dto.add(mainCategory);
+			if(dto != null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	/*
 	 * action get listallplaylist
 	 * we want to listallplaylist
 	 */
@@ -38,6 +71,7 @@ public class PlayListControllers {
 			
 			ArrayList<Playlist>  dto= playlistservice.listAllPlaylist();
 			if(dto != null){
+				System.out.println("================");
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
