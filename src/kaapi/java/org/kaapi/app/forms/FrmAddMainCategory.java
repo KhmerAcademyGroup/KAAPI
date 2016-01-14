@@ -7,6 +7,7 @@ public class FrmAddMainCategory {
 	private String backgroundImage;
 	private String Color;
 	private boolean status;
+	private String description;
 	
 	public String getMainCategoryName() {
 		return mainCategoryName;
@@ -38,6 +39,13 @@ public class FrmAddMainCategory {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	
 	
 }
