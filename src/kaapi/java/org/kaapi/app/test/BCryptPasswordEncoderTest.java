@@ -1,6 +1,6 @@
 package org.kaapi.app.test;
 
-import java.util.Base64;
+
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -12,7 +12,7 @@ public class BCryptPasswordEncoderTest {
 			System.out.println(new BCryptPasswordEncoder().encode("!@#$KAAPI"));
 			
 			//EncryptPassword basic authentication
-		    System.out.println(Base64.getUrlEncoder().encodeToString("KAAPI!@#$:!@#$KAAPI".getBytes()));
+		  //  System.out.println(Base64.getUrlEncoder().encodeToString("KAAPI!@#$:!@#$KAAPI".getBytes()));
 
 			/*String str = "61";
 

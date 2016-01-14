@@ -65,12 +65,11 @@ public class UploadFile {
 
 	}
 */
-	public String UploadFiles(MultipartFile file, String savePath,String fileName) {
+	public String UploadFiles(MultipartFile file, String savePath,String url,String fileName) {
 		String filename = file.getOriginalFilename();
-		
+		String pathAndFileName="/resources/upload/file/"+url;
 		if (!file.isEmpty()) {
-			try {
-				
+			try {				
 
 				byte[] bytes = file.getBytes();
 
@@ -78,7 +77,6 @@ public class UploadFile {
 				if (!path.exists()) {
 					path.mkdirs();
 				}
-
 				// creating the file on server
 				File serverFile = new File(savePath + File.separator + fileName);
 				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
@@ -87,7 +85,8 @@ public class UploadFile {
 
 				System.out.println(serverFile.getAbsolutePath());
 				System.out.println("You are successfully uploaded file " + fileName);
-
+				pathAndFileName+="/"+fileName;
+				
 			} catch (Exception e) {
 				System.out.println("You are failed to upload " + fileName + " => " + e.getMessage());
 			}
@@ -95,7 +94,7 @@ public class UploadFile {
 			System.out.println("You are failed to upload " + filename + " because the file was empty!");
 		}
 
-		return fileName;
+		return pathAndFileName;
 	}
 
 }
