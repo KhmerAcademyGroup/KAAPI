@@ -10,6 +10,8 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
+	public ArrayList<Playlist> litsMainElearning();
+	public ArrayList<Playlist> listMainPlaylist();
 	public ArrayList<Playlist> listAllPlaylist();
 	public ArrayList<Playlist> list(Pagination pagin , Playlist dto);
 	public ArrayList<Video> listVideoInPlaylist(String playlistid , Pagination pagin );
