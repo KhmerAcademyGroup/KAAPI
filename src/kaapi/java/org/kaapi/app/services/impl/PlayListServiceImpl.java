@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 import javax.sql.DataSource;
+
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
@@ -797,6 +799,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -821,9 +824,8 @@ public class PlayListServiceImpl implements PlayListServics{
 							+ "P.status, M.maincategoryname " 
 							+ "FROM tblplaylist P " 
 									+ "INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid " 
-									+ "WHERE P.maincategory NOTNULL AND P.status=TRUE " 
-									+ "ORDER BY M.maincategoryorder";
-				
+									+ "WHERE P.maincategory NOTNULL AND P.status=TRUE "; 
+								
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -888,6 +890,31 @@ public class PlayListServiceImpl implements PlayListServics{
 			}
 		}
 		return null;
+	}
+	@Override
+	public int countVideoInPlayList(int playlisid) {
+		try {
+			con = dataSource.getConnection();
+			String sql = "SELECT COUNT(playlistid) AS total FROM tblplaylistdetail " 
+							+"WHERE playlistid = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, playlisid);
+			ResultSet rs = ps.executeQuery();
+			int total = 0;
+			while(rs.next()){
+				total = rs.getInt("total");
+			}
+			return total;
+		} catch (SQLException e) {
+			System.out.println(e);
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+			}
+		}
+		return 0;
 	}
 	
 	
