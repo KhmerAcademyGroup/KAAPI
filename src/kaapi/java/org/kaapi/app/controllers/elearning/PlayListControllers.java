@@ -27,7 +27,6 @@ public class PlayListControllers {
 	@Autowired
 	PlayListServics playlistservice;
 	
-	
 	@RequestMapping(value="/test/{pid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> test(@PathVariable("pid") int playlisid){
 		Map<String, Object> map= new HashMap<String, Object>();
