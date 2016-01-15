@@ -27,6 +27,29 @@ public class PlayListControllers {
 	@Autowired
 	PlayListServics playlistservice;
 	
+	@RequestMapping(value="/test/{pid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> test(@PathVariable("pid") int playlisid){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			
+			int dto= playlistservice.countVideoInPlayList(playlisid);
+			if(dto>0){
+				System.out.println("================");
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
 	/*
 	 * action get List all playlist for elearning home page
 	 * 
@@ -36,18 +59,15 @@ public class PlayListControllers {
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
 			
-			ArrayList<Map>  dto= new ArrayList<Map>();
-			Map<String, Object> playlist= new HashMap<String, Object>();
-			Map<String, Object> mainCategory= new HashMap<String, Object>();
-			playlist.put("PLAYLIST", playlistservice.listMainPlaylist());
-			mainCategory.put("MAIN_CATEGORY", playlistservice.litsMainElearning());
+			ArrayList<Playlist> maincategory= playlistservice.litsMainElearning();
+			ArrayList<Playlist> playlist= playlistservice.listMainPlaylist();
 			
-			dto.add(playlist);
-			dto.add(mainCategory);
-			if(dto != null){
+		
+			if(maincategory !=null){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
-				map.put("RES_DATA", dto);
+				map.put("MAINCATEGORY", maincategory);
+				map.put("PLAYLIST", playlist);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
