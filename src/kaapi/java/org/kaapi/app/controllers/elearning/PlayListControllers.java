@@ -32,7 +32,6 @@ public class PlayListControllers {
 	public ResponseEntity<Map<String, Object>> test(@PathVariable("pid") int playlisid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
-			
 			int dto= playlistservice.countVideoInPlayList(playlisid);
 			if(dto>0){
 				System.out.println("================");
