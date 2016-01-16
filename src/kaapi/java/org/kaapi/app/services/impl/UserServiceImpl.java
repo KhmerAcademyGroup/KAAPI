@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User webLogin(FrmWebLogin wFrm) {
-		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , uni.universityname, u.departmentid ,dep.departmentname , u.point , co.coverphoto as coverphotourl,"
+		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , uni.universityname, u.departmentid ,dep.departmentname , u.point , co.coverphoto as coverphotourl, u.userstatus,"
 					+ " ut.usertypeid, ut.usertypename  ,"
 					+ " COUNT(DISTINCT V.VIDEOID) COUNTVIDEOS, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS , "
 					+ " COUNT(DISTINCT pl.PLAYLISTID) COUNTPLAYLIST"
@@ -101,6 +101,7 @@ public class UserServiceImpl implements UserService {
 				u.setCountComments(rs.getInt("countcomments"));
 				u.setCountPlaylists(rs.getInt("countplaylist"));
 				u.setCountVideos(rs.getInt("countvideos"));
+				u.setUserStatus(rs.getBoolean("userstatus"));
 				return u;
 			}
 		} catch (SQLException e) {

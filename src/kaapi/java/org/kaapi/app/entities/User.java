@@ -35,6 +35,7 @@ public class User {
 	private String universityName;
 	private String departmentName;
 	private int point;
+	private boolean userStatus;
 	
 	public String getUserId() {
 		return userId;
@@ -198,5 +199,12 @@ public class User {
 	public void setPoint(int point) {
 		this.point = point;
 	}
+	public boolean isUserStatus() {
+		return userStatus;
+	}
+	public void setUserStatus(boolean userStatus) {
+		this.userStatus = userStatus;
+	}
+	
 
 }
