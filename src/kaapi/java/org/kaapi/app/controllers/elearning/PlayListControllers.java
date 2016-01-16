@@ -27,6 +27,58 @@ public class PlayListControllers {
 	@Autowired
 	PlayListServics playlistservice;
 	
+	@RequestMapping(value="/test/{pid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> test(@PathVariable("pid") int playlisid){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			int dto= playlistservice.countVideoInPlayList(playlisid);
+			if(dto>0){
+				System.out.println("================");
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	/*
+	 * action get List all playlist for elearning home page
+	 * 
+	 */
+	@RequestMapping(value="/listmianplaylist", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listMainPlayList(){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			
+			ArrayList<Playlist> maincategory= playlistservice.litsMainElearning();
+			ArrayList<Playlist> playlist= playlistservice.listMainPlaylist();
+			
+		
+			if(maincategory !=null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("MAINCATEGORY", maincategory);
+				map.put("PLAYLIST", playlist);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
 	/*
 	 * action get listallplaylist
 	 * we want to listallplaylist
@@ -38,6 +90,7 @@ public class PlayListControllers {
 			
 			ArrayList<Playlist>  dto= playlistservice.listAllPlaylist();
 			if(dto != null){
+				System.out.println("================");
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);

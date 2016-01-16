@@ -45,6 +45,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 				dto.setBackgroundImage(rs.getString("bgImage"));
 				dto.setColor(rs.getString("color"));
 				dto.setStatus(rs.getBoolean("status"));
+				dto.setDescription(rs.getString("description"));
 				maincategory.add(dto);
 			}
 			return maincategory;
@@ -82,6 +83,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 				dto.setBackgroundImage(rs.getString("bgImage"));
 				dto.setColor(rs.getString("color"));
 				dto.setStatus(rs.getBoolean("status"));
+				dto.setDescription(rs.getString("description"));
 				maincategory.add(dto);
 			}
 
@@ -108,7 +110,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 			if (rs.next())
 				num = rs.getInt(1) + 1;
 
-			String sql = "INSERT INTO TBLMAINCATEGORY VALUES(NEXTVAL('seq_maincategory'), ?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO TBLMAINCATEGORY VALUES(NEXTVAL('seq_maincategory'), ?, ?, ?, ?, ?, ?,?)";
 
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, dto.getMainCategoryName());
@@ -117,6 +119,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 			ps.setString(4, dto.getBackgroundImage());
 			ps.setString(5, dto.getColor());
 			ps.setBoolean(6, dto.isStatus());
+			ps.setString(7, dto.getDescription());
 			if (ps.executeUpdate() > 0)
 				return true;
 		} catch (SQLException e) {
@@ -139,7 +142,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 					+ "from tblmaincategory "
 					+ "where maincategoryid=?) "
 					+ "where maincategoryorder=?;"
-					+ "update tblmaincategory set Maincategoryname=?, Maincategorylogourl=?, Maincategoryorder=?,bgimage=?,color=?,status=? WHERE maincategoryid=?";
+					+ "update tblmaincategory set Maincategoryname=?, Maincategorylogourl=?, Maincategoryorder=?,bgimage=?,color=?,status=?,description=? WHERE maincategoryid=?";
 			con = dataSource.getConnection();
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(dto.getMainCategoryId())));
@@ -150,7 +153,8 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 			ps.setString(6, dto.getBackgroundImage());
 			ps.setString(7, dto.getColor());
 			ps.setBoolean(8, dto.isStatus());
-			ps.setInt(9, Integer.parseInt(Encryption.decode(dto.getMainCategoryId())));
+			ps.setString(9, dto.getDescription());
+			ps.setInt(10, Integer.parseInt(Encryption.decode(dto.getMainCategoryId())));
 			if (ps.executeUpdate() > 0) {
 				return true;
 			}

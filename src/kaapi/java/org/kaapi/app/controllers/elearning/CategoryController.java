@@ -104,7 +104,7 @@ public class CategoryController {
 	}
 
 	@RequestMapping(value = "/{cid}", method = RequestMethod.GET, headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> getCategory(@PathVariable String categoryId) {
+	public ResponseEntity<Map<String, Object>> getCategory(@PathVariable("cid") String categoryId) {
 
 		Category getcategory = categoryService.getCategory(categoryId);
 		Map<String, Object> map = new HashMap<String, Object>();

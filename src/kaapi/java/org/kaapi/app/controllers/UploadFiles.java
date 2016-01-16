@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
-@RequestMapping("api/uploadimage")
+@RequestMapping("api/uploadfile")
 public class UploadFiles {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
-	public ResponseEntity<Map<String, Object>> uploadImageCategory(
+	public ResponseEntity<Map<String, Object>> uploadfile(
 			@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value="url") String url, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String ramdom_file_name="";
 		try {
-			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/"+url);
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/file/"+url);
 			UploadFile fileName = new UploadFile();
 			if (file == null) {
 				map.put("STATUS", false);
@@ -34,7 +34,7 @@ public class UploadFiles {
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			} else {
 				ramdom_file_name = UUID.randomUUID() + ".jpg";
-				String CategoryImage = fileName.UploadFiles(file, savePath,ramdom_file_name);
+				String CategoryImage = fileName.UploadFiles(file, savePath,url,ramdom_file_name);
 				map.put("STATUS", true);
 				map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
 				map.put("IMG", CategoryImage);
@@ -54,7 +54,7 @@ public class UploadFiles {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		try {
-			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/image/"+url);
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/file/"+url);
 			UploadFile fileName = new UploadFile();
 			if (file == null) {
 				map.put("STATUS", false);
@@ -62,7 +62,7 @@ public class UploadFiles {
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			} else {
 				
-				String CategoryImage = fileName.UploadFiles(file, savePath,filename);
+				String CategoryImage = fileName.UploadFiles(file, savePath,url,filename);
 				map.put("STATUS", true);
 				map.put("MESSAGE", "IMAGE HAS BEEN UPDATED");
 				map.put("IMG", CategoryImage);

@@ -12,8 +12,15 @@ public class Playlist {
 	private int countVideos;
 	private String videoId;
 	
-	private int maincategory;
+	private String maincategory;
+	private String maincategoryname;
 	private String bgImage;
+	public String getMaincategoryname() {
+		return maincategoryname;
+	}
+	public void setMaincategoryname(String maincategoryname) {
+		this.maincategoryname = maincategoryname;
+	}
 	private String color;
 	private boolean status;
 	private String userImageUrl;
@@ -24,10 +31,11 @@ public class Playlist {
 	public void setUserImageUrl(String userImageUrl) {
 		this.userImageUrl = userImageUrl;
 	}
-	public int getMaincategory() {
+
+	public String getMaincategory() {
 		return maincategory;
 	}
-	public void setMaincategory(int maincategory) {
+	public void setMaincategory(String maincategory) {
 		this.maincategory = maincategory;
 	}
 	public String getBgImage() {

@@ -130,7 +130,7 @@
                                     <li><a href="javascript:void(0)"><i class="md md-face-unlock"></i> Profile<div class="ripple-wrapper"></div></a></li>
                                     <li><a href="javascript:void(0)"><i class="md md-settings"></i> Settings</a></li>
                                     <li><a href="javascript:void(0)"><i class="md md-lock"></i> Lock screen</a></li>
-                                    <li><a href="javascript:void(0)"><i class="md md-settings-power"></i> Logout</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/logout"><i class="md md-settings-power"></i> Logout</a></li>
                                 </ul>
                             </div>
                             
@@ -144,7 +144,7 @@
                                 <a href="#" class="waves-effect"><i class="md md-account-child"></i><span>User</span></a>
                             </li>
                             <li>
-                                <a href="${pageContext.request.contextPath}/webserviceapi" class="waves-effect"><i class="md md-account-child"></i><span>WebService API</span></a>
+                                <a href="${pageContext.request.contextPath}/wsapi" class="waves-effect"><i class="md md-account-child"></i><span>WS API</span></a>
                             </li>
                         </ul>
                         <div class="clearfix"></div>

@@ -1,6 +1,7 @@
 package org.kaapi.app.configurations;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -14,6 +15,11 @@ import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 @EnableSwagger
 @EnableWebMvc
 public class SwaggerConfig {
+	
+	@Autowired 
+	@Qualifier("header")
+	private String header;
+	
 	private SpringSwaggerConfig springSwaggerConfig;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -32,8 +38,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
-                "KhmerAcademy  REST API",
-                "API Display Page.",
+                "KhmerAcademy  REST API" ,
+                "API KEY : "+header+"  (eg. header {'Authorization' , 'Basic "+header+"'} )",
                 "KA API",
                 "info.kshrd@gmail.com",
                 "API License",

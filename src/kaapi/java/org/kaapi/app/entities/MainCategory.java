@@ -11,6 +11,7 @@ public class MainCategory {
 	private String backgroundImage;
 	private String Color;
 	private boolean status;
+	private String description;
 	
 	public String getMainCategoryId() {
 		return mainCategoryId;
@@ -59,6 +60,12 @@ public class MainCategory {
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

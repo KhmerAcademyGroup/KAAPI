@@ -64,23 +64,6 @@ public class PrecourseController {
 		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/editprecourse", method= RequestMethod.PUT, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> editPreCourse(@RequestBody FrmEditPreCourse preCourse){
-				
-		boolean status = service.editPreCourse(preCourse);
-		Map<String,Object> map = new HashMap<String, Object>();
-			
-		if(!status){
-			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR EDIT PRECAUSE");
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
-		}
-		
-		map.put("STATUS", true);
-		map.put("MESSAGE", "RECORD HAS BEEN EDITED");		
-		
-		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
-	}
 
 	@RequestMapping(value="/getprecourse/{id}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> getPreCourse(@PathVariable("id")String id){

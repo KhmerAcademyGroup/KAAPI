@@ -6,6 +6,8 @@ import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.forms.FrmAddAnswer;
 import org.kaapi.app.forms.FrmAddQuestion;
+import org.kaapi.app.forms.FrmUpdateAnswer;
+import org.kaapi.app.forms.FrmUpdateQuestion;
 
 public interface ForumCommentService {
 	
@@ -20,12 +22,16 @@ public interface ForumCommentService {
 	
 	public List<ForumComment> listAnswerByQuestionId(String parentId, Pagination pagination);
 	public int countAnswerByQuestionId(String parentId);
-	public int countComment();
+	public int countAnswer();
 	public ForumComment getQuestionById(String commentId);
 	
 	public boolean insertAnswer(FrmAddAnswer addAnswer);
+	public boolean deleteAnswer(String answerId);
+	public boolean updateAnswer(FrmUpdateAnswer updateAnswer);
+	
 	public boolean insetQuestion(FrmAddQuestion addQuestion);
-	public boolean deleteComment(String commentId);
+	public boolean deleteQuestion(String questionId);
+	public boolean updateQuestion(FrmUpdateQuestion updateQuestion);
 	
 	public String[] getAllTags();
 }
