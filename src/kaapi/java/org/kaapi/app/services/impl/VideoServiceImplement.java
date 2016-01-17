@@ -11,6 +11,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.VideosService;
 import org.kaapi.app.utilities.Encryption;
@@ -1067,6 +1068,82 @@ public class VideoServiceImplement implements VideosService{
 			return 0;
 		}
 		return 0;
+	}
+
+	@Override
+	public List<Playlist> listMainCategory() {
+		String sql = "SELECT DISTINCT(P.maincategory), M.maincategoryname "
+				   + "FROM tblplaylist P "
+				   + "INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid "
+				   + "WHERE P.maincategory NOTNULL AND P.status=TRUE";
+	
+		List<Playlist> list = new ArrayList<Playlist>();
+		Playlist playlist = null;
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				playlist = new Playlist();
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				playlist.setMaincategoryname(rs.getString("maincategoryname"));
+				list.add(playlist);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Playlist> listPlaylist() {
+		String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, P.thumbnailurl, P.publicview, P.maincategory, P.bgimage, p.color, " 
+				   + "P.status, M.maincategoryname " 
+				   + "FROM tblplaylist P " 
+				   + "INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid " 
+				   + "WHERE P.maincategory NOTNULL AND P.status=TRUE";
+	
+		List<Playlist> list = new ArrayList<Playlist>();
+		Playlist playlist = null;
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				playlist = new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setMaincategoryname(rs.getString("maincategoryname"));
+				playlist.setVideoId(getVideoId(rs.getInt("playlistid")));
+				list.add(playlist);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getVideoId(int playlistId) {
+		String sql = "SELECT PD.VIDEOID "
+				   + "FROM TBLPLAYLISTDETAIL PD "
+				   + "WHERE PD.PLAYLISTID=? "
+				   + "ORDER BY PD.INDEX "
+				   + "LIMIT 1";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, playlistId);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return Encryption.encode(rs.getString("videoid"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

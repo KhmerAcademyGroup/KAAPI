@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.services.VideosService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class VideoController {
 
 	@Autowired VideosService videoService;
+	@Autowired PlayListServics playlistService;
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
@@ -565,4 +568,42 @@ public class VideoController {
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/video/listMainCategoryAndPlaylist", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listMainCategoryAndPlaylist() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			List<Playlist> playlists = videoService.listPlaylist();
+			List<Playlist> mainCategory = videoService.listMainCategory();
+			map.put("STATUS", true);
+			map.put("MESSAGE", "OPERATION SUCCESS");
+			map.put("PLAYLIST", playlists);
+			map.put("MAINCATEGORY", mainCategory);
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/video/playvideo", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> playVideo(
+			@RequestParam(value="v") String vid, @RequestParam(value="playlist", required=false) String pid) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			List<Video> playlistVideo= playlistService.listVideo(pid);
+			List<Playlist> playlists = videoService.listPlaylist();
+			List<Playlist> mainCategory = videoService.listMainCategory();
+			map.put("STATUS", true);
+			map.put("MESSAGE", "OPERATION SUCCESS");
+			map.put("PLAYLIST", playlistVideo);
+			map.put("PLAYLIST_SIDEBAR", playlists);
+			map.put("MAINCATEGORY", mainCategory);
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
 }

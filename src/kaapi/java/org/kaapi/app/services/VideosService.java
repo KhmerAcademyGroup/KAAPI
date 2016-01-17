@@ -3,6 +3,7 @@ package org.kaapi.app.services;
 import java.util.List;
 
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
 
 public interface VideosService {
@@ -40,4 +41,7 @@ public interface VideosService {
 	public int countForum();
 	public List<Video> topVote(int limit);
 	public List<Video> recentVideo(int limit);
+	public List<Playlist> listMainCategory();
+	public List<Playlist> listPlaylist();
+	public String getVideoId(int playlistId);
 }
