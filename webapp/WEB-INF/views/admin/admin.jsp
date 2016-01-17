@@ -177,6 +177,7 @@
 //                                 		out.print("____________adminID " +user.getId());
 //                                 		out.print("____________adminID " +user.getUsername());
                                         %>
+                                        <sec:authorize access="isAuthenticated()">Logout</sec:authorize>
                                       <%--   <sec:authorize access="isAuthenticated()">Logout</sec:authorize>
                                         <sec:authorize access="hasAnyRole('ADMIN' , 'USER')">ROLE ADMIN</sec:authorize>
                                         <sec:authorize access="hasRole('USER')">ROLE USER</sec:authorize>
