@@ -244,7 +244,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int countSearchUserByUsername(String username) {
-		String sql = "SELECT COUNT(userid) FROM tbluser WHERE username LIKE ?;";
+		String sql = "SELECT COUNT(userid) FROM tbluser WHERE LOWER(username) LIKE LOWER(?);";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
