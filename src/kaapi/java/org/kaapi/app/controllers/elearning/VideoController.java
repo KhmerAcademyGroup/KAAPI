@@ -616,11 +616,11 @@ public class VideoController {
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
-			map.put("STATUS", true);
-			map.put("MESSAGE", "OPERATION SUCCESS");
 			map.put("PLAYLIST_SIDEBAR", playlists);
 			map.put("MAINCATEGORY", mainCategory);
 			map.put("VIDEO", video);
+			map.put("STATUS", true);
+			map.put("MESSAGE", "OPERATION SUCCESS");
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
