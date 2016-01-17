@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kaapi.app.entities.ForumCategory;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
+import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
 import org.kaapi.app.forms.FrmValidateEmail;
@@ -143,6 +143,32 @@ public class UserController {
 				map.put("STATUS", false);
 			}else{
 				if(userService.insertUser(user)){
+					map.put("MESSAGE", "User has been inserted.");
+					map.put("STATUS", true);
+				}else{
+					map.put("MESSAGE", "User has not been inserted.");
+					map.put("STATUS", false);
+				}
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}
+	
+	@RequestMapping(value="mobileuserregister" , method = RequestMethod.POST , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> mobileAddUser(@RequestBody FrmMobileRegister user){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			FrmValidateEmail email = new FrmValidateEmail();
+			email.setEmail(user.getEmail());
+			if(userService.validateEmail(email)){
+				map.put("MESSAGE", "Email already exists.");
+				map.put("EMAIL", email.getEmail());
+				map.put("STATUS", false);
+			}else{
+				if(userService.mobileInsertUser(user)){
 					map.put("MESSAGE", "User has been inserted.");
 					map.put("STATUS", true);
 				}else{

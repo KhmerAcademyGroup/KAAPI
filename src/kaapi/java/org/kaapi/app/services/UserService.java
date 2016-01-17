@@ -6,6 +6,7 @@ import java.util.List;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmMobileLogin;
+import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
@@ -31,6 +32,7 @@ public interface UserService {
 	public User getUSerById(String id);
 	public boolean validateEmail(FrmValidateEmail email);
 	public boolean insertUser(FrmAddUser user);
+	public boolean mobileInsertUser(FrmMobileRegister user);
 	public boolean updateUser(FrmUpdateUser user);
 	public boolean deleteUser(String id);
 	public boolean insertCoverPhoto(FrmAddUpdateCoverPhoto coverPhoto);

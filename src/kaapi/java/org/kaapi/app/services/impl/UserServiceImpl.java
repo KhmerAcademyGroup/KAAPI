@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmMobileLogin;
+import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
@@ -443,6 +444,28 @@ public class UserServiceImpl implements UserService {
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean mobileInsertUser(FrmMobileRegister user) {
+		String sql =  " INSERT INTO TBLUSER"
+				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus)"
+				+ " VALUES"
+				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'user/avatar.jpg',2,?,?,'1');";
+		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, user.getEmail());
+			ps.setString(2, user.getPassword());
+			ps.setString(3, user.getUsername());
+			ps.setString(4, "male");
+			ps.setInt(5,36);
+			ps.setInt(6, 12 );
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		return false;
 	}
