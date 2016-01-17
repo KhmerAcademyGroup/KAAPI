@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kaapi.app.entities.Comment;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.services.CommentService;
 import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.services.VideosService;
 import org.kaapi.app.utilities.Encryption;
@@ -26,6 +28,7 @@ public class VideoController {
 
 	@Autowired VideosService videoService;
 	@Autowired PlayListServics playlistService;
+	@Autowired CommentService commentService;
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
@@ -588,17 +591,36 @@ public class VideoController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/video/playvideo", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> playVideo(
-			@RequestParam(value="v") String vid, @RequestParam(value="playlist", required=false) String pid) {
+			@RequestParam(value="v") String vid, 
+			@RequestParam(value="playlist", required=false) String pid,
+			@RequestParam(value="user", required=false) String uid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
-			List<Video> playlistVideo= playlistService.listVideo(pid);
 			List<Playlist> playlists = videoService.listPlaylist();
 			List<Playlist> mainCategory = videoService.listMainCategory();
+			Video video = videoService.getVideo(vid, true);
+			if(pid!=null){
+				List<Video> playlistVideo= playlistService.listVideo(pid);
+				map.put("PLAYLIST", playlistVideo);
+			}
+			if(video!=null){
+				Pagination pagination = new Pagination();
+				pagination.setItem(10);
+				pagination.setPage(1);
+				pagination.setTotalCount(commentService.countCommentOnVideo(vid));
+				pagination.setTotalPages(pagination.totalPages());
+				List<Comment> comment = commentService.listCommentOnVideo(vid, pagination);
+				map.put("COMMENT", comment);
+			}
+			if(video.getCategoryName()!=null){
+				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
+				map.put("RELATEVIDEO", relateVideo);
+			}
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
-			map.put("PLAYLIST", playlistVideo);
 			map.put("PLAYLIST_SIDEBAR", playlists);
 			map.put("MAINCATEGORY", mainCategory);
+			map.put("VIDEO", video);
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
