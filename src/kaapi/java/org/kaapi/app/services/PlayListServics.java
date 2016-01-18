@@ -10,6 +10,8 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
+	public ArrayList<Playlist> listPlayListByMainCategory(String categoryid);
+	public ArrayList<Playlist> searchPlayList(String kesearch);
 	public int countVideoInPlayList(int playlisid);
 	public ArrayList<Playlist> litsMainElearning();
 	public ArrayList<Playlist> listMainPlaylist();
