@@ -591,7 +591,6 @@ public class VideoController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/video/playvideo", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> playVideo(
-			@RequestParam(value="v") String vid, 
 			@RequestParam(value="playlist", required=false) String pid,
 			@RequestParam(value="user", required=false) String uid) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -601,11 +600,28 @@ public class VideoController {
 			map.put("PLAYLIST_SIDEBAR", playlists);
 			map.put("MAINCATEGORY", mainCategory);
 			
-			Video video = videoService.getVideo(vid, true);
 			if(pid!=null){
 				List<Video> playlistVideo= playlistService.listVideo(pid);
 				map.put("PLAYLIST", playlistVideo);
+			}else{
+				map.put("PLAYLIST", null);
 			}
+			map.put("STATUS", true);
+			map.put("MESSAGE", "OPERATION SUCCESS");
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/video/getplayvideo", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getPlayVideo(
+			@RequestParam(value="v") String vid,
+			@RequestParam(value="user", required=false) String uid) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			Video video = videoService.getVideo(vid, true);
 			if(video!=null){
 				Pagination pagination = new Pagination();
 				pagination.setItem(10);
@@ -619,14 +635,12 @@ public class VideoController {
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
-			
 			map.put("VIDEO", video);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
-			e.printStackTrace();
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
