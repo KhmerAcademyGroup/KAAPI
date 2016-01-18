@@ -5,6 +5,7 @@ public class FrmMobileRegister {
 	private String email;
 	private String password;
 	private String username;
+	private String gender;
 	
 	public String getEmail() {
 		return email;
@@ -23,6 +24,12 @@ public class FrmMobileRegister {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 	
 	

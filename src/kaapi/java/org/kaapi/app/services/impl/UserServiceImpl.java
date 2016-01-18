@@ -458,7 +458,7 @@ public class UserServiceImpl implements UserService {
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
 			ps.setString(3, user.getUsername());
-			ps.setString(4, "male");
+			ps.setString(4, user.getGender());
 			ps.setInt(5,36);
 			ps.setInt(6, 12 );
 			if(ps.executeUpdate()>0)
