@@ -508,7 +508,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ps.setInt(3, Integer.parseInt(Encryption.decode(playlist.getUserId())));
 			ps.setString(4, playlist.getThumbnailUrl());
 			ps.setBoolean(5, playlist.isPublicView());
-			ps.setInt(6, playlist.getMaincategory());
+			ps.setInt(6, Integer.parseInt(Encryption.decode(playlist.getMaincategory())));
 			ps.setString(7, playlist.getBgImage());
 			ps.setString(8, playlist.getColor());
 			ps.setBoolean(9, true);
