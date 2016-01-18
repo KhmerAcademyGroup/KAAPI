@@ -6,7 +6,7 @@ public class FrmCreatePlaylist {
 	private String userId;
 	private String thumbnailUrl;
 	private boolean publicView;
-	private int maincategory;
+	private String maincategory;
 	private String bgImage;
 	private String color;
 	public String getPlaylistName() {
@@ -39,10 +39,11 @@ public class FrmCreatePlaylist {
 	public void setPublicView(boolean publicView) {
 		this.publicView = publicView;
 	}
-	public int getMaincategory() {
+	
+	public String getMaincategory() {
 		return maincategory;
 	}
-	public void setMaincategory(int maincategory) {
+	public void setMaincategory(String maincategory) {
 		this.maincategory = maincategory;
 	}
 	public String getBgImage() {
