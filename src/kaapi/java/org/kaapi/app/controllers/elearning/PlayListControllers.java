@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
@@ -26,14 +27,38 @@ public class PlayListControllers {
 	
 	@Autowired
 	PlayListServics playlistservice;
-	
-	@RequestMapping(value="/test/{pid}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> test(@PathVariable("pid") int playlisid){
+	/*
+	 * list playlist by maincategory
+	 */
+	@RequestMapping(value="/listplaylistbymaincategory/{categoryid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlaylistByMainCategory(@PathVariable("categoryid") String cid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
-			int dto= playlistservice.countVideoInPlayList(playlisid);
-			if(dto>0){
-				System.out.println("================");
+			ArrayList<Playlist> dto= playlistservice.listPlayListByMainCategory(cid);
+			if(!dto.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	/*
+	 * search category
+	 */
+	@RequestMapping(value="/searchplaylist/{searchkey}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> test(@PathVariable("searchkey") String key){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			ArrayList<Playlist> dto= playlistservice.searchPlayList(key);
+			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
@@ -62,7 +87,7 @@ public class PlayListControllers {
 			ArrayList<Playlist> playlist= playlistservice.listMainPlaylist();
 			
 		
-			if(maincategory !=null){
+			if(!maincategory.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("MAINCATEGORY", maincategory);
@@ -89,7 +114,7 @@ public class PlayListControllers {
 		try{
 			
 			ArrayList<Playlist>  dto= playlistservice.listAllPlaylist();
-			if(dto != null){
+			if(!dto.isEmpty()){
 				System.out.println("================");
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
@@ -232,7 +257,7 @@ public class PlayListControllers {
 			pagin.setPage(begin);
 			
 			ArrayList<Video>  dto= playlistservice.listVideoInPlaylist(pid, pagin);
-			if(dto != null){
+			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
@@ -299,7 +324,7 @@ public class PlayListControllers {
 			pagin.setPage(begin);
 			
 			ArrayList<Playlist>  dto= playlistservice.list(pagin, playlist);
-			if(dto != null){
+			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
