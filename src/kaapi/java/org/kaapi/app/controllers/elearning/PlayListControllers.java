@@ -115,7 +115,6 @@ public class PlayListControllers {
 			
 			ArrayList<Playlist>  dto= playlistservice.listAllPlaylist();
 			if(!dto.isEmpty()){
-				System.out.println("================");
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
@@ -139,7 +138,7 @@ public class PlayListControllers {
 	 */
 	@RequestMapping(value="/addvideotoplaylistDetail/{playlistid}/{videoid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> addVideoToPlayListDetail(@PathVariable("playlistid") String pid,
-																	@PathVariable("videoid") String vid){
+																		@PathVariable("videoid") String vid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{		
 			if(playlistservice.addVideoToPlst(pid, vid)){
@@ -216,7 +215,7 @@ public class PlayListControllers {
 	 */
 	@RequestMapping(value="/deletevideofromplaylistdetail/{playlistid}/{videoid}", method= RequestMethod.DELETE, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> deleteViedoFromPlayListDetail(@PathVariable("playlistid") String pid,
-																		@PathVariable("videoid") String vid){
+																			@PathVariable("videoid") String vid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
 			if(playlistservice.deleteVideoFromPlaylist(pid, vid)){
@@ -247,8 +246,9 @@ public class PlayListControllers {
 	 */
 	@RequestMapping(value="/listVideoInPlaylist/{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listVideoInPlaylist(	@PathVariable("playlistid") String pid,
-															@RequestParam(value ="page", required = false) int page,
-															@RequestParam(value ="item" , required = false) int item){
+															@RequestParam(value ="page", required = false, defaultValue = "1") int page,
+															@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
+		
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
 			int begin = (item * page) - item;
@@ -306,8 +306,8 @@ public class PlayListControllers {
 	@RequestMapping(value="/listplayList/{userid}/{playlistname}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listPlayList(@PathVariable("userid") String uid,
 															@PathVariable("playlistname") String name,
-															@RequestParam("page") int page,
-															@RequestParam("item") int item){
+															@RequestParam(value="page", required = false, defaultValue = "1") int page,
+															@RequestParam(value="item", required = false, defaultValue = "10") int item){
 		
 		
 		Map<String, Object> map= new HashMap<String, Object>();
