@@ -844,8 +844,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setMaincategoryname(rs.getString("maincategoryname"));
 				
-				System.out.println("===================");
-				System.out.println(rs.getString("maincategoryname"));
+				
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -917,13 +916,91 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return 0;
 	}
+	@Override
+	public ArrayList<Playlist> listPlayListByMainCategory(String categoryid) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			ResultSet rs = null;
+			String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, P.thumbnailurl, P.publicview, P.maincategory, P.bgimage, p.color, " 
+							+"P.status "  
+							+"FROM tblplaylist P "
+							+"WHERE P.maincategory =? AND P.status=TRUE"; 
+								
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(categoryid)));
+			rs = ps.executeQuery();
+			while(rs.next()){
+				
+				Playlist playlist = new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	@Override
+	public ArrayList<Playlist> searchPlayList(String kesearch) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			ResultSet rs = null;
+			String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, P.thumbnailurl, P.publicview, P.maincategory, P.bgimage, p.color, " 
+							+"P.status "  
+							+"FROM tblplaylist P "
+							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status=TRUE"; 
+								
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, kesearch);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				
+				Playlist playlist = new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	
 	
-	/*public static void main(String[] args) {
-		PlayListServiceImplement p =new PlayListServiceImplement();
-		
-			System.out.println(p.updateThumbnailToDefault(2));
-		
-	}*/
 
 }
