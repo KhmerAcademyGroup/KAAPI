@@ -598,6 +598,9 @@ public class VideoController {
 		try{
 			List<Playlist> playlists = videoService.listPlaylist();
 			List<Playlist> mainCategory = videoService.listMainCategory();
+			map.put("PLAYLIST_SIDEBAR", playlists);
+			map.put("MAINCATEGORY", mainCategory);
+			
 			Video video = videoService.getVideo(vid, true);
 			if(pid!=null){
 				List<Video> playlistVideo= playlistService.listVideo(pid);
@@ -616,14 +619,14 @@ public class VideoController {
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
-			map.put("PLAYLIST_SIDEBAR", playlists);
-			map.put("MAINCATEGORY", mainCategory);
+			
 			map.put("VIDEO", video);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
+			e.printStackTrace();
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}

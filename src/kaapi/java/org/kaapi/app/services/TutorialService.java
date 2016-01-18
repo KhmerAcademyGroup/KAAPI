@@ -2,6 +2,7 @@ package org.kaapi.app.services;
 
 import java.util.ArrayList;
 
+import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.forms.FrmTutorial;
@@ -17,5 +18,5 @@ public interface TutorialService {
 	public boolean delete(String tutorialid);
 	public int count();
 	public int count(String categoryid);
-	
+	public ArrayList<Category> listCategories();
 }

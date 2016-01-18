@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.forms.FrmTutorial;
@@ -177,5 +178,24 @@ public class TutorialController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
 	}
 	
+	@RequestMapping(value="listcategory", method= RequestMethod.GET, headers="Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listCategory(){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			ArrayList<Category> category = service.listCategories();
+			if(category.isEmpty()){
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+			map.put("STATUS", true);
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("RES_DATA", category);
+			
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
 	
 }
