@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Tutorial;
 import org.kaapi.app.forms.FrmTutorial;
@@ -287,6 +288,38 @@ public class TutorialServiceImpl implements TutorialService{
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public ArrayList<Category> listCategories() {
+		try {
+			con = ds.getConnection();
+			ResultSet rs = null;			
+			String sql = "select c.categoryid, c.categoryname, c.categorylogourl from tblcategory c INNER JOIN tbltutorial t on c.categoryid = t.categoryid GROUP BY c.categoryid ORDER BY c.categoryname";
+			PreparedStatement ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			ArrayList<Category> categories= new ArrayList<Category>();
+			while(rs.next()){
+				Category dto= new Category();
+				dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+				dto.setCategoryName(rs.getString("categoryname"));
+				dto.setCategoryLogoUrl(rs.getString("categorylogourl"));
+				categories.add(dto);
+			}
+			rs.close();
+			return categories;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 
