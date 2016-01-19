@@ -180,7 +180,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			Video dto=null;
 			while(rs.next()){
 				dto = new Video();
-//				dto.setVideoId(rs.getInt("videoid"));
+				dto.setVideoId(Encryption.encode(rs.getString("videoid")));
 				dto.setVideoName(rs.getString("videoname"));
 				dto.setDescription(rs.getString("description"));
 				dto.setYoutubeUrl(rs.getString("youtubeurl"));
