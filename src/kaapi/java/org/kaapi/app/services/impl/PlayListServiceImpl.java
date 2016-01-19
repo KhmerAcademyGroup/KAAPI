@@ -1000,6 +1000,57 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+	@Override
+	public ArrayList<Video> listVideoInPlaylist(String playlistid) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Video> playlists =new ArrayList<Video>();
+			ResultSet rs = null;
+			String sql = "SELECT PL.*, V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX ,V.publicview  ispublic "
+					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
+					+ "LEFT JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT LEFT JOIN TBLCATEGORYVIDEO CV ON CT.categoryid=CV.categoryid GROUP BY CV.videoid) CC ON V.videoid=CC.videoid "
+					+ "LEFT JOIN TBLCOMMENT C ON V.VIDEOID=C.VIDEOID "
+					+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID "
+					+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
+					+ "INNER JOIN TBLPLAYLISTDETAIL PD ON PD.VIDEOID=V.VIDEOID "
+					+ "INNER JOIN tblplaylist PL ON PD.PLAYLISTID = PL.playlistid "
+					+ "WHERE PD.PLAYLISTID=? "
+					+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES, PD.INDEX , PL.playlistid "
+					+ "ORDER BY PD.INDEX ";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
+			rs = ps.executeQuery();
+			Video dto=null;
+			while(rs.next()){
+				
+				dto = new Video();
+//				dto.setVideoId(rs.getInt("videoid"));
+				dto.setVideoId(Encryption.encode(rs.getString("videoid")));
+				dto.setVideoName(rs.getString("videoname"));
+				dto.setDescription(rs.getString("description"));
+				dto.setYoutubeUrl(rs.getString("youtubeurl"));
+				dto.setFileUrl(rs.getString("fileurl"));
+				dto.setPublicView(rs.getBoolean("publicview"));
+				dto.setPostDate(rs.getDate("postdate"));
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
+				dto.setViewCounts(rs.getInt("viewcount"));
+				dto.setUsername(rs.getString("username"));
+				dto.setCountVotePlus(rs.getInt("countvoteplus"));
+				dto.setCountVoteMinus(rs.getInt("countvoteminus"));
+				playlists.add(dto);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	
 	
 
