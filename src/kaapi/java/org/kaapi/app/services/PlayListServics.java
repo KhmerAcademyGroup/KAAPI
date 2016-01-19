@@ -18,6 +18,7 @@ public interface PlayListServics {
 	public ArrayList<Playlist> listAllPlaylist();
 	public ArrayList<Playlist> list(Pagination pagin , Playlist dto);
 	public ArrayList<Video> listVideoInPlaylist(String playlistid , Pagination pagin );
+	public ArrayList<Video> listVideoInPlaylist(String playlistid );
 	public String getPlaylistName(String playlistid);
 	public ArrayList<Video> listVideo(String playlistid);
 	public Playlist listplaylistname(Playlist dto);
