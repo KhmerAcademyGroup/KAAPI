@@ -29,6 +29,7 @@ public class PlayListControllers {
 	PlayListServics playlistservice;
 	/*
 	 * list playlist by maincategory
+	 * we want to list all the course base on maincategory
 	 */
 	@RequestMapping(value="/listplaylistbymaincategory/{categoryid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listPlaylistByMainCategory(@PathVariable("categoryid") String cid){
@@ -52,6 +53,7 @@ public class PlayListControllers {
 	}
 	/*
 	 * search category
+	 * we want to search the course in play
 	 */
 	@RequestMapping(value="/searchplaylist/{searchkey}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> test(@PathVariable("searchkey") String key){
@@ -257,6 +259,35 @@ public class PlayListControllers {
 			pagin.setPage(begin);
 			
 			ArrayList<Video>  dto= playlistservice.listVideoInPlaylist(pid, pagin);
+			if(!dto.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	/*
+	 * action get playlist ->well
+	 * we want to list playlist
+	 * change from getplaylist to listVideoInPlaylist
+	 */
+	@RequestMapping(value="/listAllVideoInPlaylist/{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listAllVideoInPlaylist(	@PathVariable("playlistid") String pid){
+		
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			
+			
+			ArrayList<Video>  dto= playlistservice.listVideoInPlaylist(pid);
 			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
