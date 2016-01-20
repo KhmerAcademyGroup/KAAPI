@@ -7,6 +7,7 @@ import java.util.Map;
 import org.jsoup.select.Evaluator.IsEmpty;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
+import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
@@ -36,10 +37,12 @@ public class PlayListControllers {
 		
 		try{
 			ArrayList<Playlist>  dto= playlistservice.listUserPlayList(uid);
+			ArrayList<PlaylistDetail> playDetail = playlistservice.listplaylistdetail(uid); 
 			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
-				map.put("RES_DATA", dto);
+				map.put("USERPLAYLIST", dto);
+				map.put("PLAYLISTDETAIL", playDetail);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");

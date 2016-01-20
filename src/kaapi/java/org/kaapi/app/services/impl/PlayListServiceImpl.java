@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
+import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
@@ -301,10 +302,10 @@ public class PlayListServiceImpl implements PlayListServics{
 	}
 	//well
 	@Override
-	public ArrayList<Playlist> listplaylistdetail(String userid) {
+	public ArrayList<PlaylistDetail> listplaylistdetail(String userid) {
 		try {
 			con = dataSource.getConnection();
-			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			ArrayList<PlaylistDetail> playlists =new ArrayList<PlaylistDetail>();
 			ResultSet rs = null;
 			String sql = "select D.playlistid , D.videoid , U.userid from TBLPLAYlISTDETAIL D "
 					+ " INNER JOIN TBLPLAYLIST L ON D.playlistid = L.playlistid "
@@ -314,26 +315,11 @@ public class PlayListServiceImpl implements PlayListServics{
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
 			while(rs.next()){
-				
-				Playlist playlist = new Playlist();
+				PlaylistDetail playlist = new PlaylistDetail();
 				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
-				playlist.setUserId(Encryption.encode(rs.getString("userid")));
-				
-				
-				/*playlist.setPlaylistName(rs.getString("playlistname"));
-				playlist.setDescription(rs.getString("description"));
-				playlist.setUserId(rs.getInt("userid"));
-				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
-				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(rs.getInt("maincategory"));
-				playlist.setBgImage(rs.getString("bgimage"));
-				playlist.setColor(rs.getString("color"));
-				playlist.setStatus(rs.getBoolean("status"));
-				playlist.setUsername(rs.getString("username"));
-				playlist.setUserImageUrl(rs.getString("userimageurl"));*/
-				
 				playlists.add(playlist);
+			
 				
 			}
 			return playlists;

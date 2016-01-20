@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
+import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
@@ -26,7 +27,7 @@ public interface PlayListServics {
 	public Playlist listplaylistname(Playlist dto);
 	public ArrayList<Playlist> listplaylistbyPublicView(boolean publicview);
 	public ArrayList<Playlist> listplaylistbyAdmin(boolean publicview);
-	public ArrayList<Playlist> listplaylistdetail(String userid);
+	public ArrayList<PlaylistDetail> listplaylistdetail(String userid);
 	public ArrayList<Playlist> listplaylistdetail(String userid , String playlistid);
 	public Playlist get(String playlistid);
 	public Playlist getPlaylistForUpdate(String playlistid);

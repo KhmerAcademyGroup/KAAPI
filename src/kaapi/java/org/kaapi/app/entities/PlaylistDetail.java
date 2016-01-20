@@ -2,21 +2,22 @@ package org.kaapi.app.entities;
 
 public class PlaylistDetail {
 
-	private int playlistId;
-	private int videoId;
+	private String playlistId;
+	private String videoId;
 	private String playlistName; 
 	private String videoName;
 	
-	public int getPlaylistId() {
+
+	public String getPlaylistId() {
 		return playlistId;
 	}
-	public void setPlaylistId(int playlistId) {
+	public void setPlaylistId(String playlistId) {
 		this.playlistId = playlistId;
 	}
-	public int getVideoId() {
+	public String getVideoId() {
 		return videoId;
 	}
-	public void setVideoId(int videoId) {
+	public void setVideoId(String videoId) {
 		this.videoId = videoId;
 	}
 	public String getPlaylistName() {
