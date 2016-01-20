@@ -1,5 +1,6 @@
 package org.kaapi.app.services;
 
+import java.sql.Array;
 import java.util.ArrayList;
 
 import org.kaapi.app.entities.Pagination;
@@ -10,6 +11,7 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
+	public ArrayList<Playlist> listUserPlayList(String userid);
 	public ArrayList<Playlist> listPlayListByMainCategory(String categoryid);
 	public ArrayList<Playlist> searchPlayList(String kesearch);
 	public int countVideoInPlayList(int playlisid);
