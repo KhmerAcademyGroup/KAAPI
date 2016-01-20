@@ -1051,6 +1051,36 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+	@Override
+	public ArrayList<Playlist> listUserPlayList(String userid) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql = "select playlistid , playlistname,publicview from tblplaylist where userid = ?  order by playlistid desc";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	
 	
 

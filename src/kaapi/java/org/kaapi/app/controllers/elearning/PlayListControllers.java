@@ -27,6 +27,32 @@ public class PlayListControllers {
 	
 	@Autowired
 	PlayListServics playlistservice;
+	
+	/*listuserplaylist
+	 */
+	@RequestMapping(value="/listuserplaylist/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listUserPlayList(@PathVariable("userid") String uid){
+		Map<String, Object> map= new HashMap<String, Object>();
+		
+		try{
+			ArrayList<Playlist>  dto= playlistservice.listUserPlayList(uid);
+			if(!dto.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	
 	/*
 	 * list playlist by maincategory
 	 * we want to list all the course base on maincategory
@@ -138,7 +164,7 @@ public class PlayListControllers {
 	 * we want to add new playlist detail 
 	 * we need playlist ID and video ID
 	 */
-	@RequestMapping(value="/addvideotoplaylistDetail/{playlistid}/{videoid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	@RequestMapping(value="/addvideotoplaylistDetail/{playlistid}/{videoid}", method= RequestMethod.POST, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> addVideoToPlayListDetail(@PathVariable("playlistid") String pid,
 																		@PathVariable("videoid") String vid){
 		Map<String, Object> map= new HashMap<String, Object>();
