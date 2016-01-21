@@ -623,22 +623,11 @@ public class VideoController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			Video video = videoService.getVideo(vid, true);
-			if(video!=null){
-				Pagination pagination = new Pagination();
-				pagination.setItem(10);
-				pagination.setPage(1);
-				pagination.setTotalCount(commentService.countCommentOnVideo(vid));
-				pagination.setTotalPages(pagination.totalPages());
-				List<Comment> comment = commentService.listCommentOnVideo(vid, pagination);
-				map.put("COMMENT", comment);
-			}
 			if(video.getCategoryName()!=null){
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
 			map.put("VIDEO", video);
-			map.put("CHECKVOTE", voteService.checkVote(vid, uid));
-			map.put("COUNTVOTE", voteService.countVote(vid));
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
 		}catch(Exception e){
