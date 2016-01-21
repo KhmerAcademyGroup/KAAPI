@@ -11,6 +11,7 @@ import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.CommentService;
 import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.services.VideosService;
+import org.kaapi.app.services.VoteService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class VideoController {
 	@Autowired VideosService videoService;
 	@Autowired PlayListServics playlistService;
 	@Autowired CommentService commentService;
+	@Autowired VoteService voteService;
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
@@ -635,6 +637,8 @@ public class VideoController {
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
+			map.put("CHECKVOTE", voteService.checkVote(vid, uid));
+			map.put("COUNTVOTE", voteService.countVote(vid));
 			map.put("VIDEO", video);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
