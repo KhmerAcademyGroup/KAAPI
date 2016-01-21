@@ -55,7 +55,13 @@ public class VoteServiceImplement implements VoteService {
 
 	@Override
 	public boolean vote(String videoid, String userid) {
-		String sql = "INSERT INTO TBLVOTE VALUES(?, ?, 1)";
+		
+		String sql="";
+		if(check(videoid,userid)){
+			sql = "UPDATE TBLVOTE SET votetype=1 WHERE userid=? AND videoid=?";	
+		}else{
+			sql = "INSERT INTO TBLVOTE VALUES(?, ?, 1)";
+		}
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ps.setInt(2, Integer.parseInt(Encryption.decode(videoid)));
@@ -79,6 +85,25 @@ public class VoteServiceImplement implements VoteService {
 			ps.setInt(2, Integer.parseInt(Encryption.decode(videoid)));
 			if(ps.executeUpdate()>0){
 				return true;
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean check(String videoid, String userid) {
+		String sql = "SELECT COUNT(VIDEOID) FROM TBLVOTE WHERE userid=? AND videoid=?";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(videoid)));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				if(rs.getInt(1)>0) return true;
 			}	
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -45,8 +45,6 @@ public class VoteController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (voteService.vote(videoid, userid)) {
 			map.put("STATUS", true);
-			map.put("CHECKVOTE", voteService.checkVote(videoid, userid));
-			map.put("COUNTVOTE", voteService.countVote(videoid));
 			map.put("MESSAGE", "OPERATION SUCCESS");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}else{
@@ -64,8 +62,6 @@ public class VoteController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (voteService.unvote(videoid, userid)) {
 			map.put("STATUS", true);
-			map.put("CHECKVOTE", voteService.checkVote(videoid, userid));
-			map.put("COUNTVOTE", voteService.countVote(videoid));
 			map.put("MESSAGE", "OPERATION SUCCESS");
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		}else{
