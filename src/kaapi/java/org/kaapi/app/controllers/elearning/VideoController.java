@@ -593,8 +593,7 @@ public class VideoController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/video/playvideo", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> playVideo(
-			@RequestParam(value="playlist", required=false) String pid,
-			@RequestParam(value="user", required=false) String uid) {
+			@RequestParam(value="playlist", required=false) String pid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			List<Playlist> playlists = videoService.listPlaylist();

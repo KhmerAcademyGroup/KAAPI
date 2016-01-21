@@ -20,7 +20,7 @@ public class VoteServiceImplement implements VoteService {
 	
 	@Override
 	public int countVote(String videoid) {
-		String sql = "SELECT COUNT(*) FROM TBLVOTE WHERE votetype=1 AND VIDEOID=?";
+		String sql = "SELECT COUNT(*) FROM TBLVOTE WHERE VOTETYPE=1 AND VIDEOID=?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setInt(1, Integer.parseInt(Encryption.decode(videoid)));
 			ResultSet rs = ps.executeQuery();
