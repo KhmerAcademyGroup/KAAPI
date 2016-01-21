@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class FrmAddPreCourse {
 	
-	private String id;
+	
 	private String userId;;
 	private String username;
 	private String email;
@@ -19,12 +19,7 @@ public class FrmAddPreCourse {
 	private int payment;
 	private String gender;
 	private String year;
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+	
 	public String getUserId() {
 		return userId;
 	}
