@@ -637,9 +637,9 @@ public class VideoController {
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
+			map.put("VIDEO", video);
 			map.put("CHECKVOTE", voteService.checkVote(vid, uid));
 			map.put("COUNTVOTE", voteService.countVote(vid));
-			map.put("VIDEO", video);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
 		}catch(Exception e){
