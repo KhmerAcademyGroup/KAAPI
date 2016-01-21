@@ -9,6 +9,13 @@ public class FrmCreatePlaylist {
 	private String maincategory;
 	private String bgImage;
 	private String color;
+	private boolean status;
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
 	public String getPlaylistName() {
 		return playlistName;
 	}
