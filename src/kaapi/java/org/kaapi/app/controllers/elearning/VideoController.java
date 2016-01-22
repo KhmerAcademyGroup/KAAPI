@@ -11,6 +11,7 @@ import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.CommentService;
 import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.services.VideosService;
+import org.kaapi.app.services.VoteService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class VideoController {
 	@Autowired VideosService videoService;
 	@Autowired PlayListServics playlistService;
 	@Autowired CommentService commentService;
+	@Autowired VoteService voteService;
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
@@ -591,8 +593,7 @@ public class VideoController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/video/playvideo", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> playVideo(
-			@RequestParam(value="playlist", required=false) String pid,
-			@RequestParam(value="user", required=false) String uid) {
+			@RequestParam(value="playlist", required=false) String pid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			List<Playlist> playlists = videoService.listPlaylist();
@@ -622,15 +623,6 @@ public class VideoController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			Video video = videoService.getVideo(vid, true);
-			if(video!=null){
-				Pagination pagination = new Pagination();
-				pagination.setItem(10);
-				pagination.setPage(1);
-				pagination.setTotalCount(commentService.countCommentOnVideo(vid));
-				pagination.setTotalPages(pagination.totalPages());
-				List<Comment> comment = commentService.listCommentOnVideo(vid, pagination);
-				map.put("COMMENT", comment);
-			}
 			if(video.getCategoryName()!=null){
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);

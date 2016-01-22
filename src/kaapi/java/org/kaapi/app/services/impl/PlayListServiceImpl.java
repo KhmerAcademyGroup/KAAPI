@@ -487,17 +487,31 @@ public class PlayListServiceImpl implements PlayListServics{
 	public boolean insert(FrmCreatePlaylist playlist) {
 		try {
 			con = dataSource.getConnection();
-			String sql = "INSERT INTO TBLPLAYLIST VALUES(nextval('seq_playlist'), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql="";
+			if(playlist.getMaincategory()!=null){
+				 sql = "INSERT INTO TBLPLAYLIST VALUES(nextval('seq_playlist'), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			}else{
+				 sql = "INSERT INTO TBLPLAYLIST VALUES(nextval('seq_playlist'), ?, ?, ?, ?, ?, null, ?, ?, ?)";
+			}
+			
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, playlist.getPlaylistName());
 			ps.setString(2, playlist.getDescription());
 			ps.setInt(3, Integer.parseInt(Encryption.decode(playlist.getUserId())));
 			ps.setString(4, playlist.getThumbnailUrl());
 			ps.setBoolean(5, playlist.isPublicView());
-			ps.setInt(6, Integer.parseInt(Encryption.decode(playlist.getMaincategory())));
-			ps.setString(7, playlist.getBgImage());
-			ps.setString(8, playlist.getColor());
-			ps.setBoolean(9, true);
+			if(playlist.getMaincategory()!=null){
+				ps.setInt(6, Integer.parseInt(Encryption.decode(playlist.getMaincategory())));
+				ps.setString(7, playlist.getBgImage());
+				ps.setString(8, playlist.getColor());
+				ps.setBoolean(9, playlist.isStatus());
+			}else{
+				ps.setString(6, playlist.getBgImage());
+				ps.setString(7, playlist.getColor());
+				ps.setBoolean(8, playlist.isStatus());
+			}
+			
+			
 			if(ps.executeUpdate()>0){
 				return true;
 			}

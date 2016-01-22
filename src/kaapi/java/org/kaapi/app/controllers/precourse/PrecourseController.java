@@ -36,7 +36,7 @@ public class PrecourseController {
 			
 		if(!status){
 			map.put("STATUS", false);
-			map.put("MESSAGE", "ERROR INPUT PRECAUSE");
+			map.put("MESSAGE", "ERROR INPUT PRECOURSE");
 			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 		}
 		
