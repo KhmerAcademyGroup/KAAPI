@@ -29,6 +29,30 @@ public class PlayListControllers {
 	@Autowired
 	PlayListServics playlistservice;
 	
+	/*getplaylist by id
+	 */
+	@RequestMapping(value="/getplaylistbyplaylistid/{playlistid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> GetPlayListByPlayListId(@PathVariable("playlistid") String pid){
+		Map<String, Object> map= new HashMap<String, Object>();
+		
+		try{
+			Playlist  dto= playlistservice.get(pid);
+			if(dto !=null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("USERPLAYLIST", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+
 	/*listuserplaylist
 	 */
 	@RequestMapping(value="/listuserplaylist/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")

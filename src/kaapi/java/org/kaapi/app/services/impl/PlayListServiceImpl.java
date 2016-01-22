@@ -389,9 +389,10 @@ public class PlayListServiceImpl implements PlayListServics{
 			con = dataSource.getConnection();
 			String sql = "SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid "
 					+ "LEFT JOIN TBLPLAYlISTDETAIL PD ON P.playlistid=PD.playlistid "
-					+ "WHERE P.playlistid="+playlistid+" GROUP BY P.playlistid, U.username";
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+					+ "WHERE P.playlistid=? GROUP BY P.playlistid, U.username";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
+			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				Playlist dto = new Playlist();
 				dto.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
@@ -970,7 +971,7 @@ public class PlayListServiceImpl implements PlayListServics{
 							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status=TRUE"; 
 								
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, kesearch);
+			ps.setString(1, "%"+kesearch+"%");
 			rs = ps.executeQuery();
 			while(rs.next()){
 				
