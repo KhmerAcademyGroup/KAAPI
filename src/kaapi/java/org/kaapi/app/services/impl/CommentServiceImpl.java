@@ -164,12 +164,11 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public boolean insert(Comment comment) {
-		String sql = "INSERT INTO TBLCOMMENT VALUES(nextval('seq_comment'), NOW(), ?, ?, ?,?)";
+		String sql = "INSERT INTO TBLCOMMENT VALUES(nextval('seq_comment'), NOW(), ?, ?, ?,0)";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ps.setString(1, comment.getCommentText());
 			ps.setInt(2, Integer.parseInt(Encryption.decode(comment.getVideoId())));
 			ps.setInt(3, Integer.parseInt(Encryption.decode(comment.getUserId())));
-			ps.setInt(4, Integer.parseInt(Encryption.decode(comment.getReplyId())));
 			if(ps.executeUpdate()>0){
 				return true;
 			}
