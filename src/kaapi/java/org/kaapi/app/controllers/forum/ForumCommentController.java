@@ -248,6 +248,7 @@ public class ForumCommentController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 
+	@RequestMapping(value="/listquestion/c/{cid}" , method = RequestMethod.GET , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> listQuestionByCategoryId(
 			  @PathVariable("cid") String cateid,
 			  @RequestParam(value = "page", required = false , defaultValue="1") int page ,
