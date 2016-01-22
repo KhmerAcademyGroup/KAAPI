@@ -22,7 +22,40 @@ public class HistorysController {
 	@Autowired
 	HistoryService historyservice;
 	
+	/*action list user history ->well
+	 * we want to list history base on user id
+	 * and video name
+	 */
+	@RequestMapping(value="/lituserhistory/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listUserHistory(	
+															@PathVariable("userid") String uid,
+															@RequestParam(value="page", required = false, defaultValue = "1") int page,
+															@RequestParam(value="item", required = false, defaultValue = "10") int item){
+	
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			int begin = (item * page) - item;
+			Pagination pagin = new Pagination();
+			pagin.setItem(item);
+			pagin.setPage(begin);
+			
+			ArrayList<History> dto= historyservice.userHistory(uid, pagin);
+				
+			if(!dto.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		
+	}
 	
 	/*
 	 * action get listall history
@@ -121,7 +154,7 @@ public class HistorysController {
 				pagin.setItem(item);
 				pagin.setPage(begin);
 				
-				History dto= historyservice.list(videoname, uid, pagin);
+				ArrayList<History> dto= historyservice.list(videoname, uid, pagin);
 				if(dto != null){
 					map.put("STATUS", true);
 					map.put("MESSAGE", "RECORD FOUND");
@@ -166,11 +199,33 @@ public class HistorysController {
 		
 		//action count user history
 		@RequestMapping(value="/counthistory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> countUserHistory(@PathVariable("userid") String uid, 
+		public ResponseEntity<Map<String, Object>> countHistory(@PathVariable("userid") String uid, 
 																	@PathVariable("videoname") String name){
 			
 			Map<String, Object> map= new HashMap<String, Object>();
 			int count =historyservice.count(name, uid);
+			try{
+				if(count>0){
+					map.put("STATUS", true);
+					map.put("MESSAGE", "RECORD FOUND");
+					map.put("TOTAL", count);
+				}else{
+					map.put("STATUS", false);
+					map.put("MESSAGE", "RECORD NOTFOUND");
+				}
+			}catch(Exception e){
+				map.put("STATUS", false);
+				map.put("MESSAGE", "ERROR OCCURRING!");
+			}
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+			
+		}
+		//action count user history
+		@RequestMapping(value="/countuserhistory/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+		public ResponseEntity<Map<String, Object>> countUserHistory(@PathVariable("userid") String uid){
+			
+			Map<String, Object> map= new HashMap<String, Object>();
+			int count =historyservice.userHistoryCount(uid);
 			try{
 				if(count>0){
 					map.put("STATUS", true);
