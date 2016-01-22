@@ -6,6 +6,8 @@ import org.kaapi.app.entities.Comment;
 import org.kaapi.app.entities.Pagination;
 
 public interface CommentService {
+	public List<Comment> listSuperCommentOnVideo(String videoid, Pagination page);
+	public List<Comment> listReplyCommentOnVideo(String videoId);
 	public List<Comment> listCommentOnVideo(String videoid, Pagination page);
 	public List<Comment> listComment(Pagination page);
 	public List<Comment> listComment(String commentText, Pagination page);
@@ -17,6 +19,7 @@ public interface CommentService {
 	public int countComment();
 	public int countComment(String commentText);
 	public int countCommentOnVideo(String videoId);
+	public int countSuperCommentOnVideo(String videoId);
 	public int countSuperComment();
 	public int countReplyComment(String videoId, String replyId);
 	public Comment getComment(String commentId);

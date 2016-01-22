@@ -388,4 +388,94 @@ public class CommentServiceImpl implements CommentService {
 		return 0;
 	}
 
+	@Override
+	public List<Comment> listSuperCommentOnVideo(String videoid, Pagination page) {
+		String sql = "SELECT CM.*, V.videoname, U.username, U.userimageurl "
+				   + "FROM TBLCOMMENT CM "
+				   + "INNER JOIN TBLVIDEO V ON CM.videoid=V.videoid "
+				   + "INNER JOIN TBLUSER U ON CM.userid=U.userid "
+				   + "WHERE CM.videoid=? AND CM.replycomid is not null AND CM.replycomid = 0 "
+				   + "ORDER BY commentdate DESC OFFSET ? LIMIT ?";
+		
+		List<Comment> list = new ArrayList<Comment>();
+		Comment comment = null;
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoid)));
+			ps.setInt(2, page.offset());
+			ps.setInt(3, page.getItem());
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				comment = new Comment();
+				comment.setCommentId(Encryption.encode(rs.getString("commentid")));
+				comment.setCommentDate(rs.getDate("commentdate"));
+				comment.setCommentText(rs.getString("commenttext"));
+				comment.setVideoId(Encryption.encode(rs.getString("videoid")));
+				comment.setUserId(Encryption.encode(rs.getString("userid")));
+				comment.setUsername(rs.getString("username"));
+				comment.setUserImageUrl(rs.getString("userimageurl"));
+				comment.setReplyId(Encryption.encode(rs.getString("replycomid")));	
+				list.add(comment);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("ERROR covert");
+			return null;
+		}
+		return null;
+	}
+
+	@Override
+	public List<Comment> listReplyCommentOnVideo(String videoId) {
+		String sql = "SELECT CM.*, V.videoname, U.username, U.userimageurl "
+				   + "FROM TBLCOMMENT CM "
+				   + "INNER JOIN TBLVIDEO V ON CM.videoid=V.videoid "
+				   + "INNER JOIN TBLUSER U ON CM.userid=U.userid "
+				   + "WHERE CM.videoid=? AND CM.replycomid is not null AND CM.replycomid <> 0 "
+				   + "ORDER BY commentdate DESC";
+		
+		List<Comment> list = new ArrayList<Comment>();
+		Comment comment = null;
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				comment = new Comment();
+				comment.setCommentId(Encryption.encode(rs.getString("commentid")));
+				comment.setCommentDate(rs.getDate("commentdate"));
+				comment.setCommentText(rs.getString("commenttext"));
+				comment.setVideoId(Encryption.encode(rs.getString("videoid")));
+				comment.setUserId(Encryption.encode(rs.getString("userid")));
+				comment.setUsername(rs.getString("username"));
+				comment.setUserImageUrl(rs.getString("userimageurl"));
+				comment.setReplyId(Encryption.encode(rs.getString("replycomid")));
+				list.add(comment);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("ERROR covert");
+			return null;
+		}
+		return null;
+	}
+
+	@Override
+	public int countSuperCommentOnVideo(String videoId) {
+		String sql = "SELECT COUNT(videoid) FROM TBLCOMMENT WHERE videoid=? AND replycomid is not null AND replycomid = 0";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error");
+			return 0;
+		}
+		return 0;
+	}
+
 }

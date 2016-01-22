@@ -22,6 +22,38 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 	
 	@Autowired CommentService commentService;
+	
+	//get comment on video: param(videoId,offset,limit)
+	@RequestMapping(method = RequestMethod.GET, value = "/comment/reply/video/v/{videoId}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getCommentOnVideo(
+			@RequestParam(value="page", required=false, defaultValue="1") int page,
+			@RequestParam(value="item", required=false, defaultValue="10") int item,
+			@PathVariable("videoId") String videoId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(commentService.countSuperCommentOnVideo(videoId));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Comment> comment = commentService.listSuperCommentOnVideo(videoId, pagination);
+			List<Comment> replycomment = commentService.listReplyCommentOnVideo(videoId);
+			if (comment.isEmpty()) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND");
+			}else{
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("COMMENT", comment);
+				map.put("REPLY", replycomment);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
 
 	//get comment
 	@RequestMapping(method = RequestMethod.GET, value = "/comment/c/{id}", headers = "Accept=application/json")
