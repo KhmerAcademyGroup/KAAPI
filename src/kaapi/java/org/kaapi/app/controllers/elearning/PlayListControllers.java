@@ -306,16 +306,19 @@ public class PlayListControllers {
 		
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
-			int begin = (item * page) - item;
+			
 			Pagination pagin = new Pagination();
 			pagin.setItem(item);
-			pagin.setPage(begin);
+			pagin.setPage(page);
+			pagin.setTotalCount(playlistservice.countvideos(pid));
+			pagin.setTotalPages(pagin.totalPages());
 			
 			ArrayList<Video>  dto= playlistservice.listVideoInPlaylist(pid, pagin);
 			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
+				map.put("PAGINATION", pagin);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");

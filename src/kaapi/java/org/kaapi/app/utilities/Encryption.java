@@ -11,5 +11,9 @@ public class Encryption {
 	public static String decode(String encoded){
 		return  new String(DatatypeConverter.parseBase64Binary(encoded));
 	}
+	public static void main(String[] args) {
+		System.out.println(new Encryption().encode("341"));
+	}
 	
+	/*MzQx*/
 }
