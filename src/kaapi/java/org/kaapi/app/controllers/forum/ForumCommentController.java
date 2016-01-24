@@ -332,4 +332,76 @@ public class ForumCommentController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(value="/getquestionbyquestionid/{qid}" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> getQuestionByQuestionId(
+			  @PathVariable("qid") String qid ){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			ForumComment question = forumCommentService.getQuestionById(qid);
+			if(question == null){
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			}else{
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RESP_DATA", question);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/listanswerbyquestionid/{qid}" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> listAnswerByQuestionId(
+			  @PathVariable("qid") String qid 
+			, @RequestParam(value = "page", required = false , defaultValue="1") int page 
+			, @RequestParam(value="item" , required = false , defaultValue="20") int item  ){
+		Map<String , Object> map = new HashMap<String , Object>();
+		Pagination pagination = new Pagination();
+		pagination.setItem(item);
+		pagination.setPage(page);
+		pagination.setTotalCount(forumCommentService.countAnswerByQuestionId(qid));
+		pagination.setTotalPages(pagination.totalPages());
+		try{
+			List<ForumComment> listAnswer = forumCommentService.listAnswerByQuestionId(qid, pagination);
+			if(listAnswer == null){
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			}else{
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RESP_DATA", listAnswer);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getselectedanswerbyquestionid/{qid}" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> getSelectedAnswerByQuestionId(
+			  @PathVariable("qid") String qid ){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			ForumComment selectedAnswer = forumCommentService.getSelectedAnswerByQuestionId(qid);
+			if(selectedAnswer == null){
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			}else{
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RESP_DATA", selectedAnswer);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
 }

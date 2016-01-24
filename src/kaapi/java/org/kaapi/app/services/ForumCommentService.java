@@ -24,6 +24,8 @@ public interface ForumCommentService {
 	public int countAnswerByQuestionId(String parentId);
 	public int countAnswer();
 	public ForumComment getQuestionById(String commentId);
+	public ForumComment getSelectedAnswerByQuestionId(String parentId);
+
 	
 	public boolean insertAnswer(FrmAddAnswer addAnswer);
 	public boolean deleteAnswer(String answerId);

@@ -534,4 +534,48 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 		return false;
 	}
 
+
+
+	@Override
+	public ForumComment getSelectedAnswerByQuestionId(String parentId) {
+		String sql =  " SELECT DISTINCT(C1.*), U.Username, U.UserImageURL, C1.SELECTED, COUNT(C2.Commentid) COMMENTCOUNT, SUM(VOTETYPE) VOTECOUNT "
+				+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid "
+				+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid "
+				+ " LEFT JOIN TBLFORUMVOTE FV ON C1.Commentid=FV.Commentid "
+				+ " WHERE C1.Parentid=? AND C1.SELECTED=true GROUP BY C1.Commentid, U.Userid, FV.Commentid ";
+
+	try(
+			Connection cnn = dataSource.getConnection();
+			PreparedStatement ps = cnn.prepareStatement(sql);
+	){
+			ps.setInt(1, Integer.parseInt(Encryption.decode(parentId)));	
+			ResultSet rs = ps.executeQuery();
+			ForumComment dto = null;
+			while(rs.next()){
+				dto  = new ForumComment();
+				dto.setCommentId(Encryption.encode(rs.getString("commentid")));
+				dto.setPostDate(rs.getDate("postdate"));
+				dto.setTitle(rs.getString("title"));
+				dto.setDetail(rs.getString("detail"));
+				dto.setTag(rs.getString("tag"));
+				if(rs.getString("parentid") != null){
+					dto.setParentId(Encryption.encode(rs.getString("parentid")));
+				}
+				if(rs.getString("categoryid") != null){
+					dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+				}
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
+				dto.setUsername(rs.getString("username"));
+				dto.setSelected(rs.getBoolean("selected"));
+				dto.setCommentCount(rs.getInt("commentcount"));
+				dto.setVote(rs.getInt("votecount"));
+			}
+			return dto;
+	}catch(SQLException e){
+		e.printStackTrace();
+	}
+	return null;
+	}
+
+	
 }
