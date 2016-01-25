@@ -17,6 +17,7 @@ public interface TutorialService {
 	public boolean update(FrmUpdateTutorial dto);
 	public boolean delete(String tutorialid);
 	public int count();
+	public int countByUser(String userid);
 	public int count(String categoryid);
 	public ArrayList<Category> listCategories();
 }

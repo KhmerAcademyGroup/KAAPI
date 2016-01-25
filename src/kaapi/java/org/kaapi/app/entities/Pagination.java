@@ -58,9 +58,6 @@ public class Pagination implements Serializable{
 	}
 
 	public void setItem(int item) {
-		if(item > 100 ){
-			item = 10;
-		}
 		this.item = item;
 	}
 

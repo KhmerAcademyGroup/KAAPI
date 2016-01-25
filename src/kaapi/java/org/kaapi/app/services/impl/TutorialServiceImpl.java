@@ -322,5 +322,30 @@ public class TutorialServiceImpl implements TutorialService{
 		return null;
 	}
 
+	@Override
+	public int countByUser(String userid) {
+		try {
+			con = ds.getConnection();
+			ResultSet rs = null;
+			String sql = "SELECT COUNT(tutorialid) FROM TBLTUTORIAL where userid=?";
+			PreparedStatement ps= con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
+			System.out.println(Integer.parseInt(Encryption.decode(userid)));
+			rs = ps.executeQuery();
+			if(rs.next())
+				return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return 0;
+	}
+
 
 }

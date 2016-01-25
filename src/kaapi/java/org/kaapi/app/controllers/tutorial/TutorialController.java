@@ -45,7 +45,7 @@ public class TutorialController {
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
 			}
-			pagination.setTotalCount(service.count());
+			pagination.setTotalCount(service.countByUser(userid));
 			pagination.setTotalPages(pagination.totalPages());
 			map.put("PAGINATION", pagination);
 			map.put("STATUS", true);
