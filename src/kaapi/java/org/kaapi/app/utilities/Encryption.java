@@ -12,7 +12,7 @@ public class Encryption {
 		return  new String(DatatypeConverter.parseBase64Binary(encoded));
 	}
 	public static void main(String[] args) {
-		System.out.println(new Encryption().encode("341"));
+		System.out.println(new Encryption().encode("1"));
 	}
 	
 	/*MzQx*/

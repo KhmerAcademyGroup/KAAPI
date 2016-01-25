@@ -80,6 +80,7 @@ public class PlayListServiceImpl implements PlayListServics{
 		try {
 			con = dataSource.getConnection();
 			ArrayList<Video> playlists =new ArrayList<Video>();
+			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
 			ResultSet rs = null;
 			String sql = "SELECT PL.*, V.*, U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX ,V.publicview  ispublic "
 					+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
@@ -94,7 +95,7 @@ public class PlayListServiceImpl implements PlayListServics{
 					+ "ORDER BY PD.INDEX  offset ? limit ? ";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
-			ps.setInt(2, pagin.getPage());
+			ps.setInt(2, begin);
 			ps.setInt(3, pagin.getItem());
 			rs = ps.executeQuery();
 			Video dto=null;
