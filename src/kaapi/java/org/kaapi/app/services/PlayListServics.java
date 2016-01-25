@@ -18,7 +18,7 @@ public interface PlayListServics {
 	public int countVideoInPlayList(int playlisid);
 	public ArrayList<Playlist> litsMainElearning();
 	public ArrayList<Playlist> listMainPlaylist();
-	public ArrayList<Playlist> listAllPlaylist();
+	public ArrayList<Playlist> listAllPlaylist( Pagination pagin);
 	public ArrayList<Playlist> list(Pagination pagin , Playlist dto);
 	public ArrayList<Video> listVideoInPlaylist(String playlistid , Pagination pagin );
 	public ArrayList<Video> listVideoInPlaylist(String playlistid );
@@ -42,4 +42,5 @@ public interface PlayListServics {
 	public boolean deleteVideoFromPlaylist(String playlistid , String vid);
 	public boolean updateThumbnail(String vid , String pid);
 	public boolean updateThumbnailToDefault(String pid);
+	public int countPlayList();
 }

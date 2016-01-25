@@ -164,15 +164,22 @@ public class PlayListControllers {
 	 * we want to listallplaylist
 	 */
 	@RequestMapping(value="/listallplaylist", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> listAllPlayList(){
+	public ResponseEntity<Map<String, Object>> listAllPlayList(@RequestParam(value ="page", required = false, defaultValue = "1") int page,
+																@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
+			Pagination pagin = new Pagination();
+			pagin.setItem(item);
+			pagin.setPage(page);
+			pagin.setTotalCount(playlistservice.countPlayList());
+			pagin.setTotalPages(pagin.totalPages());
 			
-			ArrayList<Playlist>  dto= playlistservice.listAllPlaylist();
+			ArrayList<Playlist>  dto= playlistservice.listAllPlaylist(pagin);
 			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
+				map.put("PAGINATION", pagin);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
@@ -308,7 +315,6 @@ public class PlayListControllers {
 		try{
 			
 			Pagination pagin = new Pagination();
-			
 			pagin.setItem(item);
 			pagin.setPage(page);
 			pagin.setTotalCount(playlistservice.countvideos(pid));
@@ -406,17 +412,19 @@ public class PlayListControllers {
 			playlist.setUserId(uid);
 			playlist.setPlaylistName(name);
 			
-			
-			int begin = (item * page) - item;
+		
 			Pagination pagin = new Pagination();
 			pagin.setItem(item);
-			pagin.setPage(begin);
+			pagin.setPage(page);
+			pagin.setTotalCount(playlistservice.countPlayList());
+			pagin.setTotalPages(pagin.totalPages());
 			
 			ArrayList<Playlist>  dto= playlistservice.list(pagin, playlist);
 			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
+				
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");

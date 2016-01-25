@@ -35,6 +35,7 @@ public class PlayListServiceImpl implements PlayListServics{
 	public ArrayList<Playlist> list(Pagination pagin, Playlist dto) {
 		try {
 			con = dataSource.getConnection();
+			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
 			String sql = "SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid "
@@ -43,7 +44,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
 			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getUserId())));
-			ps.setInt(3, pagin.getPage());
+			ps.setInt(3, begin);
 			ps.setInt(4, pagin.getItem());
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -782,13 +783,16 @@ public class PlayListServiceImpl implements PlayListServics{
 	
 	//well
 	@Override
-	public ArrayList<Playlist> listAllPlaylist() {
+	public ArrayList<Playlist> listAllPlaylist(Pagination pagin) {
 		try {
 			con = dataSource.getConnection();
+			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
-			String sql = " SELECT * FROM tblplaylist WHERE maincategory NOTNULL AND status=TRUE";
+			String sql = " SELECT * FROM tblplaylist WHERE maincategory NOTNULL AND status=TRUE offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, begin);
+			ps.setInt(2, pagin.getItem());
 			rs = ps.executeQuery();
 			while(rs.next()){
 				Playlist playlist = new Playlist();
@@ -1082,6 +1086,18 @@ public class PlayListServiceImpl implements PlayListServics{
 			}
 		}
 		return null;
+	}
+	@Override
+	public int countPlayList() {
+		String sql = "SELECT COUNT(P.playlistid) FROM tblplaylist P";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+		
 	}
 	
 	
