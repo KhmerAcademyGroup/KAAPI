@@ -56,7 +56,7 @@ public class VideoController {
 	}
 	
 	//Toggle video: param(videoId, viewCount)
-	@RequestMapping(method = RequestMethod.PATCH, value = "/video/enable/v/{id}", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.PUT, value = "/video/enable/v/{id}", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> toggleVideo(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{

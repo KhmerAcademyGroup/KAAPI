@@ -26,7 +26,7 @@ public class HistorysController {
 	 * we want to list history base on user id
 	 * and video name
 	 */
-	@RequestMapping(value="/lituserhistory/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	@RequestMapping(value="/listuserhistory/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listUserHistory(	
 															@PathVariable("userid") String uid,
 															@RequestParam(value="page", required = false, defaultValue = "1") int page,
@@ -62,8 +62,8 @@ public class HistorysController {
 	 * we want to 
 	 */
 	@RequestMapping(value="/listallhistory", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> listallhistory(@RequestParam(value ="page", required = false) int page,
-															@RequestParam(value ="item" , required = false) int item){
+	public ResponseEntity<Map<String, Object>> listallhistory(@RequestParam(value ="page" , required = false, defaultValue = "1") int page,
+															@RequestParam(value ="item" , required = false, defaultValue = "10") int item){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
 			int begin = (item * page) - item;
@@ -141,11 +141,11 @@ public class HistorysController {
 		 * we want to list history base on user id
 		 * and video name
 		 */
-		@RequestMapping(value="/listhistory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
-		public ResponseEntity<Map<String, Object>> listHistory(	@PathVariable("videoname") String videoname,
+		@RequestMapping(value="/searchhistory/{userid}/{videoname}", method= RequestMethod.GET, headers= "Accept=application/json")
+		public ResponseEntity<Map<String, Object>> searchHistory(	@PathVariable("videoname") String videoname,
 																@PathVariable("userid") String uid,
-																@RequestParam("page") int page,
-																@RequestParam("item") int item){
+																@RequestParam(value="page" , required = false, defaultValue = "1") int page,
+																@RequestParam(value="item" , required = false, defaultValue = "10") int item){
 			
 			Map<String, Object> map= new HashMap<String, Object>();
 			try{
@@ -155,9 +155,11 @@ public class HistorysController {
 				pagin.setPage(begin);
 				
 				ArrayList<History> dto= historyservice.list(videoname, uid, pagin);
+				int count = historyservice.count(videoname, uid);
 				if(dto != null){
 					map.put("STATUS", true);
 					map.put("MESSAGE", "RECORD FOUND");
+					map.put("TOTAL", count);
 					map.put("RES_DATA", dto);
 				}else{
 					map.put("STATUS", false);

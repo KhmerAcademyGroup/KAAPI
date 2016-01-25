@@ -28,15 +28,14 @@ public class HistoryServiceImplement implements HistoryService{
 	public ArrayList<History> list(String search, String uid, Pagination pagin) {
 		try {
 			con = dataSource.getConnection();
-			ResultSet rs = null;
 			ArrayList<History> historys =new ArrayList<History>();
-			String sql =	 "SELECT h.historyid, h.historydate, h.videoid,"
-						   + "u.userid , u.username, v.videoname, v.youtubeurl, v.description, v.viewcount "
-						   + "FROM TBLHISTORY H "
-						   + "INNER JOIN TBLVIDEO V ON H.VIDEOID=V.VIDEOID "
-						   + "INNER JOIN tbluser u ON V.userid = u.userid where LOWER(v.videoname) like LOWER(?) and h.userid=? "
-						   + "order by h.historydate desc offset ? limit ?";
-			
+			ResultSet rs = null;
+			String sql = "SELECT h.historyid, h.historydate, h.videoid,"
+					   + "u.userid , u.username, v.videoname, v.youtubeurl, v.description, v.viewcount "
+					   + "FROM TBLHISTORY H "
+					   + "INNER JOIN TBLVIDEO V ON H.VIDEOID=V.VIDEOID "
+					   + "INNER JOIN tbluser u ON V.userid = u.userid where LOWER(v.videoname) like LOWER(?) and h.userid=? "
+					   + "order by h.historydate desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+search+"%");
 			ps.setInt(2, Integer.parseInt(Encryption.decode(uid)));
@@ -44,7 +43,7 @@ public class HistoryServiceImplement implements HistoryService{
 			ps.setInt(4, pagin.getItem());
 			rs = ps.executeQuery();
 			while(rs.next()){
-				History history = new History();
+				History history=new History();
 				history.setHistoryId(Encryption.encode(rs.getString("historyid")));
 				history.setHistoryDate(rs.getDate("historydate"));
 				history.setUserId(Encryption.encode(rs.getString("userid")));
@@ -55,12 +54,11 @@ public class HistoryServiceImplement implements HistoryService{
 				history.setVideoDescription(rs.getString("description"));
 				history.setVideoViewCount(rs.getString("viewcount"));
 				historys.add(history);
-				return historys;
 			}
-			
+			return historys;
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
+		}finally{
 			try {
 				con.close();
 			} catch (SQLException e) {
