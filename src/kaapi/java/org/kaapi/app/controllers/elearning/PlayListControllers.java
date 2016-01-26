@@ -3,8 +3,6 @@ package org.kaapi.app.controllers.elearning;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jsoup.select.Evaluator.IsEmpty;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.PlaylistDetail;
@@ -28,6 +26,41 @@ public class PlayListControllers {
 	
 	@Autowired
 	PlayListServics playlistservice;
+	/*
+	 * action get listallplaylist
+	 * we want to listallplaylist
+	 */
+	@RequestMapping(value="/userplaylist/{uid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> UserPlayList(
+												@PathVariable("uid") String uid,
+												@RequestParam(value ="page", required = false, defaultValue = "1") int page,
+												@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			Pagination pagin = new Pagination();
+			pagin.setItem(item);
+			pagin.setPage(page);
+			pagin.setTotalCount(playlistservice.countUserPlaylist(uid));
+			pagin.setTotalPages(pagin.totalPages());
+			
+			ArrayList<Playlist>  dto= playlistservice.UserPlayList(uid, pagin);
+			if(!dto.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+				map.put("PAGINATION", pagin);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
 	
 	/*getplaylist by id
 	 */

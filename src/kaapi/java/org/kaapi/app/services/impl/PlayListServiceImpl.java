@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -608,13 +607,12 @@ public class PlayListServiceImpl implements PlayListServics{
 	}
 	//well
 	@Override
-	public int countUserPlaylist(String keyword, String userid) {
+	public int countUserPlaylist(String userid) {
 		try {
 			con = dataSource.getConnection();
-			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where LOWER(playlistname) like LOWER(?) and userid = ?";
+			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where  userid = ? and status=TRUE";
 			PreparedStatement ps=con.prepareStatement(sql);
-			ps.setString(1, "%"+keyword+"%");
-			ps.setInt(2, Integer.parseInt(Encryption.decode(userid)));
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getInt(1); 
@@ -901,7 +899,7 @@ public class PlayListServiceImpl implements PlayListServics{
 	public int countVideoInPlayList(int playlisid) {
 		try {
 			con = dataSource.getConnection();
-			String sql = "SELECT COUNT(playlistid) AS total FROM tblplaylistdetail " 
+			String sql = "SELECT COUNT(playlistid) AS total FROM tblplaylistdetail  " 
 							+"WHERE playlistid = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, playlisid);
@@ -1064,7 +1062,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "select playlistid , playlistname,publicview from tblplaylist where userid = ?  order by playlistid desc";
+			String sql = "select playlistid , playlistname, thumbnailurl ,publicview from tblplaylist where userid = ?  order by playlistid desc";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
@@ -1072,6 +1070,8 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist =new Playlist();
 				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setPublicView(rs.getBoolean("publicview"));
 				playlists.add(playlist);
 			}
@@ -1098,6 +1098,42 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return 0;
 		
+	}
+	@Override
+	public ArrayList<Playlist> UserPlayList(String userid, Pagination pagin) {
+		try {
+			con = dataSource.getConnection();
+			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, status from tblplaylist P where P.status=TRUE and P.userid = ?   order by playlistid desc offset ? limit ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
+			ps.setInt(2, begin);
+			ps.setInt(3, pagin.getItem());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	

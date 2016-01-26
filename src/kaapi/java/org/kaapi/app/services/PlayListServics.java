@@ -12,6 +12,7 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
+	public ArrayList<Playlist> UserPlayList(String userid, Pagination pagin);
 	public ArrayList<Playlist> listUserPlayList(String userid);
 	public ArrayList<Playlist> listPlayListByMainCategory(String categoryid);
 	public ArrayList<Playlist> searchPlayList(String kesearch);
@@ -36,7 +37,7 @@ public interface PlayListServics {
 	public boolean update(FrmUpdatePlaylist playlist);
 	public boolean delete(String playlistid);
 	public int count(String keyword);
-	public int countUserPlaylist(String keyword, String userid);
+	public int countUserPlaylist( String userid);
 	public int countvideos(String playlistid);
 	public ArrayList<Playlist> recommendPlaylist();
 	public boolean deleteVideoFromPlaylist(String playlistid , String vid);
