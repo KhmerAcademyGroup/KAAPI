@@ -36,30 +36,24 @@ public class PlayListServiceImpl implements PlayListServics{
 			con = dataSource.getConnection();
 			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
-			ResultSet rs = null;
-			String sql = "SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid "
-					+ "LEFT JOIN TBLPLAYlISTDETAIL PD ON P.playlistid=PD.playlistid "
-					+ "WHERE LOWER(P.playlistname) LIKE LOWER(?) and  U.Userid = ? GROUP BY P.playlistid, U.username order by  P.playlistid desc offset ? limit ?";
+			String sql = " SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid"
+							+" LEFT JOIN TBLPLAYlISTDETAIL PD ON P.playlistid=PD.playlistid"
+							+" WHERE LOWER(P.playlistname) LIKE LOWER(?) and  U.Userid =? GROUP BY P.playlistid, U.username order by  P.playlistid desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+dto.getPlaylistName()+"%");
 			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getUserId())));
 			ps.setInt(3, begin);
 			ps.setInt(4, pagin.getItem());
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
+			
 			while(rs.next()){
 				Playlist playlist = new Playlist();
 				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
-				playlist.setDescription(rs.getString("description"));
-				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
-				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
-				playlist.setBgImage(rs.getString("bgimage"));
-				playlist.setColor(rs.getString("color"));
-				playlist.setStatus(rs.getBoolean("status"));
-				playlist.setUsername(rs.getString("username"));
 				playlist.setCountVideos(rs.getInt("countvideos"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setStatus(rs.getBoolean("status"));
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -74,7 +68,7 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
-	//well
+
 	@Override
 	public ArrayList<Video> listVideoInPlaylist(String playlistid, Pagination pagin) {
 		try {
