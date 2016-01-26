@@ -125,7 +125,7 @@ public class LogController {
 			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 		}
 		
-		@RequestMapping(value="/stopWatch/", method=RequestMethod.PUT, headers = "Accept=application/json")
+		@RequestMapping(value="/stopwatch", method=RequestMethod.PUT, headers = "Accept=application/json")
 		public ResponseEntity<Map<String,Object>> stopWatch(@RequestParam("userid") String userid,
 				@RequestParam("logid") String logid){
 						
