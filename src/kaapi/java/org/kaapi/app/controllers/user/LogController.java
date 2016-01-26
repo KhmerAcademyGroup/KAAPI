@@ -126,10 +126,13 @@ public class LogController {
 		}
 		
 		@RequestMapping(value="/stopWatch/", method=RequestMethod.PUT, headers = "Accept=application/json")
-		public ResponseEntity<Map<String,Object>> stopWatch(@RequestBody Log log){
+		public ResponseEntity<Map<String,Object>> stopWatch(@RequestParam("userid") String userid,
+				@RequestParam("logid") String logid){
 						
 			Map<String,Object> map = new HashMap<String, Object>();
-			
+			Log log = new Log();
+			log.setUserId(userid);
+			log.setLogId(logid);
 			if(service.stopWatching(log)==false){
 				map.put("STATUS", false);
 				map.put("MESSAGE", "OPERATION FAIL!");
