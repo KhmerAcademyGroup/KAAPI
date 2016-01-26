@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.kaapi.app.entities.Comment;
+import org.kaapi.app.entities.Log;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.CommentService;
+import org.kaapi.app.services.LogService;
 import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.services.VideosService;
 import org.kaapi.app.services.VoteService;
@@ -31,6 +33,7 @@ public class VideoController {
 	@Autowired PlayListServics playlistService;
 	@Autowired CommentService commentService;
 	@Autowired VoteService voteService;
+	@Autowired LogService logService;
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
@@ -627,6 +630,11 @@ public class VideoController {
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
+			Log log = new Log();
+			log.setUserId(uid);
+			log.setVideoId(vid);
+			int logid = logService.insert(log);
+			map.put("LOGID", logid);
 			map.put("VIDEO", video);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
