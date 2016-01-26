@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -123,4 +124,20 @@ public class LogController {
 			map.put("RES_DATA", logs);
 			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 		}
+		
+		@RequestMapping(value="/stopWatch/", method=RequestMethod.PUT, headers = "Accept=application/json")
+		public ResponseEntity<Map<String,Object>> stopWatch(@RequestBody Log log){
+						
+			Map<String,Object> map = new HashMap<String, Object>();
+			
+			if(service.stopWatching(log)==false){
+				map.put("STATUS", false);
+				map.put("MESSAGE", "OPERATION FAIL!");
+				return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+			}
+			map.put("STATUS", true);
+			map.put("MESSAGE", "OPERATION SUCCESS!");
+			
+			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+		}		
 }

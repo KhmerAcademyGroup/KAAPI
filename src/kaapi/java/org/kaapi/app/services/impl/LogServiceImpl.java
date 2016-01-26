@@ -56,7 +56,7 @@ public class LogServiceImpl implements LogService{
 			con = ds.getConnection();
 			String sql = "UPDATE TBLLOG Set stoptime=NOW() WHERE LOGID=? AND USERID=?";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, Integer.parseInt(Encryption.decode(dto.getLogId())));
+			ps.setInt(1, Integer.parseInt(dto.getLogId()));
 			ps.setInt(2, Integer.parseInt(Encryption.decode(dto.getUserId())));
 			if(ps.executeUpdate()>0){
 				return true;
