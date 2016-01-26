@@ -1135,6 +1135,29 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+	@Override
+	public int countUserPlaylist(String userid, String pname) {
+		try {
+			con = dataSource.getConnection();
+			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where  userid = ? and status=TRUE and LOWER(playlistname) LIKE LOWER(?)";
+			PreparedStatement ps=con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
+			ps.setString(2, "%"+pname+"%");
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return 0;
+	}
 	
 	
 

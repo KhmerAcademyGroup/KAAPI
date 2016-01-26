@@ -449,7 +449,7 @@ public class PlayListControllers {
 			Pagination pagin = new Pagination();
 			pagin.setItem(item);
 			pagin.setPage(page);
-			pagin.setTotalCount(playlistservice.countPlayList());
+			pagin.setTotalCount(playlistservice.countUserPlaylist(uid, name));
 			pagin.setTotalPages(pagin.totalPages());
 			
 			ArrayList<Playlist>  dto= playlistservice.list(pagin, playlist);
@@ -457,7 +457,7 @@ public class PlayListControllers {
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", dto);
-				
+				map.put("PAGINATION", pagin);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");

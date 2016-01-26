@@ -38,6 +38,7 @@ public interface PlayListServics {
 	public boolean delete(String playlistid);
 	public int count(String keyword);
 	public int countUserPlaylist( String userid);
+	public int countUserPlaylist( String userid, String pname);
 	public int countvideos(String playlistid);
 	public ArrayList<Playlist> recommendPlaylist();
 	public boolean deleteVideoFromPlaylist(String playlistid , String vid);
