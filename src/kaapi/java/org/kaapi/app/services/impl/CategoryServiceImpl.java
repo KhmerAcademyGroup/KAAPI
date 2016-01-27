@@ -64,6 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
 				dto.setCategoryId(Encryption.encode(rs.getInt("categoryid")+""));
 				dto.setCategoryName(rs.getString("categoryname"));
 				dto.setMainCategoryName(rs.getString("maincategoryname"));
+				dto.setMainCategoryId(Encryption.encode(rs.getString("maincategoryid")));
 				dto.setCategoryLogoUrl(rs.getString("categorylogourl"));
 				dto.setCountVideos(rs.getInt("countvideos"));
 				category.add(dto);
@@ -101,7 +102,7 @@ public class CategoryServiceImpl implements CategoryService {
 				dto.setCategoryId(categoryid);
 				dto.setCategoryName(rs.getString("categoryname"));
 				dto.setCategoryLogoUrl(rs.getString("categorylogourl"));
-				dto.setMainCategoryId(rs.getInt("maincategoryid"));
+				dto.setMainCategoryId(Encryption.encode(rs.getString("maincategoryid")));
 				dto.setMainCategoryName(rs.getString("maincategoryname"));
 				dto.setCountVideos(rs.getInt("countvideos"));
 			}
@@ -127,7 +128,7 @@ public class CategoryServiceImpl implements CategoryService {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, dto.getCategoryName());
 			ps.setString(2, dto.getCategoryLogoUrl());
-			ps.setInt(3, dto.getMainCategoryId());
+			ps.setInt(3, Integer.parseInt(Encryption.decode(dto.getMainCategoryId())));
 			if (ps.executeUpdate() > 0)
 				return true;
 		} catch (SQLException e) {
@@ -151,7 +152,7 @@ public class CategoryServiceImpl implements CategoryService {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, dto.getCategoryName());
 			ps.setString(2, dto.getCategoryLogoUrl());
-			ps.setInt(3, dto.getMainCategoryId());
+			ps.setInt(3, Integer.parseInt(Encryption.decode(dto.getMainCategoryId())));
 			ps.setInt(4,Integer.parseInt(Encryption.decode( dto.getCategoryId())));			
 			if (ps.executeUpdate() > 0)
 				return true;

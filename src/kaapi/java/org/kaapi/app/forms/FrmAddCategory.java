@@ -16,14 +16,14 @@ public class FrmAddCategory {
 	public void setCategoryLogoUrl(String categoryLogoUrl) {
 		this.categoryLogoUrl = categoryLogoUrl;
 	}
-	public int getMainCategoryId() {
+	public String getMainCategoryId() {
 		return mainCategoryId;
 	}
-	public void setMainCategoryId(int mainCategoryId) {
+	public void setMainCategoryId(String mainCategoryId) {
 		this.mainCategoryId = mainCategoryId;
 	}
 	private String categoryLogoUrl;
-	private int mainCategoryId;
+	private String mainCategoryId;
 	
 	
 }
