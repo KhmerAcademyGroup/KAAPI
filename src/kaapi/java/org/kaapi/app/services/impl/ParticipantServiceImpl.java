@@ -26,13 +26,13 @@ public class ParticipantServiceImpl implements ParticipantService{
 		String sql = "SELECT * FROM tbl_participants ORDER BY id DESC";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ResultSet rs = ps.executeQuery();
+			FrmParticipants part = null;
 			while (rs.next()) {
-				FrmParticipants part = new FrmParticipants();
+			    part = new FrmParticipants();
 				part.setId(rs.getInt("id"));
 				part.setUsername(rs.getString("username"));
 				part.setContents(rs.getString("contents"));
 				part.setPostDate(rs.getString("post_date"));
-				System.out.println(part.getContents());
 				list.add(part);
 			}		
 		} catch (SQLException e) {

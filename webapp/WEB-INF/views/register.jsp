@@ -137,9 +137,11 @@
 	            },
   	            success: function(data) {
   	            	send();
+  	            	location.href = "${pageContext.request.contextPath}/login";
   	            	alert(data.MESSAGE);
   	            },
   	         	error: function(data){
+  	         		
   	         		alert(data.responseJSON.Error.details);
   				}
   	        });

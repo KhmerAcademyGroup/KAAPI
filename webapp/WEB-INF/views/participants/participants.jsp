@@ -5,10 +5,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc.">
-        <meta name="author" content="Coderthemes">
+<!--         <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc."> -->
+<!--         <meta name="author" content="Coderthemes"> -->
 
-        <link rel="shortcut icon" href="images/favicon_1.ico">
+        <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/theme/images/favicon_1.ico">
 
         <title>Participants | KhmerAcademy</title>
 
@@ -270,45 +270,53 @@
         <script type="text/javascript">
         $(function() {
         	
-        	$.ajax({
-  	            url: "${pageContext.request.contextPath}/participants/list",
-  	            type: "GET",
-  	         	datatype: 'JSON',
-	  	        beforeSend: function(xhr) {
-	               xhr.setRequestHeader("Accept", "application/json");
-	               xhr.setRequestHeader("Content-Type", "application/json");
-	            },
-  	            success: function(data) {
-  	          	 	contentsHTML ="";
-  	          		for(i=0;i<data.RESP_DATA.length;i++){
-  	          	 		contentsHTML += '<div class="cd-timeline-block">'+
-						                        '<div class="cd-timeline-img cd-success">'+
-						                        '<img src="${pageContext.request.contextPath}/resources/theme/images/default-avatar.png" alt="" class="thumb-md img-circle">'+
-						                    '</div> <!-- cd-timeline-img -->'+
-						
-						                    '<div class="cd-timeline-content">'+
-						                        '<h3>'+data.RESP_DATA[i].username+'</h3>'+
-						                        '<div>'+data.RESP_DATA[i].contents+'</div>'+
-						                        '<span class="cd-date">'+data.RESP_DATA[i].postDate+'</span>'+
-						                    '</div> <!-- cd-timeline-content -->'+
-						             '</div> <!-- cd-timeline-block -->';
-  	          	 	}
-  	          		
-  	          		$(".getContents").html(contentsHTML);
-  	          		
-  	          		
-  	             	
+        	var part = {};
+        	
+        	part.list = function(){
+        		$.ajax({
+      	            url: "${pageContext.request.contextPath}/participants/list",
+      	            type: "GET",
+      	         	datatype: 'JSON',
+    	  	        beforeSend: function(xhr) {
+    	               xhr.setRequestHeader("Accept", "application/json");
+    	               xhr.setRequestHeader("Content-Type", "application/json");
+    	            },
+      	            success: function(data) {
+      	            	console.log(data);
+      	          	 	contentsHTML ="";
+      	          		for(i=0;i<data.RESP_DATA.length;i++){
+      	          	 		contentsHTML += '<div class="cd-timeline-block">'+
+    						                        '<div class="cd-timeline-img cd-success">'+
+    						                        '<img src="${pageContext.request.contextPath}/resources/theme/images/default-avatar.png" alt="" class="thumb-md img-circle">'+
+    						                    '</div> <!-- cd-timeline-img -->'+
+    						
+    						                    '<div class="cd-timeline-content">'+
+    						                        '<h3>'+data.RESP_DATA[i].username+'</h3>'+
+    						                        '<div>'+data.RESP_DATA[i].contents+'</div>'+
+    						                        '<span class="cd-date">'+data.RESP_DATA[i].postDate+'</span>'+
+    						                    '</div> <!-- cd-timeline-content -->'+
+    						             '</div> <!-- cd-timeline-block -->';
+      	          	 	}
+      	          		
+      	          		$(".getContents").html(contentsHTML);
+      	          		
+      	          		
+      	             	
 
-  	            	
-  	            },
-  	         	error: function(data){
-  	         		alert(data);
-  				}
-  	        });
+      	            	
+      	            },
+      	         	error: function(data){
+      	         		alert(data);
+      				}
+      	        });
+        		
+        	};
+        	
+        	part.list();
         	
         	$("#btPost").click(function(e){ 
 	       		if( $(".note-editable").html().trim() == "" ){ 
-	       			alert(1);return;
+	       			return;
 	       		} 
 		     	 json ={				
 		     					"contents"		: $(".note-editable").html().trim(),
@@ -325,6 +333,7 @@
 		            },
 	  	            success: function(data) {
 	  	            	console.log(data);
+	  	            	part.list();
 	  	            },
 	  	         	error: function(data){
 	  	         		alert(data);
