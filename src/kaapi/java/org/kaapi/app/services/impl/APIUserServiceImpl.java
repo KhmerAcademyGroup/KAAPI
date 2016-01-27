@@ -117,7 +117,7 @@ public class APIUserServiceImpl implements APIUserService {
 	public boolean addUser(APIUser user) {
 		String sql = "INSERT INTO api_user (username,email,password,position, enabled,locked,created_date) "
 					+"VALUES "
-					+"(?,?,?,?,1,0,NOW());";
+					+"(?,?,?,?,1,1,NOW());";
 		try(
 			Connection cnn = dataSource.getConnection();
 			PreparedStatement ps = cnn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
@@ -131,7 +131,7 @@ public class APIUserServiceImpl implements APIUserService {
 				if ( rs.next() ) {
 				    // Retrieve the auto generated key(s).
 				    System.out.println(rs.getInt(1));
-				    this.addUserRoles(rs.getInt(1), 3);
+				    this.addUserRoles(rs.getInt(1), 4);
 				}
 				return true;
 			}

@@ -78,7 +78,7 @@
                          <input id="confirmPassword" name="confirmPassword" require  type="text" class="form-control">
                     </div>
                     
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                     	<label>Group</label>
                     	<select class="form-control" id="group">
                                 <option value="WEB">WEB</option>
@@ -86,7 +86,7 @@
                                 <option value="IOS">IOS</option>
                                 <option value="OTHER">Other</option>
                          </select>
-                    </div>
+                    </div> -->
                     
                     <div class="form-group text-center m-t-40">
                         <div class="col-xs-12">
@@ -123,7 +123,7 @@
 	     					"email"			: $("#email").val(),
 							"username" 		: $("#username").val(),
 							"password"		: $("#password").val(),
-							"position"		: $("#group").val()
+							"position"		: "OTHER"//$("#group").val()
 	     		};
        		  $.ajax({
   	            url: "${pageContext.request.contextPath}/api/apiuser/",
