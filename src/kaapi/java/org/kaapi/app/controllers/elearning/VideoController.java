@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kaapi.app.entities.History;
 import org.kaapi.app.entities.Log;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.services.CategoryService;
 import org.kaapi.app.services.CommentService;
+import org.kaapi.app.services.HistoryService;
 import org.kaapi.app.services.LogService;
 import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.services.VideosService;
@@ -35,6 +37,7 @@ public class VideoController {
 	@Autowired VoteService voteService;
 	@Autowired LogService logService;
 	@Autowired CategoryService categoryService;
+	@Autowired HistoryService historyService;
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
@@ -631,14 +634,20 @@ public class VideoController {
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
 			}
+			
 			Log log = new Log();
 			log.setUserId(uid);
 			log.setVideoId(vid);
 			int logid = logService.insert(log);
+			History history = new History();
+			history.setUserId(uid);
+			history.setVideoId(vid);
+			historyService.insert(history);
 			map.put("LOGID", logid);
 			map.put("VIDEO", video);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
+			
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
