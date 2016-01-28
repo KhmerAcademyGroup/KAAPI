@@ -134,7 +134,7 @@ public class UniversityServiceImpl implements UniversityService{
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 			){
-			ps.setInt(6, Integer.parseInt(Encryption.decode(universityId)));
+			ps.setInt(1, Integer.parseInt(Encryption.decode(universityId)));
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getString("universityname");
