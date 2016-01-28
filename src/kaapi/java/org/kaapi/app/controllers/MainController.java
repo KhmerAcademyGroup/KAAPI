@@ -79,6 +79,7 @@ public class MainController {
 		System.out.print("____________adminID " +user.getId());
 		System.out.print("____________adminID " +user.getUsername());
 		m.addAttribute("username",user.getUsername());
+		m.addAttribute("kaapi" , header);
 		return "participants/participants";
 	}
 }

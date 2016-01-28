@@ -86,20 +86,30 @@
 	                        </div>
                     </div>
  							
+ 						<div class="row">
+ 							 <div class="col-md-6">
+ 							 		<script src="//cdn.ckeditor.com/4.5.6/basic/ckeditor.js"></script>
+									<textarea name="editor1" id="editor1"></textarea>
+							        <script>
+							            CKEDITOR.replace( 'editor1', {
+											    uiColor: '#9AB8F3'
+									});
+							        </script>
+ 							 </div>
+ 							  <div class="col-md-6">
+ 							  		Photo 1 : <input type="file" id="file1">
+ 							  		Photo 2 : <input type="file" id="file2">
+ 							  		
+ 							  		<br/>
+ 							  		<span><img id="ph1" width="140px" src="${pageContext.request.contextPath}/resources/theme/images/default-avatar.png"></span>
+ 							  		<span><img  id="ph2" width="140px" src="${pageContext.request.contextPath}/resources/theme/images/default-avatar.png"></span>
+ 							  </div>
+ 						</div>	
  							
-				 			<script src="//cdn.ckeditor.com/4.5.6/standard/ckeditor.js"></script>
-							<textarea name="editor1" id="editor1"></textarea>
-					        <script>
-// 					            CKEDITOR.replace( 'editor1' );
-					            
-					            CKEDITOR.replace( 'editor1', {
-					                filebrowserBrowseUrl: '/browser/browse.php',
-					                filebrowserUploadUrl: '/uploader/upload.php'
-					            });
-					        </script>
+				 			
 	        
 		                  		
-		                    
+		                    <br/> <hr/>
 		                    
 		                    <button type="button" id="btPost" class="btn btn-primary waves-effect waves-light m-b-5">Post</button>
 		             </div>
@@ -187,7 +197,8 @@
                                 </section> <!-- cd-timeline -->
                             </div>
                         </div><!-- Row -->
-
+		
+						<br/> <hr/>
 
             </div> <!-- container -->
                                
@@ -272,7 +283,16 @@
       	            success: function(data) {
       	            	console.log(data);
       	          	 	contentsHTML ="";
+      	       			
       	          		for(i=0;i<data.RESP_DATA.length;i++){
+	      	          		photo1 = "";
+	      	       			photo2 = "";
+      	          			if(data.RESP_DATA[i].photo1 != null){
+      	          				photo1 = '<span><img  id="ph2" style="width:100%"  src="${pageContext.request.contextPath}/'+data.RESP_DATA[i].photo1+'"></span>';
+      	          			}
+	      	          		if(data.RESP_DATA[i].photo2 != null){
+	  	          				photo2 = '<span><img  id="ph2" style="width:100%" src="${pageContext.request.contextPath}/'+data.RESP_DATA[i].photo2+'"></span>';
+	  	          			}
       	          	 		contentsHTML += '<div class="cd-timeline-block">'+
     						                        '<div class="cd-timeline-img cd-success">'+
     						                        '<img src="${pageContext.request.contextPath}/resources/theme/images/default-avatar.png" alt="" class="thumb-md img-circle">'+
@@ -280,7 +300,7 @@
     						
     						                    '<div class="cd-timeline-content">'+
     						                        '<h3>'+data.RESP_DATA[i].username+'</h3>'+
-    						                        '<div>'+data.RESP_DATA[i].contents+'</div>'+
+    						                        '<div>'+data.RESP_DATA[i].contents+ photo1 +"<hr/>"+ photo2 + '</div>'+ 
     						                        '<span class="cd-date">'+data.RESP_DATA[i].postDate+'</span>'+
     						                    '</div> <!-- cd-timeline-content -->'+
     						             '</div> <!-- cd-timeline-block -->';
@@ -304,33 +324,118 @@
         	
         	$("#btPost").click(function(e){ 
 	       		if( CKEDITOR.instances['editor1'].getData().trim() == "" ){ 
-	       			return;
+	       			alert("Please provide some information about yourself with two photos!");return;
 	       		} 
-		     	 json ={				
-		     					"contents"		: CKEDITOR.instances['editor1'].getData().trim(),
-								"username" 		: "${username}"
-		     	  };
-	       		  $.ajax({
-	  	            url: "${pageContext.request.contextPath}/participants/add",
-	  	            type: "POST",
-	  	         	datatype: 'JSON',
-	  	          	data: JSON.stringify(json), 
-		  	        beforeSend: function(xhr) {
-		               xhr.setRequestHeader("Accept", "application/json");
-		               xhr.setRequestHeader("Content-Type", "application/json");
-		            },
-	  	            success: function(data) {
-	  	            	console.log(data);
-	  	            	part.list();
-	  	            },
-	  	         	error: function(data){
-	  	         		alert(data);
-	  				}
-	  	        });
-       			
+		     	
+		     	
+		     	 var photo1 = "";
+		     	 var photo2 = "";
+		     	 
+		     	if($("#file1")[0].files[0] != null && $("#file2")[0].files[0] != null){
+		     		var formData = new FormData();
+			     	formData.append('file',  $("#file1")[0].files[0]);
+			     	console.log(formData);
+			     		$.ajax({
+			  	            url: "${pageContext.request.contextPath}/api/uploadfile/upload?url=participants",
+			  	            type: "POST",
+			  	         	enctype : 'multipart/form-data',
+							data : formData ,
+							processData : false, // tell jQuery not to process the data
+							contentType : false, // tell jQuery not to set contentType
+				  	        beforeSend: function(xhr) {
+							   xhr.setRequestHeader("Authorization", "Basic ${kaapi}");
+//	 			               xhr.setRequestHeader("Accept", "application/json");
+//	 			               xhr.setRequestHeader("Content-Type", "application/json");
+				  	        },
+			  	            success: function(data) {
+			  	            	console.log(data); 
+			  	            	
+			  	            	photo1 = data.IMG;
+			  	            	
+			            		var formData = new FormData();
+						     	formData.append('file',  $("#file1")[0].files[0]);
+						     	console.log(formData);
+						     		$.ajax({
+						  	            url: "${pageContext.request.contextPath}/api/uploadfile/upload?url=participants",
+						  	            type: "POST",
+						  	         	enctype : 'multipart/form-data',
+										data : formData ,
+										processData : false, // tell jQuery not to process the data
+										contentType : false, // tell jQuery not to set contentType
+							  	        beforeSend: function(xhr) {
+										   xhr.setRequestHeader("Authorization", "Basic ${kaapi}");
+//				 			               xhr.setRequestHeader("Accept", "application/json");
+//				 			               xhr.setRequestHeader("Content-Type", "application/json");
+							  	        },
+						  	            success: function(data) {
+						  	            	console.log(data); 
+						  	            	
+						  	            	photo2 = data.IMG;
+						  	            	
+						  	            	console.log(photo1 +" | " + photo2); 
+						  	            	
+						  	            	 json ={				
+								     					"contents"		: CKEDITOR.instances['editor1'].getData().trim(),
+														"username" 		: "${username}",
+								     	  	 			"photo1"		: photo1,
+								     	  	 			"photo2"        : photo2
+						  	            	 };
+						  	            	 
+						  	            	 $.ajax({
+						 		  	            url: "${pageContext.request.contextPath}/participants/add",
+						 		  	            type: "POST",
+						 		  	         	datatype: 'JSON',
+						 		  	          	data: JSON.stringify(json), 
+						 			  	        beforeSend: function(xhr) {
+						 			               xhr.setRequestHeader("Accept", "application/json");
+						 			               xhr.setRequestHeader("Content-Type", "application/json");
+						 			            },
+						 		  	            success: function(data) {
+						 		  	            	console.log(data);
+						 		  	            	part.list();
+						 		  	            },
+						 		  	         	error: function(data){
+						 		  	         		alert(data);
+						 		  				}
+						 		  	        });
+						  	            	 
+						  	            	 
+						  	            },
+						  	         	error: function(data){
+						  	         		console.log(data);
+						  				}
+						  	      });
+						     		
+			  	            },
+			  	         	error: function(data){
+			  	         		console.log(data);
+			  				}
+			  	        });
+		     	}else{
+		     		alert("Please provide some information about yourself with two photos!");
+		     	}
+		     	
+			     	
+			     	
        		});
         
         });
+        
+        $('#file1').change(
+				function(event) {
+					$("#ph1").fadeIn("fast").attr('src',
+							URL.createObjectURL(event.target.files[0]));
+					
+					
+		});
+        
+        $('#file2').change(
+				function(event) {
+					$("#ph2").fadeIn("fast").attr('src',
+							URL.createObjectURL(event.target.files[0]));
+					
+					
+		});
         </script>
         
         
