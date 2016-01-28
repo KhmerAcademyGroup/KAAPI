@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+      
 <!DOCTYPE html>
 <html>
     <head>
@@ -45,6 +46,9 @@
          <!--bootstrap-wysihtml5-->
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/theme/assets/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
         <link href="${pageContext.request.contextPath}/resources/theme/assets/summernote/summernote.css" rel="stylesheet" />
+   		
+   
+   
     </head>
 
 
@@ -83,10 +87,18 @@
                     </div>
  							
  							
- 							
-		                  		 <div>
-									<div class="summernote"> </div>
-								</div>
+				 			<script src="//cdn.ckeditor.com/4.5.6/standard/ckeditor.js"></script>
+							<textarea name="editor1" id="editor1"></textarea>
+					        <script>
+// 					            CKEDITOR.replace( 'editor1' );
+					            
+					            CKEDITOR.replace( 'editor1', {
+					                filebrowserBrowseUrl: '/browser/browse.php',
+					                filebrowserUploadUrl: '/uploader/upload.php'
+					            });
+					        </script>
+	        
+		                  		
 		                    
 		                    
 		                    <button type="button" id="btPost" class="btn btn-primary waves-effect waves-light m-b-5">Post</button>
@@ -214,11 +226,6 @@
   		 <!-- CUSTOM JS -->
         <script src="${pageContext.request.contextPath}/resources/theme/js/jquery.app.js"></script>
 
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/theme/assets/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/theme/assets/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
-
-        <!--form validation init-->
-        <script src="${pageContext.request.contextPath}/resources/theme/assets/summernote/summernote.min.js"></script>
 
         <script type="text/javascript">
             jQuery(document).ready(function($){
@@ -242,26 +249,7 @@
             });
         </script>
         
-        <script>
-            jQuery(document).ready(function(){
-                $('.wysihtml5').wysihtml5();
-
-                $('.summernote').summernote({
-  				  height: 150,   //set editable area's height
-  				  placeholder: 'write here...',
-  				  codemirror: { // codemirror options
-  				    theme: 'monokai'
-  				  }
-  				});
-
-            });
-        </script>
-	
-	
-	
-	
-	
-	
+    
 	        <script src="${pageContext.request.contextPath}/resources/theme/js/jquery.tmpl.min.js"></script>
 			
 			
@@ -315,11 +303,11 @@
         	part.list();
         	
         	$("#btPost").click(function(e){ 
-	       		if( $(".note-editable").html().trim() == "" ){ 
+	       		if( CKEDITOR.instances['editor1'].getData().trim() == "" ){ 
 	       			return;
 	       		} 
 		     	 json ={				
-		     					"contents"		: $(".note-editable").html().trim(),
+		     					"contents"		: CKEDITOR.instances['editor1'].getData().trim(),
 								"username" 		: "${username}"
 		     	  };
 	       		  $.ajax({
