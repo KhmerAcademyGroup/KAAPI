@@ -1145,5 +1145,19 @@ public class VideoServiceImplement implements VideosService{
 		}
 		return null;
 	}
+
+	@Override
+	public int countCourse() {
+	   String sql = "SELECT COUNT(playlistid) " 
+			   	  + "FROM tblplaylist " 
+			   	  + "WHERE maincategory NOTNULL AND status=TRUE";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 	
 }

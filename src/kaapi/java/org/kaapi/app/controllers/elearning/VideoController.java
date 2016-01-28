@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kaapi.app.entities.Comment;
 import org.kaapi.app.entities.Log;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.services.CategoryService;
 import org.kaapi.app.services.CommentService;
 import org.kaapi.app.services.LogService;
 import org.kaapi.app.services.PlayListServics;
@@ -34,6 +34,7 @@ public class VideoController {
 	@Autowired CommentService commentService;
 	@Autowired VoteService voteService;
 	@Autowired LogService logService;
+	@Autowired CategoryService categoryService;
 
 	//Get video: param(videoId, viewCount)
 	@RequestMapping(method = RequestMethod.GET, value = "/video/v/{id}", headers = "Accept=application/json")
@@ -638,6 +639,29 @@ public class VideoController {
 			map.put("VIDEO", video);
 			map.put("STATUS", true);
 			map.put("MESSAGE", "OPERATION SUCCESS");
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/mainpage/countdata", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> getCountMainPage() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			
+			int users = videoService.countUser();
+			int videos = videoService.countVideo();
+			int categories = categoryService.countCategory();
+			int courses = videoService.countCourse();
+			
+			map.put("STATUS", true);
+			map.put("MESSAGE", "OPERATION SUCCESS");
+			map.put("COUNTUSER", users);
+			map.put("COUNTVIDEO", videos);
+			map.put("COUNTCATEGORY", categories);
+			map.put("COUNTCOURSE", courses);
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);

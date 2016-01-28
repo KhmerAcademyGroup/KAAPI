@@ -36,6 +36,7 @@ public interface VideosService {
 	public int countVideo(String userId, String videoName, boolean status);
 	public int countUser();
 	public int countPlaylist();
+	public int countCourse();
 	public int countCategoryVideo(String categoryId);
 	public int countCategoryVideo(String categoryId, boolean status);
 	public int countForum();
