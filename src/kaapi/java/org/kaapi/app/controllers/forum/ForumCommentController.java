@@ -306,6 +306,35 @@ public class ForumCommentController {
 		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/listquestion/t/{tag}" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> listQuestionByTag(
+			  @PathVariable("tag") String tag,
+			  @RequestParam(value = "page", required = false , defaultValue="1") int page ,
+			  @RequestParam(value="item" , required = false , defaultValue="20") int item  ){
+		Map<String , Object> map = new HashMap<String , Object>();
+		Pagination pagination = new Pagination();
+		pagination.setItem(item);
+		pagination.setPage(page);
+		pagination.setTotalCount(forumCommentService.countQuestionByTag(tag));
+		pagination.setTotalPages(pagination.totalPages());
+		try{
+			List<ForumComment> question = forumCommentService.listQuestionByTag(tag, pagination);
+			if(question == null){
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			}else{
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RES_DATA", question);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
 	@RequestMapping(value="/totalquestion" , method = RequestMethod.GET , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> totalQuestion(){
 		Map<String , Object> map = new HashMap<String , Object>();

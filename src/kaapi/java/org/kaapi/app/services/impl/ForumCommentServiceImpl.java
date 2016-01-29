@@ -209,7 +209,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 						+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid"
 						+ " LEFT JOIN TBLFORUMVOTE FV ON C1.Commentid=FV.Commentid AND FV.Votetype=1"
 						+ " WHERE "
-						+ " C1.title like ?"
+						+ " LOWER(C1.title) like  LOWER(?)"
 						+ " AND C1.Parentid IS NULL"
 						+ " GROUP BY C1.Commentid, C2.Commentid, U.Userid, FV.Commentid"
 						+ " ORDER BY COMMENTID DESC offset ? limit ?";
@@ -253,12 +253,79 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	@Override
 	public int countQuestionByTitle(String title) {
 		String sql =  " SELECT COUNT(*) FROM TBLFORUMCOMMENT WHERE Parentid IS NULL"
-					+ " AND title like ?";
+					+ " AND  LOWER(title) like  LOWER(?)";
 		try(
 				Connection cnn = dataSource.getConnection();
 				PreparedStatement ps = cnn.prepareStatement(sql);
 		){
 				ps.setString(1, "%"+title+"%");
+				ResultSet rs = ps.executeQuery();
+				if(rs.next()){
+					return rs.getInt(1);
+				}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	@Override
+	public List<ForumComment> listQuestionByTag(String tag, Pagination pagination) {
+		String sql =      " SELECT DISTINCT(C1.*), U.Username, COUNT(C2.Commentid) COMMENTCOUNT, COUNT(FV.Commentid) VOTECOUNT"
+						+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid"
+						+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid"
+						+ " LEFT JOIN TBLFORUMVOTE FV ON C1.Commentid=FV.Commentid AND FV.Votetype=1"
+						+ " WHERE "
+						+ "  LOWER(C1.tag) like  LOWER(?)"
+						+ " AND C1.Parentid IS NULL"
+						+ " GROUP BY C1.Commentid, C2.Commentid, U.Userid, FV.Commentid"
+						+ " ORDER BY COMMENTID DESC offset ? limit ?";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ps.setString(1, "%"+tag+"%");
+				ps.setInt(2, pagination.offset()); 
+				ps.setInt(3, pagination.getItem());
+				ResultSet rs = ps.executeQuery();
+				List<ForumComment> list = new ArrayList<ForumComment>();
+				ForumComment dto = null;
+				while(rs.next()){
+					dto  = new ForumComment();
+					dto.setCommentId(Encryption.encode(rs.getString("commentid")));
+					dto.setPostDate(rs.getDate("postdate"));
+					dto.setTitle(rs.getString("title"));
+					dto.setDetail(rs.getString("detail"));
+					dto.setTag(rs.getString("tag"));
+					if(rs.getString("parentid") != null){
+						dto.setParentId(Encryption.encode(rs.getString("parentid")));
+					}
+					if(rs.getString("categoryid") != null){
+						dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+					}
+					dto.setUserId(Encryption.encode(rs.getString("userid")));
+					dto.setUsername(rs.getString("username"));
+					dto.setSelected(rs.getBoolean("selected"));
+					dto.setCommentCount(rs.getInt("commentcount"));
+					dto.setVote(rs.getInt("votecount"));
+					list.add(dto);
+				}
+				return list;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public int countQuestionByTag(String tag) {
+		String sql =  " SELECT COUNT(*) FROM TBLFORUMCOMMENT WHERE Parentid IS NULL"
+					+ " AND  LOWER(tag) like  LOWER(?)";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps = cnn.prepareStatement(sql);
+		){
+				ps.setString(1, "%"+tag+"%");
 				ResultSet rs = ps.executeQuery();
 				if(rs.next()){
 					return rs.getInt(1);

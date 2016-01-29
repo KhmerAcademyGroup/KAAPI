@@ -26,6 +26,11 @@ public interface ForumCommentService {
 	public ForumComment getQuestionById(String commentId);
 	public ForumComment getSelectedAnswerByQuestionId(String parentId);
 
+	public List<ForumComment> listQuestionByTag(String tag, Pagination pagination);
+	public int countQuestionByTag(String tag);
+
+	
+	
 	
 	public boolean insertAnswer(FrmAddAnswer addAnswer);
 	public boolean deleteAnswer(String answerId);
