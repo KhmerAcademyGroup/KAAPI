@@ -125,14 +125,14 @@ public class VideoServiceImplement implements VideosService{
 	//list video by user id
 	@Override
 	public List<Video> listVideoUser(String userId, Pagination page) {
-		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
+		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS " //, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
 				+ "LEFT JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
 				+ "LEFT JOIN TBLCATEGORYVIDEO CV ON CT.categoryid=CV.categoryid GROUP BY CV.videoid) CC ON V.videoid=CC.videoid " 
 				+ "LEFT JOIN TBLCOMMENT C ON V.VIDEOID=C.VIDEOID "
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID "
-				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
+//				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
 				+ "WHERE V.USERID=?"
 				+ "GROUP BY V.VIDEOID, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES "
 				+ "ORDER BY V.VIDEOID DESC OFFSET ? LIMIT ?";
@@ -157,7 +157,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
-				video.setCountVoteMinus(rs.getInt("countvoteminus"));
+//				video.setCountVoteMinus(rs.getInt("countvoteminus"));
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
