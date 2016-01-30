@@ -230,14 +230,14 @@ public class VideoServiceImplement implements VideosService{
 	//list related video
 	@Override
 	public List<Video> getRelateVideo(String categoryName, int limit) {
-		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
+		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS " //, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
 				+ "FROM TBLVIDEO V "
 				+ "LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
 				+ "LEFT JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
 				+ "LEFT JOIN TBLCATEGORYVIDEO CV ON CT.categoryid=CV.categoryid GROUP BY CV.videoid) CC ON V.videoid=CC.videoid " 
 				+ "LEFT JOIN TBLCOMMENT C ON V.VIDEOID=C.VIDEOID "
 				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID "
-				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
+//				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
 				+ "WHERE lower(CC.CATEGORYNAMES) LIKE lower(?) AND V.STATUS=true "
 				+ "GROUP BY V.VIDEOID, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES "
 				+ "ORDER BY random() LIMIT ?";
@@ -261,7 +261,7 @@ public class VideoServiceImplement implements VideosService{
 				video.setViewCounts(rs.getInt("viewcount"));
 				video.setCategoryName(rs.getString("categorynames"));
 				video.setCountComments(rs.getInt("countcomments"));
-				video.setCountVoteMinus(rs.getInt("countvoteminus"));
+//				video.setCountVoteMinus(rs.getInt("countvoteminus"));
 				video.setCountVotePlus(rs.getInt("countvoteplus"));
 				video.setUsername(rs.getString("username"));
 				video.setUserImageUrl(rs.getString("userimageurl"));
@@ -1158,6 +1158,57 @@ public class VideoServiceImplement implements VideosService{
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	@Override
+	public Video getVideoWithStatus(String videoId, boolean viewCount, boolean status) {
+		String sql = "SELECT V.*, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS " //, COUNT(DISTINCT VM.*) COUNTVOTEMINUS "
+				+ "FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID "
+				+ "LEFT JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT "
+				+ "LEFT JOIN TBLCATEGORYVIDEO CV ON CT.categoryid=CV.categoryid GROUP BY CV.videoid) CC ON V.videoid=CC.videoid "
+				+ "LEFT JOIN TBLCOMMENT C ON V.VIDEOID=C.VIDEOID "
+				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID "
+//				+ "LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID "
+				+ "WHERE V.VIDEOID=? AND V.STATUS=? "
+				+ "GROUP BY V.VIDEOID, U.USERNAME, U.USERIMAGEURL, CC.CATEGORYNAMES";
+	
+		Video video = null;
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			int id = Integer.parseInt(Encryption.decode(videoId));
+			ps.setInt(1, id);
+			ps.setBoolean(2, status);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				video = new Video();
+				video.setVideoId(Encryption.encode(rs.getString("videoid")));
+				video.setVideoName(rs.getString("videoname"));
+				video.setDescription(rs.getString("description"));
+				video.setYoutubeUrl(rs.getString("youtubeurl"));
+				video.setFileUrl(rs.getString("fileurl"));
+				video.setPublicView(rs.getBoolean("publicview"));
+				video.setPostDate(rs.getDate("postdate"));
+				video.setUserId(Encryption.encode(rs.getString("userid")));
+				video.setViewCounts(rs.getInt("viewcount"));
+				video.setCategoryName(rs.getString("categorynames"));
+				video.setCountComments(rs.getInt("countcomments"));
+	//			video.setCountVoteMinus(rs.getInt("countvoteminus"));
+				video.setCountVotePlus(rs.getInt("countvoteplus"));
+				video.setUsername(rs.getString("username"));
+				video.setUserImageUrl(rs.getString("userimageurl"));
+				video.setStatus(rs.getBoolean("status"));
+				if(viewCount){
+					Statement s2 = cnn.createStatement();
+					s2.executeUpdate("UPDATE TBLVIDEO SET VIEWCOUNT=VIEWCOUNT+1 WHERE videoid=" + id);
+				}
+			}
+			return video;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			System.out.println("Error Convert ID To Integer!");
+			return null;
+		}
+		return null;
 	}
 	
 }
