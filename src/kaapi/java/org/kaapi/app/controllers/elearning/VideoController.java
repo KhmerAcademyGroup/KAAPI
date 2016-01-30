@@ -630,11 +630,6 @@ public class VideoController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			Video video = videoService.getVideo(vid, true);
-			if(video==null){
-				map.put("MESSAGE", "VIDEO NOT FOUND");
-				map.put("STATUS", false);
-				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-			}
 			if(video.getCategoryName()!=null){
 				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
 				map.put("RELATEVIDEO", relateVideo);
