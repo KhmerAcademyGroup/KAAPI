@@ -629,7 +629,7 @@ public class VideoController {
 			@RequestParam(value="user", required=false) String uid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
-			Video video = videoService.getVideoWithStatus(vid, true, true);
+			Video video = videoService.getVideo(vid, true);
 			if(video!=null){
 				if(video.getCategoryName()!=null){
 					List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
