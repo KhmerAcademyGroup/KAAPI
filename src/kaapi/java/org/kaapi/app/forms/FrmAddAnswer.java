@@ -6,7 +6,6 @@ public class FrmAddAnswer {
 	private String detail;
 	private String tags;
 	private String parentId;
-	private String categoryId;
 	private String userId;
 	public String getTitle() {
 		return title;
@@ -31,12 +30,6 @@ public class FrmAddAnswer {
 	}
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
-	}
-	public String getCategoryId() {
-		return categoryId;
-	}
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
 	}
 	public String getUserId() {
 		return userId;
