@@ -311,4 +311,24 @@ public class UserController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}
 	
+	@RequestMapping(value="/updatetype",method = RequestMethod.PUT , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> updateType(@RequestParam("userid") String uid,
+			@RequestParam("usertype")String utype){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			if(userService.updateType(uid, utype)){
+				map.put("MESSAGE", "User type has been updated.");
+				map.put("STATUS", true);
+			}else{
+				map.put("MESSAGE", "User type has not been updated.");
+				map.put("STATUS", false);
+			}
+			
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}
+	
 }
