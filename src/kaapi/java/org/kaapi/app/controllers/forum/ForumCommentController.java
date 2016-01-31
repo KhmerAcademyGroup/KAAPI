@@ -10,6 +10,7 @@ import org.kaapi.app.forms.FrmAddAnswer;
 import org.kaapi.app.forms.FrmAddQuestion;
 import org.kaapi.app.forms.FrmUpdateAnswer;
 import org.kaapi.app.forms.FrmUpdateQuestion;
+import org.kaapi.app.services.ForumCategoryService;
 import org.kaapi.app.services.ForumCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,9 @@ public class ForumCommentController {
 	
 	@Autowired
 	ForumCommentService forumCommentService;
+	
+	@Autowired
+	ForumCategoryService forumCategoryService;
 	
 	@RequestMapping(value="/addanswer" , method=RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String,Object>> addAnswer(@RequestBody FrmAddAnswer addAnswer){
@@ -426,6 +430,26 @@ public class ForumCommentController {
 				map.put("STATUS", true);
 				map.put("RESP_DATA", selectedAnswer);
 			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/listtagandcategory" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> getTagAndCategory(){
+		Map<String , Object> map = new HashMap<String , Object>();
+		Pagination pagination = new Pagination();
+		pagination.setItem(1000);
+		pagination.setPage(1);
+		pagination.setTotalCount(forumCategoryService.countForumCate());
+		pagination.setTotalPages(pagination.totalPages());
+		try{
+		    map.put("MESSAGE", "RECORD FOUND");
+			map.put("STATUS", true);
+			map.put("TAGS", forumCommentService.getAllTags());
+			map.put("CATEGORY", forumCategoryService.listForumCate(pagination));
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
