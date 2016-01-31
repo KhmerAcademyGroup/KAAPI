@@ -29,6 +29,28 @@ public class CategoryController {
 	@Qualifier("CategoryService")
 	CategoryService categoryService;
 
+	@RequestMapping(value="/listall", method = RequestMethod.GET, headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listCategoryForAddVideo() {
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			List<Category> list = categoryService.listCategory();
+			if (list.isEmpty()) {
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			} else {
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RES_DATA", list);
+			}
+		} catch (Exception e) {
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+	}
+	
 	@RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> listCategory(
 			@RequestParam(value = "name", required = false, defaultValue = "") String categoryName,
