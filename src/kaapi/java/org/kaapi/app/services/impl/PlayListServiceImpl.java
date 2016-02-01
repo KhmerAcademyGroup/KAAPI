@@ -1101,7 +1101,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, status from tblplaylist P where P.status=TRUE and P.userid = ?   order by playlistid desc offset ? limit ?";
+			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, bgimage, status from tblplaylist P where P.status=TRUE and P.userid = ?   order by playlistid desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ps.setInt(2, begin);
@@ -1114,6 +1114,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlists.add(playlist);
 			}
