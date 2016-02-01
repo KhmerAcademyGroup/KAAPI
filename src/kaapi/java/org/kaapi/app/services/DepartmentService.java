@@ -10,5 +10,6 @@ public interface DepartmentService {
 	public boolean updateDepartment(FrmUpdateDepartment department);
 	public boolean deleteDepartment(String departmentId);
 	public List<Department> listDepartment(Pagination pagination, String keyword);
+	public String findDepartmentById(String departmentId);
 	public int countDepartment(String keyword);
 }

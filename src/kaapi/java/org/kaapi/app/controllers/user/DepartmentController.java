@@ -129,4 +129,29 @@ public class DepartmentController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		
 	}
+	
+	// ListFindDepartmentByID
+		@RequestMapping(method = RequestMethod.GET, value = "/list/{id}", headers = "Accept=application/json")
+		public ResponseEntity<Map<String, Object>> findDepartmentById(
+				@PathVariable("id") String departmentId) {
+
+			Map<String, Object> map = new HashMap<String, Object>();
+			try{
+				String department = departmentService.findDepartmentById(departmentId);
+				System.out.println(department);
+				if (department == null) {
+					map.put("MESSAGE", "RECORD  NOT FOUND");
+					map.put("STATUS", false);
+					return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+				}
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("REST_DATA", department);
+			}catch(Exception e){
+				map.put("MESSAGE", "OPERATION FAIL");
+				map.put("STATUS", false);
+			}
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		}
+
 }

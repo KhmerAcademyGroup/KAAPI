@@ -71,4 +71,15 @@ public class MainController {
 		return "register";
 	}
 	
+	@RequestMapping(value="/participants" , method = RequestMethod.GET)
+	public String paticipants(ModelMap m){
+		m.addAttribute("msg","participants");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		APIUser user = (APIUser)authentication.getPrincipal();
+		System.out.print("____________adminID " +user.getId());
+		System.out.print("____________adminID " +user.getUsername());
+		m.addAttribute("username",user.getUsername());
+		m.addAttribute("kaapi" , header);
+		return "participants/participants";
+	}
 }
