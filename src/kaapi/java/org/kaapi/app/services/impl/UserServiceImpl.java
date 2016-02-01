@@ -469,5 +469,22 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean updateUserType(String userId, String type) {
+	
+		String sql = "update tbluser set usertypeid=? where userid=?";
+		try(Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(sql)){
+			
+			ps.setInt(1, Integer.parseInt(Encryption.decode(type)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(userId)));
+			if(ps.executeUpdate()>0)
+				return true;
+			return false;
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+	}
 	
 }

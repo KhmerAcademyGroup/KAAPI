@@ -270,6 +270,27 @@ public class UserController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}
 	
+	@RequestMapping(value="/updatetype",method = RequestMethod.PUT , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> updateUserType(
+			@RequestParam(value = "userid", required = true) String uid,
+			@RequestParam(value = "usertype", required = true) String utype){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			if(userService.updateUserType(uid, utype)){
+				map.put("MESSAGE", "Cover photo has been updated.");
+				map.put("STATUS", true);
+			}else{
+				map.put("MESSAGE", "Cover photo has not been updated.");
+				map.put("STATUS", false);
+			}
+			
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}
+	
 	@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> resetPassword(@RequestBody FrmResetPassword resetPassword){
 		Map<String , Object> map = new HashMap<String , Object>();
