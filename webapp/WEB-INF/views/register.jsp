@@ -70,12 +70,12 @@
 
                      <div class="form-group">
                          <label>Password</label>
-                         <input id="password" name="password" require type="text" class="form-control">
+                         <input id="password" name="password" require type="password" class="form-control">
                     </div>
                     
                     <div class="form-group">
                          <label>Confirm Password</label>
-                         <input id="confirmPassword" name="confirmPassword" require  type="text" class="form-control">
+                         <input id="confirmPassword" name="confirmPassword" require  type="password" class="form-control">
                     </div>
                     
                     <!-- <div class="form-group">
