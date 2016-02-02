@@ -14,6 +14,7 @@ import org.kaapi.app.forms.FrmUpdateCategory;
 public interface CategoryService {
 
 	public List<Category> listCategory(Pagination pagination,String keyword);
+	public List<Category> listCategory();
 	public Category getCategory(String categoryid);
 	public boolean insertCategory(FrmAddCategory dto) ;
 	public boolean updateCategory(FrmUpdateCategory dto);

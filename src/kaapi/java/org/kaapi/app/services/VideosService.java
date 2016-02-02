@@ -20,6 +20,7 @@ public interface VideosService {
 	public List<Video> categoryVideo(String categoryid, boolean status, Pagination page);
 	public List<Video> topVoteAndRecent(int limit);
 	public Video getVideo(String videoId, boolean viewCount);
+	public Video getVideoWithStatus(String videoId, boolean viewCount, boolean status);
 	public int insert(Video video);
 	public boolean update(Video video);
 	public boolean delete(String videoId);

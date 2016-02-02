@@ -33,6 +33,8 @@ public class ParticipantServiceImpl implements ParticipantService{
 				part.setUsername(rs.getString("username"));
 				part.setContents(rs.getString("contents"));
 				part.setPostDate(rs.getString("post_date"));
+				part.setPhoto1(rs.getString("photo1"));
+				part.setPhoto2(rs.getString("photo2"));
 				list.add(part);
 			}		
 		} catch (SQLException e) {
@@ -43,15 +45,17 @@ public class ParticipantServiceImpl implements ParticipantService{
 
 	@Override
 	public boolean add(FrmParticipants part) {
-		String sql = "INSERT INTO tbl_participants (username,contents) "
+		String sql = "INSERT INTO tbl_participants (username,contents,photo1,photo2) "
 				+"VALUES "
-				+"(?,?);";
+				+"(?,?,?,?);";
 		try(
 			Connection cnn = dataSource.getConnection();
 			PreparedStatement ps = cnn.prepareStatement(sql);
 		){
 			ps.setString(1, part.getUsername());
 			ps.setString(2, part.getContents());
+			ps.setString(3, part.getPhoto1());
+			ps.setString(4, part.getPhoto2());
 			if(ps.executeUpdate() > 0){
 				return true;
 			}

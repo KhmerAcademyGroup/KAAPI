@@ -39,6 +39,8 @@ public interface UserService {
 	public boolean updateCoverPhoto(FrmAddUpdateCoverPhoto coverPhoto);
 	public boolean resetPassword(FrmResetPassword resetPassword);
 	public boolean changePassword(FrmChangePassword changePassword);
+	public boolean updateType(String userId, String typeId);
+
 	
 }
 

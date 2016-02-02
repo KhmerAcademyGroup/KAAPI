@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserService {
 				+ " LEFT JOIN tblcoverphoto co ON u.userid = co.userid"
 				+ " LEFT JOIN tbluniversity uni ON u.universityid = uni.universityid"
 				+ " LEFT JOIN tbldepartment dep ON u.departmentid = dep.departmentid" 
-				+ " WHERE LOWER(u.username) LIKE LOWER(?)"
+				+ " WHERE LOWER(u.username) LIKE LOWER(?) and u.userstatus='1'"
 				+ " GROUP BY u.USERID, ut.USERTYPEID, co.coverid, uni.universityid , dep.departmentid ORDER BY u.userid DESC offset ? limit ?;";
 		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, "%"+ username + "%");
@@ -469,5 +469,19 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
-	
+
+	@Override
+	public boolean updateType(String userId, String typeId) {
+		
+		String sql= "Update tbluser set usertypeid=? where userid=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setInt(1, Integer.parseInt(Encryption.decode(typeId)));
+			ps.setInt(2, Integer.parseInt(Encryption.decode(userId)));
+			if(ps.executeUpdate()>0)
+				return true;
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}	
 }

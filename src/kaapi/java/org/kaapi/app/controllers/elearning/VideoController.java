@@ -630,24 +630,28 @@ public class VideoController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			Video video = videoService.getVideo(vid, true);
-			if(video.getCategoryName()!=null){
-				List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
-				map.put("RELATEVIDEO", relateVideo);
+			if(video!=null){
+				if(video.getCategoryName()!=null){
+					List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
+					map.put("RELATEVIDEO", relateVideo);
+				}
+				
+				Log log = new Log();
+				log.setUserId(uid);
+				log.setVideoId(vid);
+				int logid = logService.insert(log);
+				History history = new History();
+				history.setUserId(uid);
+				history.setVideoId(vid);
+				historyService.insert(history);
+				map.put("LOGID", logid);
+				map.put("VIDEO", video);
+				map.put("STATUS", true);
+				map.put("MESSAGE", "VIDEO FOUND");
+			}else{
+				map.put("MESSAGE", "VIDEO NOT FOUND");
+				map.put("STATUS", false);
 			}
-			
-			Log log = new Log();
-			log.setUserId(uid);
-			log.setVideoId(vid);
-			int logid = logService.insert(log);
-			History history = new History();
-			history.setUserId(uid);
-			history.setVideoId(vid);
-			historyService.insert(history);
-			map.put("LOGID", logid);
-			map.put("VIDEO", video);
-			map.put("STATUS", true);
-			map.put("MESSAGE", "OPERATION SUCCESS");
-			
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);

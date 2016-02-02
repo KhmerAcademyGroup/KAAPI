@@ -297,6 +297,41 @@ public class CategoryServiceImpl implements CategoryService {
         System.out.println("original value is \t" + str);
 	 }
 
+	@Override
+	public List<Category> listCategory() {
+		List<Category> category = new ArrayList<Category>();
+		Category dto = null;
+		ResultSet rs = null;
+
+		try {
+
+			String sql = "SELECT categoryid, categoryname  FROM TBLCATEGORY ORDER BY categoryname";
+			con = dataSource.getConnection();
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				dto = new Category();
+				dto.setCategoryId(Encryption.encode(rs.getInt("categoryid")+""));
+				dto.setCategoryName(rs.getString("categoryname"));
+				category.add(dto);
+			}
+			return category;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	
+
 	
 		 
 		 
