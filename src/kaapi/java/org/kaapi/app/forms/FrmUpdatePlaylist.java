@@ -7,7 +7,7 @@ public class FrmUpdatePlaylist {
 	private String userId;
 	private String thumbnailUrl;
 	private boolean publicView;
-	private int maincategory;
+	private String maincategory;
 	private String bgImage;
 	private String color;
 	private boolean status;
@@ -53,10 +53,11 @@ public class FrmUpdatePlaylist {
 	public void setPublicView(boolean publicView) {
 		this.publicView = publicView;
 	}
-	public int getMaincategory() {
+
+	public String getMaincategory() {
 		return maincategory;
 	}
-	public void setMaincategory(int maincategory) {
+	public void setMaincategory(String maincategory) {
 		this.maincategory = maincategory;
 	}
 	public String getBgImage() {
