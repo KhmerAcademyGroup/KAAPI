@@ -824,7 +824,7 @@ public class PlayListServiceImpl implements PlayListServics{
 							+ "P.status, M.maincategoryname " 
 							+ "FROM tblplaylist P " 
 									+ "INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid " 
-									+ "WHERE P.maincategory NOTNULL AND P.status=TRUE AND P.publicview= TRUE"; 
+									+ "WHERE P.maincategory NOTNULL AND P.status=TRUE "; 
 								
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
@@ -1102,7 +1102,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, bgimage, status from tblplaylist P where P.status=TRUE and P.userid = ?   order by playlistid desc offset ? limit ?";
+			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, bgimage, status from tblplaylist P where P.userid = ?   order by playlistid desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ps.setInt(2, begin);
