@@ -26,6 +26,34 @@ public class PlayListControllers {
 	
 	@Autowired
 	PlayListServics playlistservice;
+	
+	/*
+	 * action get listallplaylist
+	 * we want to listallplaylist
+	 */
+	@RequestMapping(value="/userplaylistall/{uid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> UserPlayListAll(
+												@PathVariable("uid") String uid
+												){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			ArrayList<Playlist>  dto= playlistservice.UserPlayList(uid);
+			if(!dto.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
 	/*
 	 * action get listallplaylist
 	 * we want to listallplaylist

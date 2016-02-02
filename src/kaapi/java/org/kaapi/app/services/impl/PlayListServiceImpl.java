@@ -823,7 +823,7 @@ public class PlayListServiceImpl implements PlayListServics{
 							+ "P.status, M.maincategoryname " 
 							+ "FROM tblplaylist P " 
 									+ "INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid " 
-									+ "WHERE P.maincategory NOTNULL AND P.status=TRUE "; 
+									+ "WHERE P.maincategory NOTNULL AND P.status=TRUE AND P.publicview= TRUE"; 
 								
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
@@ -1101,7 +1101,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, status from tblplaylist P where P.status=TRUE and P.userid = ?   order by playlistid desc offset ? limit ?";
+			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, bgimage, status from tblplaylist P where P.status=TRUE and P.userid = ?   order by playlistid desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ps.setInt(2, begin);
@@ -1114,6 +1114,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlists.add(playlist);
 			}
@@ -1151,6 +1152,40 @@ public class PlayListServiceImpl implements PlayListServics{
 			}
 		}
 		return 0;
+	}
+
+	@Override
+	public ArrayList<Playlist> UserPlayList(String userid) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql = "select playlistid , playlistname, thumbnailurl ,publicview, status from tblplaylist P where P.status=TRUE and P.userid = ?   order by playlistid desc ";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	

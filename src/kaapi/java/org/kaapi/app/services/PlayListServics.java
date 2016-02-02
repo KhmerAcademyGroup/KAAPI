@@ -12,6 +12,7 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
+	public ArrayList<Playlist> UserPlayList(String userid);
 	public ArrayList<Playlist> UserPlayList(String userid, Pagination pagin);
 	public ArrayList<Playlist> listUserPlayList(String userid);
 	public ArrayList<Playlist> listPlayListByMainCategory(String categoryid);
