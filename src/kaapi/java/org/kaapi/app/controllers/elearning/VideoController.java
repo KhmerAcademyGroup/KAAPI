@@ -631,10 +631,6 @@ public class VideoController {
 		try{
 			Video video = videoService.getVideo(vid, true);
 			if(video!=null){
-				if(video.getCategoryName()!=null){
-					List<Video> relateVideo = videoService.getRelateVideo(video.getCategoryName(), 10);
-					map.put("RELATEVIDEO", relateVideo);
-				}
 				
 				Log log = new Log();
 				log.setUserId(uid);
