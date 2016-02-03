@@ -48,6 +48,34 @@ public class UploadFiles {
 
 	}
 	
+	@RequestMapping(method = RequestMethod.POST, value = "/image")
+	public ResponseEntity<Map<String, Object>> uploadimage(
+			@RequestParam(value = "image", required = false) MultipartFile file,@RequestParam(value="url") String url, HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String ramdom_file_name="";
+		try {
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/file/"+url);
+			UploadFile fileName = new UploadFile();
+			if (file == null) {
+				map.put("STATUS", false);
+				map.put("MESSAGE", "IMAGE HAS NOT BEEN INSERTED");
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			} else {
+				ramdom_file_name = UUID.randomUUID() + ".jpg";
+				String CategoryImage = fileName.UploadFiles(file, savePath,url,ramdom_file_name);
+				map.put("STATUS", true);
+				map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
+				map.put("IMG", CategoryImage);
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+	}
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/update")
 	public ResponseEntity<Map<String, Object>> updateFile(
 			@RequestParam(value = "file", required = false) MultipartFile file,@RequestParam(value="url") String url,@RequestParam("filename") String filename, HttpServletRequest request) {
