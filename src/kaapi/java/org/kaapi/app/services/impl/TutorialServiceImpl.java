@@ -112,8 +112,8 @@ public class TutorialServiceImpl implements TutorialService{
 				dto.setTitle(rs.getString("title"));
 				dto.setDescription(rs.getString("description"));
 				dto.setIndex(rs.getInt("index"));
-				/*dto.setUserid(rs.getInt("userid"));*/
-				/*dto.setCategoryid(rs.getInt("categoryid"));*/
+				dto.setUserId(Encryption.encode(rs.getString("userid")));
+				dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
 				dto.setUsername(rs.getString("username"));
 				dto.setCategoryName(rs.getString("categoryname"));
 			}
@@ -330,7 +330,6 @@ public class TutorialServiceImpl implements TutorialService{
 			String sql = "SELECT COUNT(tutorialid) FROM TBLTUTORIAL where userid=?";
 			PreparedStatement ps= con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
-			System.out.println(Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
 			if(rs.next())
 				return rs.getInt(1);
