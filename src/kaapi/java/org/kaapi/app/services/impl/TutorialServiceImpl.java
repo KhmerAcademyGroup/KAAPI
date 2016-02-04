@@ -102,7 +102,7 @@ public class TutorialServiceImpl implements TutorialService{
 			con = ds.getConnection();
 			ResultSet rs = null;
 			Tutorial dto = null;
-			String sql = "SELECT T.tutorialid, T.title, T.index, T.description, C.CATEGORYNAME, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID WHERE T.TUTORIALID=? ORDER BY T.INDEX ";
+			String sql = "SELECT T.tutorialid, T.title, T.index, T.description,C.CATEGORYID, C.CATEGORYNAME,U.USERID, U.USERNAME FROM TBLTUTORIAL T INNER JOIN TBLCATEGORY C ON T.CATEGORYID=C.CATEGORYID INNER JOIN TBLUSER U ON T.USERID=U.USERID WHERE T.TUTORIALID=? ORDER BY T.INDEX ";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(tutorialid)));
 			rs = ps.executeQuery();
