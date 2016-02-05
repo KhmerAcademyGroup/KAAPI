@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.entities.University;
 import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
@@ -14,6 +16,8 @@ import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
 import org.kaapi.app.forms.FrmValidateEmail;
+import org.kaapi.app.services.DepartmentService;
+import org.kaapi.app.services.UniversityService;
 import org.kaapi.app.services.UserService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -330,6 +334,43 @@ public class UserController {
 			map.put("STATUS", false);
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}
+	
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Autowired
+	UniversityService universityService;
+
+	
+	@RequestMapping(value="/listuniversity_department" , method = RequestMethod.GET , headers = "accept=Application/json")
+	public ResponseEntity<Map<String , Object>> listDepartmentAndUniversity(
+			 @RequestParam(value = "page", required = false , defaultValue="1") int page 
+		   , @RequestParam(value="item" , required = false , defaultValue="1000") int item){
+		Map<String , Object> map = new HashMap<String , Object> ();
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(departmentService.countDepartment(""));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Department> listDepartment = departmentService.listDepartment(pagination, "");
+			
+			pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(universityService.countUniversity());
+			pagination.setTotalPages(pagination.totalPages());
+			List<University> listUniversity = universityService.findAllUniverstiyByName(pagination, "");
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("STATUS", true);
+			map.put("DEPARTMENT",listDepartment);
+			map.put("UNIVERSITY",listUniversity);
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
 	}
 	
 }

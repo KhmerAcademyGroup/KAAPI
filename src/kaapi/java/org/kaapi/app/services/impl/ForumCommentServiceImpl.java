@@ -63,6 +63,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
 					dto.setVote(rs.getInt("votecount"));
+					dto.setUserImageUrl(rs.getString("userimageurl"));
 					list.add(dto);
 				}
 				return list;
@@ -111,6 +112,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
 					dto.setVote(rs.getInt("votecount"));
+					dto.setUserImageUrl(rs.getString("userimageurl"));
 					list.add(dto);
 				}
 				return list;
@@ -174,6 +176,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
+					dto.setUserImageUrl(rs.getString("userimageurl"));
 					dto.setVote(rs.getInt("votecount"));
 					list.add(dto);
 				}
@@ -240,6 +243,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
+					dto.setUserImageUrl(rs.getString("userimageurl"));
 					dto.setVote(rs.getInt("votecount"));
 					list.add(dto);
 				}
@@ -307,6 +311,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
+					dto.setUserImageUrl(rs.getString("userimageurl"));
 					dto.setVote(rs.getInt("votecount"));
 					list.add(dto);
 				}
@@ -371,6 +376,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					dto.setUsername(rs.getString("username"));
 					dto.setSelected(rs.getBoolean("selected"));
 					dto.setCommentCount(rs.getInt("commentcount"));
+					dto.setUserImageUrl(rs.getString("userimageurl"));
 					dto.setVote(rs.getInt("votecount"));
 					list.add(dto);
 				}
@@ -633,6 +639,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 				}
 				dto.setUserId(Encryption.encode(rs.getString("userid")));
 				dto.setUsername(rs.getString("username"));
+				dto.setUserImageUrl(rs.getString("userimageurl"));
 				dto.setSelected(rs.getBoolean("selected"));
 				dto.setCommentCount(rs.getInt("commentcount"));
 				dto.setVote(rs.getInt("votecount"));
