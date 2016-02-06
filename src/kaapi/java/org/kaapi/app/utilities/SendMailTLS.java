@@ -36,7 +36,7 @@ public class SendMailTLS {
 			message.setRecipients(Message.RecipientType.TO,
 				/*InternetAddress.parse("sarin9999@outlook.com"));*/
 			InternetAddress.parse(address));
-			message.setSubject("KhmerAcademy Reset Your password");
+			message.setSubject(" Reset your KhmerAcademy password");
 			message.setText(msg);
 
 			Transport.send(message);
