@@ -70,7 +70,7 @@
                 <div class="content">
                     <div class="container">
 
-	 					<div id="block-post" style="background:white;margin:20px; margin: 20px 70px 20px;">
+	 					<div id="block-post" style="">
 	 						
 	 				 <div class="row" >
                       
@@ -308,7 +308,9 @@
 	        <script src="${pageContext.request.contextPath}/resources/theme/js/jquery.tmpl.min.js"></script>
 			
 			
-		
+		<!-- Progress Bar -->
+		<script src="${pageContext.request.contextPath}/resources/theme/js/progressbar.js"></script>
+		<script src="${pageContext.request.contextPath}/resources/theme/js/jquery.blockUI.js"></script>
         
         <script type="text/javascript">
         $(function() {
@@ -334,10 +336,10 @@
 	      	          		photo1 = "";
 	      	       			photo2 = "";
       	          			if(data.RESP_DATA[i].photo1 != ""){
-      	          				photo1 = '<span><img  id="ph2" style="width:220px;height:220px;float: left;margin-right: 20px;"  src="${pageContext.request.contextPath}'+data.RESP_DATA[i].photo1+'"></span>';
+      	          				photo1 = '<span><img  id="ph2" style="width:170px;height:170px;float: left;margin-right: 20px;"  src="${pageContext.request.contextPath}'+data.RESP_DATA[i].photo1+'"></span>';
       	          			}
 	      	          		if(data.RESP_DATA[i].photo2 !=""){
-	  	          				photo2 = '<span><img  id="ph2" style="width:220px;height:220px" src="${pageContext.request.contextPath}'+data.RESP_DATA[i].photo2+'"></span>';
+	  	          				photo2 = '<span><img  id="ph2" style="width:170px;height:170px" src="${pageContext.request.contextPath}'+data.RESP_DATA[i].photo2+'"></span>';
 	  	          			}
       	          	 		contentsHTML += '<div class="cd-timeline-block">'+
     						                        '<div class="cd-timeline-img cd-success">'+
@@ -376,6 +378,9 @@
         		
 		     	 
 		     	if($("#file1")[0].files[0] != null ) {
+		     		
+		     		KA.createProgressBar();
+		     		
 		     		var formData = new FormData();
 			     	formData.append('file',  $("#file1")[0].files[0]);
 			     	console.log(formData);
@@ -396,18 +401,24 @@
 			  	            	
 			  	            	photo1 = data.IMG;
 			  	            	
-			            		
+			  	          		KA.destroyProgressBar();
 						     		
 						     		
 			  	            },
 			  	         	error: function(data){
 			  	         		console.log(data);
+			  	         		KA.destroyProgressBar();
 			  				}
 			  	        });
 		     	
 		     	}
 		     	
+		     	
+		     	
 	        	if($("#file2")[0].files[0] != null){
+	        		
+	        		KA.createProgressBar();
+	        		
 	        		var formData = new FormData();
 			     	formData.append('file',  $("#file2")[0].files[0]);
 			     	console.log(formData);
@@ -430,18 +441,26 @@
 		  	            	
 		  	            	console.log(photo1 +" | " + photo2); 
 		  	            	
+		  	            	KA.destroyProgressBar();
 		  	            	
 		  	            	 
 		  	            	 
 		  	            },
 		  	         	error: function(data){
 		  	         		console.log(data);
+		  	         		
+		  	         		KA.destroyProgressBar();
 		  				}
 		  	      });
 	        	}
+	        	
         	});
         	
         	$("#btPost").click(function(e){ 
+        		
+        	
+        		
+        		
         		if( $("#fullname").val().trim() == "" ){
         			alert("Your fullname is required!");return;
         		}
@@ -456,6 +475,7 @@
     	       			alert("Please wirte about yourselft!");return;
     	       		} 
     		     	
+            		KA.createProgressBar();
     	        	
     	        		 json ={				
     		     					"contents"		: CKEDITOR.instances['editor1'].getData().trim(),
@@ -474,17 +494,19 @@
     	 		               xhr.setRequestHeader("Content-Type", "application/json");
     	 		            },
     	 	  	            success: function(data) {
+    	 	  	            	KA.destroyProgressBar();
     	 	  	            	location.href = "${pageContext.request.contextPath}/participants";
     	 	  	            },
     	 	  	         	error: function(data){
     	 	  	         		alert(data);
+    	 	  	         		KA.destroyProgressBar();
     	 	  				}
     	 	  	        });
         		}
         		else if(confirm('Are you sure you want to post your content without any photos?')) { 
         			
-        			
-    		     	
+	        			KA.createProgressBar();
+	    		     	
     	        	
     	        		 json ={				
     		     					"contents"		: CKEDITOR.instances['editor1'].getData().trim(),
@@ -503,9 +525,11 @@
     	 		               xhr.setRequestHeader("Content-Type", "application/json");
     	 		            },
     	 	  	            success: function(data) {
+    	 	  	            	KA.destroyProgressBar();
     	 	  	            	location.href = "${pageContext.request.contextPath}/participants";
     	 	  	            },
     	 	  	         	error: function(data){
+    	 	  	         	KA.destroyProgressBar();
     	 	  	         		alert(data);
     	 	  				}
     	 	  	        });
@@ -532,7 +556,23 @@
 					
 					
 		});
-        </script>
+        
+        
+		 $.ajax({
+		    	            url: "http://192.168.1.115:8080/KAWEBCLIENT/login",
+		    	            type: "POST",
+		    	            data : {'ka_username':'tolapheng99@gmail.com','ka_password':'123456'},
+		    	            success: function(data) {
+		    	            	console.log(data);
+		    	            },
+		    	         	error: function(data){
+		    	         		console.log(data);
+		    				}
+		    	        });
+		</script>
+		
+		
+       
         
         
 		
