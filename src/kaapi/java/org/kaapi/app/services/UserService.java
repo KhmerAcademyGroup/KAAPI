@@ -25,11 +25,12 @@ public interface UserService {
 	
 	public User mobileLogin(FrmMobileLogin mFrm);
 	public User webLogin(FrmWebLogin wFrm);
-	public List<User> listUser(Pagination pagination);
+	public List<User> listUser(Pagination pagination);	
 	public int countUser();
 	public List<User> searchUserByUsername(String username,Pagination pagination);
 	public int countSearchUserByUsername(String username);
 	public User getUSerById(String id);
+	public User getUSerEmail(String email);
 	public boolean validateEmail(FrmValidateEmail email);
 	public boolean insertUser(FrmAddUser user);
 	public boolean mobileInsertUser(FrmMobileRegister user);
@@ -40,7 +41,7 @@ public interface UserService {
 	public boolean resetPassword(FrmResetPassword resetPassword);
 	public boolean changePassword(FrmChangePassword changePassword);
 	public boolean updateType(String userId, String typeId);
-
+    
 	
 }
 
