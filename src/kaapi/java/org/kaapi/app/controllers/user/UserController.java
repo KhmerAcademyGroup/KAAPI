@@ -1,6 +1,7 @@
 
 package org.kaapi.app.controllers.user;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.kaapi.app.services.DepartmentService;
 import org.kaapi.app.services.UniversityService;
 import org.kaapi.app.services.UserService;
 import org.kaapi.app.utilities.Encryption;
+import org.kaapi.app.utilities.SendMailTLS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -372,6 +374,36 @@ public class UserController {
 			e.printStackTrace();
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value="/email",method = RequestMethod.GET)
+	public ResponseEntity<Map<String,Object>> getUserByEmail(
+			@RequestParam("email") String email
+			){		
+		Map<String , Object> map = new HashMap<String , Object> ();				
+		try{
+			User u = userService.getUSerEmail(email);
+			if(u != null){
+					SecureRandom random = new SecureRandom();
+				    byte bytes[] = new byte[20];
+				    random.nextBytes(bytes);
+				    String token = bytes.toString();	    
+					new SendMailTLS().sendMaile(email, "http://localhost:8080/KAWEBCLIENT/elearning");
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RES_DATA",u);
+			}else{
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
+		
 	}
 	
 }
