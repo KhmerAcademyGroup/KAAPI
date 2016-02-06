@@ -32,11 +32,11 @@ public class SendMailTLS {
 		try {
 
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("hemsarin.rupp@gmail.com"));
+			message.setFrom(new InternetAddress("khmer.academy999@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
 				/*InternetAddress.parse("sarin9999@outlook.com"));*/
 			InternetAddress.parse(address));
-			message.setSubject("IRON MAN 2");
+			message.setSubject("KhmerAcademy Reset Your password");
 			message.setText(msg);
 
 			Transport.send(message);
