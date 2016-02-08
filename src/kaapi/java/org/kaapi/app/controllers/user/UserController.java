@@ -16,6 +16,7 @@ import org.kaapi.app.forms.FrmChangePassword;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
+import org.kaapi.app.forms.FrmUserResetPassword;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.services.DepartmentService;
 import org.kaapi.app.services.UniversityService;
@@ -388,8 +389,9 @@ public class UserController {
 					SecureRandom random = new SecureRandom();
 				    byte bytes[] = new byte[20];
 				    random.nextBytes(bytes);
-				    String token = bytes.toString();	    
-					new SendMailTLS().sendMaile(email, "http://localhost:8080/KAWEBCLIENT/elearning");
+				    String token = bytes.toString();	
+				    userService.insertHistoryResetPassWord(token,u.getEmail());
+					new SendMailTLS().sendMaile(email, "http://localhost:8080/KAWEBCLIENT/reset?code="+token);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("STATUS", true);
 				map.put("RES_DATA",u);
@@ -405,5 +407,37 @@ public class UserController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> resetPassword1(@RequestParam("code") String code ,@RequestParam("password") String password){
+		Map<String , Object> map = new HashMap<String , Object>();
+		
+		try{
+			FrmUserResetPassword resetPass=userService.getHistoryResetPassword(code);
+			
+			if(resetPass.isResetStatus()==true){
+
+				FrmResetPassword resetPassword = new FrmResetPassword();
+				resetPassword.setEmail(resetPass.getResetEmail());
+				resetPassword.setNewPassword(password);
+				userService.updateHistoryResetPassword(code);
+				if(userService.resetPassword(resetPassword)){
+					map.put("MESSAGE", "Password has been reseted.");
+					map.put("STATUS", true);
+				}else{
+					map.put("MESSAGE", "Password has not been reseted.");
+					map.put("STATUS", false);
+				}
+			}else{
+				map.put("MESSAGE", "Password has not been reseted.");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}
+	
 	
 }

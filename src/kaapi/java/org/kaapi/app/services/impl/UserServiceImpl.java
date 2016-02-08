@@ -1,6 +1,7 @@
 package org.kaapi.app.services.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
 import org.kaapi.app.forms.FrmUpdateUser;
+import org.kaapi.app.forms.FrmUserResetPassword;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.services.UserService;
@@ -505,5 +507,54 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean insertHistoryResetPassWord(String id,String email) {
+		String sql =  " insert into tblhistoryresetpassword (id,email,resetdate) VALUES(?,?,now())";
+	try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+		ps.setString(1, id);
+		ps.setString(2, email);					
+		if(ps.executeUpdate()>0)
+			return true;
+	} catch (SQLException e) {
+		e.printStackTrace();
+		System.out.println(e.getMessage());
+	}
+	return false;
+	}
+
+	@Override
+	public FrmUserResetPassword getHistoryResetPassword(String id) {
+		String sql =  "select * tblhistoryresetpassword where id = ? ";
+		
+	try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+		ps.setString(1, id);		
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			FrmUserResetPassword u = new FrmUserResetPassword();
+			u.setResetEmail(rs.getString("email"));
+			u.setResetStatus(rs.getBoolean("status"));
+			u.setResetDate(rs.getDate("resetdate"));
+			return u;
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+	return null;
+		
+	}
+
+	@Override
+	public boolean updateHistoryResetPassword(String id) {
+		String sql =  "update  tblhistoryresetpassword set status = false where id = ? ";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+		    ps.setString(1, id);
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}	
 }
