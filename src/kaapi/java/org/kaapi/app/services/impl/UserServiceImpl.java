@@ -483,5 +483,27 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public User getUSerEmail(String email) {
+		//System.err.println(email+ "bb   ehllere");
+		String sql = "SELECT  userid , email from tbluser  where email = ?   ";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			//rs.next();
+			//System.err.println(rs.getInt("userid"));
+			if(rs.next()){
+				System.err.println(rs.getInt("userid") + "/ Crush " + rs.getString("email") );
+				User u = new User();
+				u.setUserId(Encryption.encode(rs.getString("userid")));
+				u.setEmail(email);
+				return u;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
 	}	
 }
