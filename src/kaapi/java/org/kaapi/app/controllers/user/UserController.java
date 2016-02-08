@@ -278,7 +278,7 @@ public class UserController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}
 	
-	@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
+	/*@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> resetPassword(@RequestBody FrmResetPassword resetPassword){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
@@ -294,7 +294,7 @@ public class UserController {
 			map.put("STATUS", false);
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
-	}
+	}*/
 	
 	@RequestMapping(value="/changepassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> changePassword(@RequestBody FrmChangePassword changePassword){
@@ -409,9 +409,8 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
-	public ResponseEntity<Map<String , Object>> resetPassword1(@RequestParam("code") String code ,@RequestParam("password") String password){
-		Map<String , Object> map = new HashMap<String , Object>();
-		
+	public ResponseEntity<Map<String , Object>> sarinResetpassword(@RequestParam("code") String code ,@RequestParam("password") String password){
+		Map<String , Object> map = new HashMap<String , Object>();		
 		try{
 			FrmUserResetPassword resetPass=userService.getHistoryResetPassword(code);
 			
@@ -437,7 +436,5 @@ public class UserController {
 			map.put("STATUS", false);
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
-	}
-	
-	
+	}		
 }

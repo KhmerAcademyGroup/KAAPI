@@ -526,7 +526,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public FrmUserResetPassword getHistoryResetPassword(String id) {
-		String sql =  "select * tblhistoryresetpassword where id = ? ";
+		String sql =  "select * from tblhistoryresetpassword where id = ? ";
 		
 	try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 		ps.setString(1, id);		
