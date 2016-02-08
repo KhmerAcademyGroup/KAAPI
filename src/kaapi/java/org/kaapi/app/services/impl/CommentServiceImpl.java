@@ -65,7 +65,7 @@ public class CommentServiceImpl implements CommentService {
 				   + "FROM TBLCOMMENT CM "
 				   + "INNER JOIN TBLVIDEO V ON CM.videoid=V.videoid "
 				   + "INNER JOIN TBLUSER U ON CM.userid=U.userid "
-				   + "OFFSET ? LIMIT ?";
+				   + "ORDER BY commentdate DESC OFFSET ? LIMIT ?";
 		
 		List<Comment> list = new ArrayList<Comment>();
 		Comment comment = null;
@@ -100,7 +100,7 @@ public class CommentServiceImpl implements CommentService {
 				   + "INNER JOIN TBLVIDEO V ON CM.videoid=V.videoid "
 				   + "INNER JOIN TBLUSER U ON CM.userid=U.userid "
 				   + "WHERE lower(CM.commenttext) LIKE lower(?) "
-				   + "OFFSET ? LIMIT ?";
+				   + "ORDER BY commentdate DESC OFFSET ? LIMIT ?";
 		
 		List<Comment> list = new ArrayList<Comment>();
 		Comment comment = null;
