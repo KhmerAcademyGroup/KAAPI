@@ -13,10 +13,10 @@ import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
+import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
-import org.kaapi.app.forms.FrmUserResetPassword;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.services.DepartmentService;
 import org.kaapi.app.services.UniversityService;
@@ -412,7 +412,7 @@ public class UserController {
 	public ResponseEntity<Map<String , Object>> sarinResetpassword(@RequestParam("code") String code ,@RequestParam("password") String password){
 		Map<String , Object> map = new HashMap<String , Object>();		
 		try{
-			FrmUserResetPassword resetPass=userService.getHistoryResetPassword(code);
+			FrmHistoryResetPassword resetPass=userService.getHistoryResetPassword(code);
 			
 			if(resetPass.isResetStatus()==true){
 

@@ -2,7 +2,7 @@ package org.kaapi.app.forms;
 
 import java.sql.Date;
 
-public class FrmUserResetPassword {
+public class FrmHistoryResetPassword {
 		private String resetId;
 		private String resetEmail;
 		private boolean resetStatus;

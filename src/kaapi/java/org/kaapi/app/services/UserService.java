@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
+import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileLogin;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
@@ -13,7 +14,6 @@ import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
 import org.kaapi.app.forms.FrmUpdateUser;
-import org.kaapi.app.forms.FrmUserResetPassword;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.forms.FrmWebLogin;
 
@@ -44,7 +44,7 @@ public interface UserService {
 	public boolean changePassword(FrmChangePassword changePassword);
 	public boolean updateType(String userId, String typeId);
     public boolean insertHistoryResetPassWord(String id,String email);
-    public FrmUserResetPassword getHistoryResetPassword(String id);
+    public FrmHistoryResetPassword getHistoryResetPassword(String id);
     public boolean updateHistoryResetPassword(String id);
 	
 	

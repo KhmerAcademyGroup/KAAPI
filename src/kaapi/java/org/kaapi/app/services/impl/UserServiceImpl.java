@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
+import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileLogin;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
@@ -19,7 +20,6 @@ import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
 import org.kaapi.app.forms.FrmUpdateUser;
-import org.kaapi.app.forms.FrmUserResetPassword;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.services.UserService;
@@ -525,14 +525,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public FrmUserResetPassword getHistoryResetPassword(String id) {
+	public FrmHistoryResetPassword getHistoryResetPassword(String id) {
 		String sql =  "select * from tblhistoryresetpassword where id = ? ";
 		
 	try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 		ps.setString(1, id);		
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
-			FrmUserResetPassword u = new FrmUserResetPassword();
+			FrmHistoryResetPassword u = new FrmHistoryResetPassword();
 			u.setResetEmail(rs.getString("email"));
 			u.setResetStatus(rs.getBoolean("status"));
 			u.setResetDate(rs.getDate("resetdate"));
