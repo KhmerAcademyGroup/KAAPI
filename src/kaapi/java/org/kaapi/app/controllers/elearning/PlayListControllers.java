@@ -27,6 +27,8 @@ public class PlayListControllers {
 	@Autowired
 	PlayListServics playlistservice;
 	
+	
+	
 	//Toggle playlist: 
 		@RequestMapping(method = RequestMethod.PUT, value = "/togglePlaylist/{pid}", headers = "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> togglePlaylist(@PathVariable("pid") String pid) {
