@@ -1,21 +1,28 @@
 
 package org.kaapi.app.controllers.user;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.entities.University;
 import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
+import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
 import org.kaapi.app.forms.FrmValidateEmail;
+import org.kaapi.app.services.DepartmentService;
+import org.kaapi.app.services.UniversityService;
 import org.kaapi.app.services.UserService;
 import org.kaapi.app.utilities.Encryption;
+import org.kaapi.app.utilities.SendMailTLS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -271,7 +278,7 @@ public class UserController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}
 	
-	@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
+	/*@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> resetPassword(@RequestBody FrmResetPassword resetPassword){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
@@ -287,7 +294,7 @@ public class UserController {
 			map.put("STATUS", false);
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
-	}
+	}*/
 	
 	@RequestMapping(value="/changepassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> changePassword(@RequestBody FrmChangePassword changePassword){
@@ -332,4 +339,102 @@ public class UserController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}
 	
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Autowired
+	UniversityService universityService;
+
+	
+	@RequestMapping(value="/listuniversity_department" , method = RequestMethod.GET , headers = "accept=Application/json")
+	public ResponseEntity<Map<String , Object>> listDepartmentAndUniversity(
+			 @RequestParam(value = "page", required = false , defaultValue="1") int page 
+		   , @RequestParam(value="item" , required = false , defaultValue="1000") int item){
+		Map<String , Object> map = new HashMap<String , Object> ();
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(departmentService.countDepartment(""));
+			pagination.setTotalPages(pagination.totalPages());
+			List<Department> listDepartment = departmentService.listDepartment(pagination, "");
+			
+			pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(universityService.countUniversity());
+			pagination.setTotalPages(pagination.totalPages());
+			List<University> listUniversity = universityService.findAllUniverstiyByName(pagination, "");
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("STATUS", true);
+			map.put("DEPARTMENT",listDepartment);
+			map.put("UNIVERSITY",listUniversity);
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value="/email",method = RequestMethod.GET)
+	public ResponseEntity<Map<String,Object>> getUserByEmail(
+			@RequestParam("email") String email
+			){		
+		Map<String , Object> map = new HashMap<String , Object> ();				
+		try{
+			User u = userService.getUSerEmail(email);
+			if(u != null){
+					SecureRandom random = new SecureRandom();
+				    byte bytes[] = new byte[20];
+				    random.nextBytes(bytes);
+				    String token = bytes.toString();	
+				    userService.insertHistoryResetPassWord(token,u.getEmail());
+					new SendMailTLS().sendMaile(email, "http://localhost:8080/KAWEBCLIENT/reset?code="+token);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RES_DATA",u);
+			}else{
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value="/resetpassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> sarinResetpassword(@RequestParam("code") String code ,@RequestParam("password") String password){
+		Map<String , Object> map = new HashMap<String , Object>();		
+		try{
+			FrmHistoryResetPassword resetPass=userService.getHistoryResetPassword(code);
+			
+			if(resetPass.isResetStatus()==true){
+
+				FrmResetPassword resetPassword = new FrmResetPassword();
+				resetPassword.setEmail(resetPass.getResetEmail());
+				resetPassword.setNewPassword(password);
+				userService.updateHistoryResetPassword(code);
+				if(userService.resetPassword(resetPassword)){
+					map.put("MESSAGE", "Password has been reseted.");
+					map.put("STATUS", true);
+				}else{
+					map.put("MESSAGE", "Password has not been reseted.");
+					map.put("STATUS", false);
+				}
+			}else{
+				map.put("MESSAGE", "Password has not been reseted.");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}		
 }

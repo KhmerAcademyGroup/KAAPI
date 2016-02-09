@@ -44,7 +44,7 @@ public class ForumVoteController {
 			int total_vote = voteService.voteMinus(vote);
 			map.put("STATUS",true);
 			map.put("TOTAL_VOTE", total_vote);
-			map.put("MESSAGE", "QUESTION WAS LIKED");
+			map.put("MESSAGE", "QUESTION WAS UNLIKED");
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
@@ -58,6 +58,7 @@ public class ForumVoteController {
 		try{
 			int total_vote = voteService.votePlus(vote);
 			map.put("STATUS",true);
+			map.put("COMMENTID",vote.getCommentId());
 			map.put("TOTAL_VOTE", total_vote);
 			map.put("MESSAGE", "ANSWER WAS LIKED");
 		}catch(Exception e){
@@ -75,6 +76,7 @@ public class ForumVoteController {
 			map.put("STATUS",true);
 			map.put("MESSAGE", "ANSWER WAS UNLIKED");
 			map.put("TOTAL_VOTE", total_vote);
+			map.put("COMMENTID",vote.getCommentId());
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);

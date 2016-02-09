@@ -1,10 +1,12 @@
 
 package org.kaapi.app.services;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
+import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileLogin;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
@@ -25,11 +27,12 @@ public interface UserService {
 	
 	public User mobileLogin(FrmMobileLogin mFrm);
 	public User webLogin(FrmWebLogin wFrm);
-	public List<User> listUser(Pagination pagination);
+	public List<User> listUser(Pagination pagination);	
 	public int countUser();
 	public List<User> searchUserByUsername(String username,Pagination pagination);
 	public int countSearchUserByUsername(String username);
 	public User getUSerById(String id);
+	public User getUSerEmail(String email);
 	public boolean validateEmail(FrmValidateEmail email);
 	public boolean insertUser(FrmAddUser user);
 	public boolean mobileInsertUser(FrmMobileRegister user);
@@ -40,7 +43,10 @@ public interface UserService {
 	public boolean resetPassword(FrmResetPassword resetPassword);
 	public boolean changePassword(FrmChangePassword changePassword);
 	public boolean updateType(String userId, String typeId);
-
+    public boolean insertHistoryResetPassWord(String id,String email);
+    public FrmHistoryResetPassword getHistoryResetPassword(String id);
+    public boolean updateHistoryResetPassword(String id);
+	
 	
 }
 

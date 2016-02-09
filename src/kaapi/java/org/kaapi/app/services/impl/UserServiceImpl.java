@@ -1,6 +1,7 @@
 package org.kaapi.app.services.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
+import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileLogin;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
@@ -480,6 +482,77 @@ public class UserServiceImpl implements UserService {
 			if(ps.executeUpdate()>0)
 				return true;
 		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public User getUSerEmail(String email) {
+		//System.err.println(email+ "bb   ehllere");
+		String sql = "SELECT  userid , email from tbluser  where email = ?   ";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			//rs.next();
+			//System.err.println(rs.getInt("userid"));
+			if(rs.next()){
+				System.err.println(rs.getInt("userid") + "/ Crush " + rs.getString("email") );
+				User u = new User();
+				u.setUserId(Encryption.encode(rs.getString("userid")));
+				u.setEmail(email);
+				return u;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean insertHistoryResetPassWord(String id,String email) {
+		String sql =  " insert into tblhistoryresetpassword (id,email,resetdate) VALUES(?,?,now())";
+	try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+		ps.setString(1, id);
+		ps.setString(2, email);					
+		if(ps.executeUpdate()>0)
+			return true;
+	} catch (SQLException e) {
+		e.printStackTrace();
+		System.out.println(e.getMessage());
+	}
+	return false;
+	}
+
+	@Override
+	public FrmHistoryResetPassword getHistoryResetPassword(String id) {
+		String sql =  "select * from tblhistoryresetpassword where id = ? ";
+		
+	try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+		ps.setString(1, id);		
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			FrmHistoryResetPassword u = new FrmHistoryResetPassword();
+			u.setResetEmail(rs.getString("email"));
+			u.setResetStatus(rs.getBoolean("status"));
+			u.setResetDate(rs.getDate("resetdate"));
+			return u;
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+	return null;
+		
+	}
+
+	@Override
+	public boolean updateHistoryResetPassword(String id) {
+		String sql =  "update  tblhistoryresetpassword set status = false where id = ? ";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
+		    ps.setString(1, id);
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
