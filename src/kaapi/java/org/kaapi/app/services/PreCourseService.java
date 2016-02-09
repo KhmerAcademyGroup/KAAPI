@@ -18,5 +18,6 @@ public interface PreCourseService {
 	PreCourse getPreCourse(String id);
 	PreCourse getPreCourseStudent(String uid);
 	int countPreCourse();
-	
+	ArrayList<PreCourse> getListAllPreCourses();
+	boolean updatePreCourseWithPayment(PreCourse preCourse);
 }
