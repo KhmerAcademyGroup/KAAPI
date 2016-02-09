@@ -88,7 +88,7 @@ public class PlayListServiceImpl implements PlayListServics{
 					+ "INNER JOIN tblplaylist PL ON PD.PLAYLISTID = PL.playlistid "
 					+ "WHERE PD.PLAYLISTID=? "
 					+ "GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES, PD.INDEX , PL.playlistid "
-					+ "ORDER BY PD.INDEX  offset ? limit ? ";
+					+ "ORDER BY PD.INDEX desc   offset ? limit ? ";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistid)));
 			ps.setInt(2, begin);
