@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.PlaylistDetail;
@@ -782,7 +783,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			ResultSet rs = null;
-			String sql = " SELECT * FROM tblplaylist WHERE maincategory NOTNULL AND status=TRUE offset ? limit ?";
+			String sql = " SELECT * FROM tblplaylist order by playlistid desc offset ? limit ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, begin);
 			ps.setInt(2, pagin.getItem());
@@ -957,19 +958,25 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+	
+	
+	
 	@Override
-	public ArrayList<Playlist> searchPlayList(String kesearch) {
+	public ArrayList<Playlist> searchPlayList(String kesearch, Pagination pagin) {
 		try {
 			con = dataSource.getConnection();
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
+			
 			ResultSet rs = null;
-			String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, P.thumbnailurl, P.publicview, P.maincategory, P.bgimage, p.color, " 
-							+"P.status "  
-							+"FROM tblplaylist P "
-							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status=TRUE"; 
+			String sql = "SELECT * FROM tblplaylist P "
+							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) "
+							+"order by playlistid desc offset ? limit ?"; 
 								
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+kesearch+"%");
+			ps.setInt(2, begin);
+			ps.setInt(3, pagin.getItem());
 			rs = ps.executeQuery();
 			while(rs.next()){
 				
@@ -999,6 +1006,31 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+	
+	@Override
+	public int countSearchPlayList(String kesearch) {
+		try {
+			con = dataSource.getConnection();
+			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST P WHERE LOWER(P.playlistname) LIKE LOWER(?)";
+			PreparedStatement ps=con.prepareStatement(sql);
+			ps.setString(1, "%"+kesearch+"%");
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return 0;
+	}
+	
+	
 	@Override
 	public ArrayList<Video> listVideoInPlaylist(String playlistid) {
 		try {
@@ -1102,7 +1134,10 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "select * from tblplaylist P where P.userid = ?   order by playlistid desc offset ? limit ?";
+			String sql="";
+	
+				 sql = "select * from tblplaylist P where P.userid = ?   order by playlistid desc offset ? limit ?";
+		
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ps.setInt(2, begin);
@@ -1115,6 +1150,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setDescription(rs.getString("description"));
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				
 				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
 				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setPublicView(rs.getBoolean("publicview"));
@@ -1191,6 +1227,24 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+
+	@Override
+	public boolean togglePlaylist(String playlistId) {
+		String sql = "UPDATE tblplaylist SET status=not status WHERE playlistid=?";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, Integer.parseInt(Encryption.decode(playlistId)));
+			if(ps.executeUpdate()>0){
+				return true;
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1){
+			return false;
+		}
+		return false;
+	}
+
+	
 	
 	
 
