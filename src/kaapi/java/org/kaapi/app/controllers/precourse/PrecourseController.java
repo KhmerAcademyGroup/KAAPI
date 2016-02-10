@@ -162,5 +162,42 @@ public class PrecourseController {
 		
 		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
 	}
+	
+	@RequestMapping(value="/listall", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listAllPreCourse(){
+		
+		ArrayList<PreCourse> preCourses = service.getListAllPreCourses();
+		Map<String,Object> map = new HashMap<String, Object>();
+			
+		if(preCourses.isEmpty()){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "RECORD NOT FOUND");
+			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+		}
+		
+		map.put("STATUS", true);
+		map.put("MESSAGE", "RECORD FOUND");		
+		map.put("RES_DATA", preCourses);
+		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value="/updateprecoursewithpayment", method= RequestMethod.PUT, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> updatePreCourseWithPayment(@RequestBody PreCourse preCourse){
+				
+		boolean status = service.updatePreCourseWithPayment(preCourse);
+		Map<String,Object> map = new HashMap<String, Object>();
+			
+		if(!status){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR UPDATE PRECAUSE");
+			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+		}
+		
+		map.put("STATUS", true);
+		map.put("MESSAGE", "RECORD HAS BEEN UPDATED");		
+		
+		return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+	}
 
 }

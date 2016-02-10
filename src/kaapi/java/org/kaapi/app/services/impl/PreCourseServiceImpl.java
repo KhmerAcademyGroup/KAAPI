@@ -28,7 +28,7 @@ public class PreCourseServiceImpl implements PreCourseService {
 	@Override
 	public int countPreCourse(){
 		
-		String sql = "SELECT count(pr.pc_id) from pre_course pr";
+		String sql = "SELECT count(pc_id) from precourse.pre_course";
 		try(Connection cnn = ds.getConnection(); Statement stm = cnn.createStatement();){
 			
 			ResultSet rs = stm.executeQuery(sql);
@@ -123,7 +123,7 @@ public class PreCourseServiceImpl implements PreCourseService {
 	public ArrayList<PreCourse> getAllPreCourses(Pagination pg) {
 		
 		ArrayList<PreCourse> preCourses = new ArrayList<PreCourse>();
-		final String SQL = "SELECT * FROM precourse.pre_course; offset ? limit ?";
+		final String SQL = "SELECT * FROM precourse.pre_course offset ? limit ?";
 		
 		try(Connection cnn = ds.getConnection(); PreparedStatement pstmt = cnn.prepareStatement(SQL);) {
 			
@@ -245,5 +245,72 @@ public class PreCourseServiceImpl implements PreCourseService {
 			e.printStackTrace();
 		}
 		return preCourse;
+	}
+
+	@Override
+	public ArrayList<PreCourse> getListAllPreCourses() {
+
+		ArrayList<PreCourse> preCourses = new ArrayList<PreCourse>();
+		final String SQL = "SELECT * FROM precourse.pre_course order by pc_payment";
+		
+		try(Connection cnn = ds.getConnection(); PreparedStatement pstmt = cnn.prepareStatement(SQL);) {
+			
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()){
+				PreCourse preCourse = new PreCourse();
+				preCourse.setId(Encryption.encode(rs.getInt(1)+""));
+				preCourse.setDateCreate(rs.getDate(2));
+				preCourse.setUserId(Encryption.encode(rs.getInt(3)+""));
+				preCourse.setUsername(rs.getString(4));
+				preCourse.setEmail(rs.getString(5));
+				preCourse.setTelephone(rs.getString(6));
+				preCourse.setUniversity(rs.getString(7));
+				preCourse.setDob(rs.getDate(8));
+				preCourse.setPob(rs.getString(9));
+				preCourse.setUserImage(rs.getString(10));
+				preCourse.setJavaCourse(rs.getString(11));
+				preCourse.setWebCourse(rs.getString(12));
+				preCourse.setPayment(rs.getInt(13));
+				preCourse.setComment(rs.getString(14));
+				preCourse.setGender(rs.getString(15));
+				preCourse.setYear(rs.getString(16));
+				preCourses.add(preCourse);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return preCourses;
+	}
+
+	@Override
+	public boolean updatePreCourseWithPayment(PreCourse preCourse) {
+		final String SQL = "UPDATE precourse.pre_course SET pc_dob = ?, pc_email = ?, "
+				+ "pc_java = ?, pc_pob = ?, pc_web = ?, pc_tel = ?, "
+				+ "pc_university = ?, pc_userimage = ?, pc_username = ?, pc_comment = ?, "
+				+ "pc_gender = ?, pc_year = ?, pc_payment = ? WHERE pc_id = ?;";
+		
+		try(Connection cnn = ds.getConnection(); PreparedStatement pstmt = cnn.prepareStatement(SQL);) {
+			
+			pstmt.setDate(1, (Date) preCourse.getDob());
+			pstmt.setString(2, preCourse.getEmail());
+			pstmt.setString(3, preCourse.getJavaCourse());
+			
+			pstmt.setString(4, preCourse.getPob());
+			pstmt.setString(5, preCourse.getWebCourse());
+			pstmt.setString(6, preCourse.getTelephone());
+			pstmt.setString(7, preCourse.getUniversity());
+			pstmt.setString(8, preCourse.getUserImage());
+			pstmt.setString(9, preCourse.getUsername());
+			pstmt.setString(10, preCourse.getComment());
+			pstmt.setString(11, preCourse.getGender());
+			pstmt.setString(12, preCourse.getYear());
+			pstmt.setInt(13, preCourse.getPayment());
+			pstmt.setInt(14, Integer.parseInt(Encryption.decode(preCourse.getId())));
+			if(pstmt.executeUpdate() > 0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

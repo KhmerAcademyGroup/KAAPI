@@ -74,7 +74,7 @@ public class KAAPISecurityWebConfiguration extends WebSecurityConfigurerAdapter{
 			.authorizeRequests()
 			.antMatchers("/wsapi/**").hasAnyRole("USER","ADMIN")
 			.antMatchers("/user/**").hasAnyRole("USER" , "ADMIN")
-			.antMatchers("/admin/**").hasRole("ADMIN")
+			.antMatchers("/admin/**", "/api-docs").hasRole("ADMIN")
 			.antMatchers("/participants").permitAll();
 		http
 			.formLogin()

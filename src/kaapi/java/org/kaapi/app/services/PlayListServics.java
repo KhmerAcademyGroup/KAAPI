@@ -16,7 +16,8 @@ public interface PlayListServics {
 	public ArrayList<Playlist> UserPlayList(String userid, Pagination pagin);
 	public ArrayList<Playlist> listUserPlayList(String userid);
 	public ArrayList<Playlist> listPlayListByMainCategory(String categoryid);
-	public ArrayList<Playlist> searchPlayList(String kesearch);
+	public ArrayList<Playlist> searchPlayList(String kesearch, Pagination pagin);
+	public int countSearchPlayList(String kesearch);
 	public int countVideoInPlayList(int playlisid);
 	public ArrayList<Playlist> litsMainElearning();
 	public ArrayList<Playlist> listMainPlaylist();
@@ -46,4 +47,5 @@ public interface PlayListServics {
 	public boolean updateThumbnail(String vid , String pid);
 	public boolean updateThumbnailToDefault(String pid);
 	public int countPlayList();
+	public boolean togglePlaylist(String playlistId);
 }

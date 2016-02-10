@@ -378,7 +378,7 @@ public class UserController {
 	}
 	
 	
-	@RequestMapping(value="/email",method = RequestMethod.GET)
+	@RequestMapping(value="/sendmail",method = RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> getUserByEmail(
 			@RequestParam("email") String email
 			){		
