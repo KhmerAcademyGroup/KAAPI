@@ -13,7 +13,9 @@ public interface CommentService {
 	public List<Comment> listComment(String commentText, Pagination page);
 	public List<Comment> listSuperComment(Pagination page);
 	public boolean insert(Comment comment);
+	public int insertReturnId(Comment comment);
 	public boolean reply(Comment comment);
+	public int replyReturnId(Comment comment);
 	public boolean update(Comment comment);
 	public boolean delete(String commentId);
 	public int countComment();

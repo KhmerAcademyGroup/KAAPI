@@ -7,6 +7,7 @@ import java.util.Map;
 import org.kaapi.app.entities.Comment;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.services.CommentService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,6 +96,26 @@ public class CommentController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 	
+	@RequestMapping(method = RequestMethod.POST, value = "/comment/returnid", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> insertCommentReturnId(@RequestBody Comment comment) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			int commentid = commentService.insertReturnId(comment);
+			if (commentid>0) {
+				map.put("STATUS", true);
+				map.put("COMMENTID", Encryption.encode(commentid+""));
+				map.put("MESSAGE", "RECORD HAS BEEN INSERTED");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN INSERTED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
 	//Reply Comment
 	@RequestMapping(method = RequestMethod.POST, value = "/comment/reply", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> replyComment(@RequestBody Comment comment) {
@@ -113,6 +134,27 @@ public class CommentController {
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/comment/reply/returnid", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> replyCommentReturnId(@RequestBody Comment comment) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			int commentid = commentService.replyReturnId(comment);
+			if (commentid>0) {
+				map.put("STATUS", true);
+				map.put("COMMENTID", Encryption.encode(commentid+""));
+				map.put("MESSAGE", "RECORD HAS BEEN REPLYED");
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN REPLYED");
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
 	
 	//Update Comment
 	@RequestMapping(method = RequestMethod.PUT, value = "/comment", headers = "Accept=application/json")

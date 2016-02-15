@@ -478,4 +478,47 @@ public class CommentServiceImpl implements CommentService {
 		return 0;
 	}
 
+	@Override
+	public int insertReturnId(Comment comment) {
+		String sql = "INSERT INTO TBLCOMMENT VALUES(nextval('seq_comment'), NOW(), ?, ?, ?,0)";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
+			ps.setString(1, comment.getCommentText());
+			ps.setInt(2, Integer.parseInt(Encryption.decode(comment.getVideoId())));
+			ps.setInt(3, Integer.parseInt(Encryption.decode(comment.getUserId())));
+			if(ps.executeUpdate()>0){
+				ResultSet rs = ps.getGeneratedKeys();
+		    	rs.next();
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1) {
+			System.out.println(e1.getMessage());
+			return 0;
+		}
+		return 0;
+	}
+
+	@Override
+	public int replyReturnId(Comment comment) {
+		String sql = "INSERT INTO TBLCOMMENT VALUES(nextval('seq_comment'), NOW(), ?, ?, ?,?)";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
+			ps.setString(1, comment.getCommentText());
+			ps.setInt(2, Integer.parseInt(Encryption.decode(comment.getVideoId())));
+			ps.setInt(3, Integer.parseInt(Encryption.decode(comment.getUserId())));
+			ps.setInt(4, Integer.parseInt(Encryption.decode(comment.getReplyId())));
+			if(ps.executeUpdate()>0){
+				ResultSet rs = ps.getGeneratedKeys();
+		    	rs.next();
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e1) {
+			System.out.println(e1.getMessage());
+			return 0;
+		}
+		return 0;
+	}
+
 }
