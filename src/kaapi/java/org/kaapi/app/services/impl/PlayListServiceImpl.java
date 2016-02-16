@@ -987,7 +987,9 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setPublicView(rs.getBoolean("publicview"));
-				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				if(rs.getString("maincategory")!=null){
+					playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));					
+				}
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
