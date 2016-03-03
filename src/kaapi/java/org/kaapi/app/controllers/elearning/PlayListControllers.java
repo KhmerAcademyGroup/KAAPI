@@ -614,6 +614,45 @@ public class PlayListControllers {
 		
 	}
 	
-	
+	@RequestMapping(value="/filterplaylist/u/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlaylistByUseridPlaylistNameMainCategoryName(
+												@RequestParam(value = "playlistname" ,required = false, defaultValue = "") String playlistname,
+												@RequestParam(value = "maincategoryname",required = false, defaultValue = "") String maincategoryname,
+												@PathVariable("userid") String userid,
+												@RequestParam(value ="page", required = false, defaultValue = "1") int page,
+												@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			System.out.println(userid);
+			
+			Pagination pagin = new Pagination();
+			Playlist dto = new Playlist();
+			dto.setUserId(userid);
+			dto.setMaincategoryname(maincategoryname);
+			dto.setPlaylistName(playlistname);
+			
+			pagin.setItem(item);
+			pagin.setPage(page);
+			pagin.setTotalCount(playlistservice.countPlaylistByUseridPlaylistNameMainCategoryName(dto));
+			pagin.setTotalPages(pagin.totalPages());
+			
+			ArrayList<Playlist>  arr= playlistservice.listPlaylistByUseridPlaylistNameMainCategoryName(dto, pagin);
+			if(!arr.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", arr);
+				map.put("PAGINATION", pagin);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
 			
 }

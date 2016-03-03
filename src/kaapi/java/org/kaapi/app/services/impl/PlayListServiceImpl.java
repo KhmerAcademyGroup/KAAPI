@@ -1289,5 +1289,73 @@ public class PlayListServiceImpl implements PlayListServics{
 		return null;
 	}
 	
+	@Override
+	public ArrayList<Playlist> listPlaylistByUseridPlaylistNameMainCategoryName(Playlist p, Pagination pagin) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql =  " SELECT P.*, U.username, COUNT(DISTINCT PD.videoid) countvideos , M.maincategoryname"
+					+ "	FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid"
+					+ "	INNER JOIN TBLMAINCATEGORY M ON P.maincategory = M.maincategoryid"
+					+ " LEFT JOIN TBLPLAYlISTDETAIL PD ON P.playlistid=PD.playlistid"
+					+ " WHERE  LOWER(P.playlistname) LIKE   LOWER(?)  AND  LOWER(m.maincategoryname) LIKE  LOWER(?) and U.Userid = ? GROUP BY P.playlistid, U.username,m.maincategoryname order by  P.playlistid"
+					+ " desc  offset ? limit ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, "%"+p.getPlaylistName()+"%");
+			ps.setString(2, "%"+p.getMaincategoryname()+"%");
+			ps.setInt(3, Integer.parseInt(Encryption.decode(p.getUserId())));
+			ps.setInt(4, begin);
+			ps.setInt(5, pagin.getItem());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setCountVideos(rs.getInt("countvideos"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setUsername(rs.getString("username"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 
+	
+	@Override
+	public int countPlaylistByUseridPlaylistNameMainCategoryName(Playlist p) {
+		System.out.println("123 "+ p.getUserId() + " PN " + p.getPlaylistName() + " MN "+ p.getMaincategoryname() );
+		String sql = "SELECT COUNT(P.playlistid)"
+				+ " FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid"
+				+ " INNER JOIN TBLMAINCATEGORY M ON P.maincategory = M.maincategoryid"
+				+ " LEFT JOIN TBLPLAYlISTDETAIL PD ON P.playlistid=PD.playlistid"
+				+ " WHERE  LOWER(P.playlistname) LIKE   LOWER(?)  AND  LOWER(m.maincategoryname) LIKE  LOWER(?) and U.Userid = ? ";
+		try (Connection cnn = dataSource.getConnection(); 
+			PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setString(1, "%"+p.getPlaylistName()+"%");
+			ps.setString(2, "%"+p.getMaincategoryname()+"%");
+			ps.setInt(3, Integer.parseInt(Encryption.decode(p.getUserId())));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) 
+				return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+		
+	}
 }

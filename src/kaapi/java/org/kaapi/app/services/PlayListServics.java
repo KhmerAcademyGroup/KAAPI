@@ -49,4 +49,7 @@ public interface PlayListServics {
 	public int countPlayList();
 	public boolean togglePlaylist(String playlistId);
 	public List<Playlist> listRecentPlaylists(String mainCategoryId);
+	
+	public ArrayList<Playlist> listPlaylistByUseridPlaylistNameMainCategoryName(Playlist playlist , Pagination pagin);
+	public int countPlaylistByUseridPlaylistNameMainCategoryName(Playlist playlist);
 }
