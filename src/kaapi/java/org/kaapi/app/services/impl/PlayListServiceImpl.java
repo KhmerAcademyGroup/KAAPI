@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -1247,7 +1248,46 @@ public class PlayListServiceImpl implements PlayListServics{
 	}
 
 	
-	
+	@Override
+	public List<Playlist> listRecentPlaylists(String mainCategoryId) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, B.email, B.username, A.bgimage, A.color, A.thumbnailurl, A.status "
+					   + "FROM tblplaylist A "
+					   + "INNER JOIN tbluser B ON A.userid = B.userid "
+					   + "WHERE maincategory<>0 AND A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
+					   + "ORDER BY 1 DESC "
+					   + "LIMIT 12";
+			PreparedStatement ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUsername(rs.getString("username"));
+				playlist.setUserId(rs.getString("userid"));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	
 
 }

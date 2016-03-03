@@ -1,7 +1,7 @@
 package org.kaapi.app.services;
 
-import java.sql.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
@@ -48,4 +48,5 @@ public interface PlayListServics {
 	public boolean updateThumbnailToDefault(String pid);
 	public int countPlayList();
 	public boolean togglePlaylist(String playlistId);
+	public List<Playlist> listRecentPlaylists(String mainCategoryId);
 }
