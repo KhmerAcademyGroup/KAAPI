@@ -25,11 +25,19 @@ import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.services.UserService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@PropertySource(
+		value={"classpath:applications.properties"}
+)
 public class UserServiceImpl implements UserService {
 
+	@Autowired
+	private Environment environment;
+	
 	@Autowired
 	DataSource dataSource;
 
@@ -339,7 +347,7 @@ public class UserServiceImpl implements UserService {
 		String sql =  " INSERT INTO TBLUSER"
 					+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus)"
 					+ " VALUES"
-					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'user/avatar.jpg',2,?,?,'1');";
+					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'"+environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg',2,?,?,'1');";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
