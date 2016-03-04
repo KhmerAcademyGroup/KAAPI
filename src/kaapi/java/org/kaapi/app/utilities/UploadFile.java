@@ -5,7 +5,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
+
 
 public class UploadFile {
 
@@ -66,6 +70,7 @@ public class UploadFile {
 	}
 */
 	public String UploadFiles(MultipartFile file, String savePath,String url,String fileName) {
+		
 		String filename = file.getOriginalFilename();
 		String pathAndFileName="/resources/upload/file/"+url;
 		if (!file.isEmpty()) {

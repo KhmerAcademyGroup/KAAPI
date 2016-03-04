@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.kaapi.app.utilities.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("api/uploadfile")
+@PropertySource(
+		value={"classpath:applications.properties"}
+)
 public class UploadFiles {
+	
+	@Autowired
+	private Environment environment;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/upload")
 	public ResponseEntity<Map<String, Object>> uploadfile(
@@ -37,7 +45,7 @@ public class UploadFiles {
 				String CategoryImage = fileName.UploadFiles(file, savePath,url,ramdom_file_name);
 				map.put("STATUS", true);
 				map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
-				map.put("IMG", CategoryImage);
+				map.put("IMG", environment.getProperty("KA.path")+CategoryImage);
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
@@ -65,7 +73,7 @@ public class UploadFiles {
 				String CategoryImage = fileName.UploadFiles(file, savePath,url,ramdom_file_name);
 				map.put("STATUS", true);
 				map.put("MESSAGE", "IMAGE HAS BEEN INSERTED");
-				map.put("IMG", CategoryImage);
+				map.put("IMG", environment.getProperty("KA.path")+CategoryImage);
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
@@ -93,7 +101,7 @@ public class UploadFiles {
 				String CategoryImage = fileName.UploadFiles(file, savePath,url,filename);
 				map.put("STATUS", true);
 				map.put("MESSAGE", "IMAGE HAS BEEN UPDATED");
-				map.put("IMG", CategoryImage);
+				map.put("IMG", environment.getProperty("KA.path")+CategoryImage);
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
