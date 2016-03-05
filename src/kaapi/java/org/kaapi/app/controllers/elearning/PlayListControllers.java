@@ -228,8 +228,8 @@ public class PlayListControllers {
 	 * searchPlaylistMobile
 	 * we want to search only status tru for mobile application
 	 */
-	@RequestMapping(value="/searchplaylistmobile/{searchkey}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> searchPlaylistMobile(@PathVariable("searchkey") String key, 
+	@RequestMapping(value="/searchcourse/{searchkey}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> searchCourse(@PathVariable("searchkey") String key, 
 					@RequestParam(value ="page", required = false, defaultValue = "1") int page,
 					@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
 		Map<String, Object> map= new HashMap<String, Object>();
