@@ -30,7 +30,6 @@ public class PlayListControllers {
 	PlayListServics playlistservice;
 	
 	
-	
 	//Toggle playlist: 
 		@RequestMapping(method = RequestMethod.PUT, value = "/togglePlaylist/{pid}", headers = "Accept=application/json")
 		public ResponseEntity<Map<String, Object>> togglePlaylist(@PathVariable("pid") String pid) {
@@ -208,6 +207,41 @@ public class PlayListControllers {
 			
 			
 			ArrayList<Playlist> dto= playlistservice.searchPlayList(key, pagin);
+			if(!dto.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", dto);
+				map.put("PAGINATION", pagin);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	/*
+	 * searchPlaylistMobile
+	 * we want to search only status tru for mobile application
+	 */
+	@RequestMapping(value="/searchplaylistmobile/{searchkey}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> searchPlaylistMobile(@PathVariable("searchkey") String key, 
+					@RequestParam(value ="page", required = false, defaultValue = "1") int page,
+					@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			Pagination pagin = new Pagination();
+			pagin.setItem(item);
+			pagin.setPage(page);
+			pagin.setTotalCount(playlistservice.countSearchPlayListMobile(key));
+			pagin.setTotalPages(pagin.totalPages());
+			
+			
+			ArrayList<Playlist> dto= playlistservice.searchPlayListMobile(key, pagin);
 			if(!dto.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
