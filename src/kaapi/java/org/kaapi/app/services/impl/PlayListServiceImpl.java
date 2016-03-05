@@ -607,7 +607,7 @@ public class PlayListServiceImpl implements PlayListServics{
 	public int countUserPlaylist(String userid) {
 		try {
 			con = dataSource.getConnection();
-			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where  userid = ? and status=TRUE";
+			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where  userid = ? and status=False";
 			PreparedStatement ps=con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			ResultSet rs = ps.executeQuery();
@@ -1139,7 +1139,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ResultSet rs = null;
 			String sql="";
 	
-				 sql = "select * from tblplaylist P where P.userid = ?   order by playlistid desc offset ? limit ?";
+				 sql = "select * from tblplaylist P where P.userid = ? AND P.status = false   order by playlistid desc offset ? limit ?";
 		
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
@@ -1357,5 +1357,76 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return 0;
 		
+	}
+
+	@Override
+	public int countSearchPlayListMobile(String kesearch) {
+		try {
+			con = dataSource.getConnection();
+			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST P WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status = TRUE";
+			PreparedStatement ps=con.prepareStatement(sql);
+			ps.setString(1, "%"+kesearch+"%");
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Playlist> searchPlayListMobile(String kesearch, Pagination pagin) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
+			
+			ResultSet rs = null;
+			String sql = "SELECT * FROM tblplaylist P "
+							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status = TRUE "
+							+"order by playlistid desc offset ? limit ?"; 
+								
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, "%"+kesearch+"%");
+			ps.setInt(2, begin);
+			ps.setInt(3, pagin.getItem());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				
+				Playlist playlist = new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(Encryption.encode(rs.getString("userid")));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setPublicView(rs.getBoolean("publicview"));
+				if(rs.getString("maincategory")!=null){
+					playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));					
+				}
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }
