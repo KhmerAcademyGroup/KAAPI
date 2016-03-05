@@ -12,6 +12,8 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 
 public interface PlayListServics {
+	public int countSearchPlayListMobile(String kesearch);
+	public ArrayList<Playlist> searchPlayListMobile(String kesearch, Pagination pagin);
 	public ArrayList<Playlist> UserPlayList(String userid);
 	public ArrayList<Playlist> UserPlayList(String userid, Pagination pagin);
 	public ArrayList<Playlist> listUserPlayList(String userid);
