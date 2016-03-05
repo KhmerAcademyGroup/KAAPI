@@ -13,11 +13,11 @@ import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
-import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
 import org.kaapi.app.forms.FrmValidateEmail;
+import org.kaapi.app.forms.accountSetting;
 import org.kaapi.app.services.DepartmentService;
 import org.kaapi.app.services.UniversityService;
 import org.kaapi.app.services.UserService;
@@ -380,18 +380,25 @@ public class UserController {
 	
 	@RequestMapping(value="/sendmail",method = RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> getUserByEmail(
-			@RequestParam("email") String email
+			@RequestParam("email") String email,
+			@RequestParam("type") String type			
 			){		
 		Map<String , Object> map = new HashMap<String , Object> ();				
 		try{
+			System.out.println("type: "+type);
 			User u = userService.getUSerEmail(email);
 			if(u != null){
 					SecureRandom random = new SecureRandom();
 				    byte bytes[] = new byte[20];
 				    random.nextBytes(bytes);
 				    String token = bytes.toString();	
-				    userService.insertHistoryResetPassWord(token,u.getEmail());
-					new SendMailTLS().sendMaile(email, "http://localhost:8080/KAWEBCLIENT/reset?code="+token);
+				    userService.insertHistoryResetPassWord(token,u.getEmail(),type);
+				    if(type.equals("reset")){
+				    	new SendMailTLS().sendMaile(email,type, "http://localhost:8080/KAWEBCLIENT/reset?code="+token);
+				    }
+				    else{
+				    	new SendMailTLS().sendMaile(email,type, "http://localhost:8080/KAWEBCLIENT/confirmemail?code="+token);
+				    }
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("STATUS", true);
 				map.put("RES_DATA",u);
@@ -412,12 +419,12 @@ public class UserController {
 	public ResponseEntity<Map<String , Object>> sarinResetpassword(@RequestParam("code") String code ,@RequestParam("password") String password){
 		Map<String , Object> map = new HashMap<String , Object>();		
 		try{
-			FrmHistoryResetPassword resetPass=userService.getHistoryResetPassword(code);
+			accountSetting setting=userService.getHistoryAccountSetting(code);
 			
-			if(resetPass.isResetStatus()==true){
+			if(setting.isStatus()==true){
 
 				FrmResetPassword resetPassword = new FrmResetPassword();
-				resetPassword.setEmail(resetPass.getResetEmail());
+				resetPassword.setEmail(setting.getEmail());
 				resetPassword.setNewPassword(password);
 				userService.updateHistoryResetPassword(code);
 				if(userService.resetPassword(resetPassword)){
@@ -437,4 +444,31 @@ public class UserController {
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}		
+	
+	@RequestMapping(value="/confirm" ,method = RequestMethod.POST , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> confirmEmail(@RequestParam("code") String code){
+		Map<String , Object> map = new HashMap<String , Object>();		
+		try{
+			accountSetting resetPass=userService.getHistoryAccountSetting(code);
+			
+			if(resetPass.isStatus()==true){
+				userService.updateHistoryResetPassword(code);
+				if(userService.confirmEmail(resetPass.getEmail())){
+					map.put("MESSAGE", "Confirm Success !");
+					map.put("STATUS", true);
+				}else{
+					map.put("MESSAGE", "Confirm unsuccess !");
+					map.put("STATUS", false);
+				}
+			}else{
+				map.put("MESSAGE", "Confirm unsuccess !");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}		
+	
 }

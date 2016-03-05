@@ -11,7 +11,7 @@ import javax.mail.internet.MimeMessage;
 
 public class SendMailTLS {
 
-	public void sendMaile(String address,String msg){
+	public void sendMaile(String address,String type,String msg){
 
 		final String username = "khmer.academy999@gmail.com";
 		final String password = "abc123+-*";
@@ -34,9 +34,14 @@ public class SendMailTLS {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("khmer.academy999@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
-				/*InternetAddress.parse("sarin9999@outlook.com"));*/
+	
 			InternetAddress.parse(address));
-			message.setSubject(" Reset your KhmerAcademy password");
+			if(type.equals("reset")){
+					message.setSubject(" Reset your KhmerAcademy password");
+			}
+			else{
+				message.setSubject("Please Confirm your email ! ");
+			}
 			message.setText(msg);
 
 			Transport.send(message);

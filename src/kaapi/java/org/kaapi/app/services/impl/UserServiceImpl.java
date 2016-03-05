@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
-import org.kaapi.app.forms.FrmHistoryResetPassword;
 import org.kaapi.app.forms.FrmMobileLogin;
 import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
@@ -22,6 +21,7 @@ import org.kaapi.app.forms.FrmChangePassword;
 import org.kaapi.app.forms.FrmUpdateUser;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.forms.FrmWebLogin;
+import org.kaapi.app.forms.accountSetting;
 import org.kaapi.app.services.UserService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -347,7 +347,7 @@ public class UserServiceImpl implements UserService {
 		String sql =  " INSERT INTO TBLUSER"
 					+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus)"
 					+ " VALUES"
-					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'"+environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg',2,?,?,'1');";
+					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'"+environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg',2,?,?,'0');";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
@@ -518,11 +518,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean insertHistoryResetPassWord(String id,String email) {
-		String sql =  " insert into tblhistoryresetpassword (id,email,resetdate) VALUES(?,?,now())";
+	public boolean insertHistoryResetPassWord(String id,String email,String type) {
+		String sql =  " insert into tblaccountsetting (id,email,datetime,type) VALUES(?,?,now(),?)";
 	try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 		ps.setString(1, id);
-		ps.setString(2, email);					
+		ps.setString(2, email);
+		ps.setString(3, type);		
 		if(ps.executeUpdate()>0)
 			return true;
 	} catch (SQLException e) {
@@ -533,17 +534,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public FrmHistoryResetPassword getHistoryResetPassword(String id) {
-		String sql =  "select * from tblhistoryresetpassword where id = ? ";
+	public accountSetting getHistoryAccountSetting(String id) {
+		String sql =  "select * from tblaccountsetting where id = ? ";
 		
 	try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 		ps.setString(1, id);		
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
-			FrmHistoryResetPassword u = new FrmHistoryResetPassword();
-			u.setResetEmail(rs.getString("email"));
-			u.setResetStatus(rs.getBoolean("status"));
-			u.setResetDate(rs.getDate("resetdate"));
+			accountSetting u = new accountSetting();
+			u.setEmail(rs.getString("email"));
+			u.setStatus(rs.getBoolean("status"));
+			u.setDatetime(rs.getDate("datetime"));
+			u.setType(rs.getString("type"));
 			return u;
 		}
 	} catch (SQLException e) {
@@ -555,7 +557,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean updateHistoryResetPassword(String id) {
-		String sql =  "update  tblhistoryresetpassword set status = false where id = ? ";
+		String sql =  "update  tblaccountsetting set status = false where id = ? ";
 		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)) {
 		    ps.setString(1, id);
 			if(ps.executeUpdate()>0)
@@ -564,5 +566,20 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public boolean confirmEmail(String email) {
+		String sql="UPDATE TBLUSER SET userstatus='1' WHERE email=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
+			ps.setString(1, email);
+			if(ps.executeUpdate()>0){
+				return true;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+		
 	}	
 }
