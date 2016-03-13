@@ -394,10 +394,11 @@ public class UserController {
 				    String token = bytes.toString();	
 				    userService.insertHistoryResetPassWord(token,u.getEmail(),type);
 				    if(type.equals("reset")){
-				    	new SendMailTLS().sendMaile(email,type, "http://localhost:8080/KAWEBCLIENT/reset?code="+token);
+				    	new SendMailTLS().sendMaile(email,type, "<h4>We have just received a password reset request for "+u.getEmail()+" </h4> <h4> Please click <a href='http://localhost:8080/KAWEBCLIENT/reset?code="+token+"'>here</a> to reset your password.  </h4> "
+				    			+ "<h4>If the above link does not work for you, please copy and paste the following into your browser address bar:</h4> http://localhost:8080/KAWEBCLIENT/reset?code="+token);
 				    }
 				    else{
-				    	new SendMailTLS().sendMaile(email,type, "http://localhost:8080/KAWEBCLIENT/confirmemail?code="+token);
+				    	new SendMailTLS().sendMaile(email,type, "<h1>Welcome to Khmer Academy</h1> <h4>Please click this link above to verify your account and finish your registration</h4> <br/> http://localhost:8080/KAWEBCLIENT/confirmemail?code="+token);
 				    }
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("STATUS", true);

@@ -1256,6 +1256,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			Playlist playlist = null;
 			ResultSet rs = null;
 			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, B.email, B.username, A.bgimage, A.color, A.thumbnailurl, A.status "
+					   + ",(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) " 
 					   + "FROM tblplaylist A "
 					   + "INNER JOIN tbluser B ON A.userid = B.userid "
 					   + "WHERE maincategory<>0 AND A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
@@ -1274,6 +1275,8 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setColor(rs.getString("color"));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -1390,9 +1393,12 @@ public class PlayListServiceImpl implements PlayListServics{
 			int begin =(pagin.getItem()*pagin.getPage())-pagin.getItem();
 			
 			ResultSet rs = null;
-			String sql = "SELECT * FROM tblplaylist P "
-							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status = TRUE "
-							+"order by playlistid desc offset ? limit ?"; 
+			String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, U.email, U.username, P.bgimage, P.color, P.thumbnailurl, P.status"
+					+ " ,(SELECT videoid from tblplaylistdetail where playlistid=P.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=P.playlistid) )"
+					+ " FROM tblplaylist P"
+					+ " INNER JOIN tbluser u ON u.userid = P.userid"
+					+ " WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status = TRUE"
+					+ " order by playlistid desc offset ? limit ?"; 
 								
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, "%"+kesearch+"%");
@@ -1407,14 +1413,12 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setDescription(rs.getString("description"));
 				playlist.setUserId(Encryption.encode(rs.getString("userid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
-				playlist.setPublicView(rs.getBoolean("publicview"));
-				if(rs.getString("maincategory")!=null){
-					playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));					
-				}
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlist.setUsername(rs.getString("username"));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
 				playlists.add(playlist);
 			}
 			return playlists;

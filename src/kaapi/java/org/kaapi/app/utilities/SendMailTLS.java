@@ -37,12 +37,15 @@ public class SendMailTLS {
 	
 			InternetAddress.parse(address));
 			if(type.equals("reset")){
-					message.setSubject(" Reset your KhmerAcademy password");
+					message.setSubject("Khmer Academy - Reset Password");
 			}
 			else{
-				message.setSubject("Please Confirm your email ! ");
+				message.setSubject("Khmer Academy - Email Verification");
 			}
-			message.setText(msg);
+			
+			message.setContent(msg, "text/html; charset=utf-8");
+			
+//			message.setText(msg);
 
 			Transport.send(message);
 

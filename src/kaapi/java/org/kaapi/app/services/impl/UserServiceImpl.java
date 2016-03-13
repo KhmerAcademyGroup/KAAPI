@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User webLogin(FrmWebLogin wFrm) {
-		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , uni.universityname, u.departmentid ,dep.departmentname , u.point , co.coverphoto as coverphotourl, u.userstatus,"
+		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , uni.universityname, u.departmentid ,dep.departmentname , u.point , co.coverphoto as coverphotourl, u.userstatus,u.isconfirmed, "
 					+ " ut.usertypeid, ut.usertypename  ,"
 					+ " COUNT(DISTINCT V.VIDEOID) COUNTVIDEOS, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS , "
 					+ " COUNT(DISTINCT pl.PLAYLISTID) COUNTPLAYLIST"
@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
 				u.setCountPlaylists(rs.getInt("countplaylist"));
 				u.setCountVideos(rs.getInt("countvideos"));
 				u.setUserStatus(rs.getBoolean("userstatus"));
+				u.setConfirmed(rs.getBoolean("isconfirmed"));
 				return u;
 			}
 		} catch (SQLException e) {
@@ -345,9 +346,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean insertUser(FrmAddUser user) {
 		String sql =  " INSERT INTO TBLUSER"
-					+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus)"
+					+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed)"
 					+ " VALUES"
-					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'"+environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg',2,?,?,'0');";
+					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'"+environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg',2,?,?,'1',false);";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
@@ -461,9 +462,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean mobileInsertUser(FrmMobileRegister user) {
 		String sql =  " INSERT INTO TBLUSER"
-				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus)"
+				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed)"
 				+ " VALUES"
-				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'user/avatar.jpg',2,?,?,'1');";
+				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'user/avatar.jpg',2,?,?,'1',true);";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
@@ -570,7 +571,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean confirmEmail(String email) {
-		String sql="UPDATE TBLUSER SET userstatus='1' WHERE email=?";
+		String sql="UPDATE TBLUSER SET isconfirmed=true WHERE email=?";
 		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, email);
 			if(ps.executeUpdate()>0){

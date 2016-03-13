@@ -228,8 +228,8 @@ public class PlayListControllers {
 	 * searchPlaylistMobile
 	 * we want to search only status tru for mobile application
 	 */
-	@RequestMapping(value="/searchcourse/{searchkey}", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> searchCourse(@PathVariable("searchkey") String key, 
+	@RequestMapping(value="/searchcourse", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> searchCourse(@RequestParam("keyword") String key, 
 					@RequestParam(value ="page", required = false, defaultValue = "1") int page,
 					@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
 		Map<String, Object> map= new HashMap<String, Object>();
@@ -634,7 +634,7 @@ public class PlayListControllers {
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", playlists);
 				map.put("HIGH_SCHOOL", playlistservice.listRecentPlaylists("25"));
-				map.put("COMPUTER_SCIENCE" , playlistservice.listRecentPlaylists("25"));
+				map.put("COMPUTER_SCIENCE" , playlistservice.listRecentPlaylists("1"));
 				map.put("LANGUAGES" , playlistservice.listRecentPlaylists("23"));
 			}else{
 				map.put("STATUS", false);

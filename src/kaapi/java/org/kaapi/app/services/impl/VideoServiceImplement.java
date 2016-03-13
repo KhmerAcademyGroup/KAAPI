@@ -1096,11 +1096,12 @@ public class VideoServiceImplement implements VideosService{
 
 	@Override
 	public List<Playlist> listPlaylist() {
-		String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, P.thumbnailurl, P.publicview, P.maincategory, P.bgimage, p.color, " 
-				   + "P.status, M.maincategoryname " 
-				   + "FROM tblplaylist P " 
-				   + "INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid " 
-				   + "WHERE P.maincategory NOTNULL AND P.status=TRUE";
+		String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, P.thumbnailurl, P.publicview, P.maincategory, P.bgimage, p.color,  u.username,"
+				+ "	P.status, M.maincategoryname ,(SELECT videoid from tblplaylistdetail where playlistid=P.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=P.playlistid) )"
+				+ "	FROM tblplaylist P"
+				+ "	INNER JOIN tblmaincategory M ON P.maincategory=M.maincategoryid"
+				+ "	INNER JOIN tbluser u ON u.userid = P.userid"
+				+ "	WHERE P.maincategory NOTNULL AND P.status=TRUE";
 	
 		List<Playlist> list = new ArrayList<Playlist>();
 		Playlist playlist = null;
@@ -1120,6 +1121,9 @@ public class VideoServiceImplement implements VideosService{
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setMaincategoryname(rs.getString("maincategoryname"));
 				playlist.setVideoId(getVideoId(rs.getInt("playlistid")));
+				playlist.setUsername(rs.getString("username"));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
 				list.add(playlist);
 			}
 			return list;
@@ -1129,6 +1133,33 @@ public class VideoServiceImplement implements VideosService{
 		return null;
 	}
 
+	public int countVideoInPlayList(int playlisid) {
+		Connection con =  null;
+		try {
+			 con = dataSource.getConnection();
+			String sql = "SELECT COUNT(playlistid) AS total FROM tblplaylistdetail  " 
+							+"WHERE playlistid = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, playlisid);
+			ResultSet rs = ps.executeQuery();
+			int total = 0;
+			while(rs.next()){
+				total = rs.getInt("total");
+			}
+			return total;
+		} catch (SQLException e) {
+			System.out.println(e);
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				System.out.println(e);
+			}
+		}
+		return 0;
+	}
+	
+	
 	@Override
 	public String getVideoId(int playlistId) {
 		String sql = "SELECT PD.VIDEOID "

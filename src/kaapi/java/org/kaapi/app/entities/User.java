@@ -36,6 +36,7 @@ public class User {
 	private String departmentName;
 	private int point;
 	private boolean userStatus;
+	private boolean isConfirmed;
 	
 	public String getUserId() {
 		return userId;
@@ -205,6 +206,12 @@ public class User {
 	public void setUserStatus(boolean userStatus) {
 		this.userStatus = userStatus;
 	}
+	public boolean isConfirmed() {
+		return isConfirmed;
+	}
+	public void setConfirmed(boolean isConfirmed) {
+		this.isConfirmed = isConfirmed;
+	}
 	
-
+	
 }
