@@ -1256,7 +1256,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			Playlist playlist = null;
 			ResultSet rs = null;
 			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, B.email, B.username, A.bgimage, A.color, A.thumbnailurl, A.status "
-					   + ",(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) " 
+					   + ",(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid " 
 					   + "FROM tblplaylist A "
 					   + "INNER JOIN tbluser B ON A.userid = B.userid "
 					   + "WHERE maincategory<>0 AND A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
