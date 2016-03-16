@@ -58,7 +58,7 @@ public class SendMailTLS {
 	
 	public static void main(String[] args) {
 //		for(int i=0;i<1000;i++){
-			new SendMailTLS().sendMaile("pirangphan@gmail.com", "Test", "Hello Hello");
+//			new SendMailTLS().sendMaile("tolapheng99@gmail.com", "Test", "Hello Hello");
 //		}
 	}
 }

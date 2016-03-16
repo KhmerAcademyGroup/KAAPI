@@ -387,6 +387,7 @@ public class UserController {
 		try{
 			System.out.println("type: "+type);
 			User u = userService.getUSerEmail(email);
+			System.out.println("Email: "+u.getEmail());
 			if(u != null){
 					SecureRandom random = new SecureRandom();
 				    byte bytes[] = new byte[20];
