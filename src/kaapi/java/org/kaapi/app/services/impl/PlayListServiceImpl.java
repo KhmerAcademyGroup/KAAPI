@@ -1433,4 +1433,83 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+	
+	@Override
+	public List<Playlist> recommendedCourses(String userid) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql = "SELECT A.userid, B.playlistid , COUNT(A.videoid) as watched, P.playlistname, P.description ,  P.thumbnailurl, A.videoid"
+					+ " FROM tbllog A"
+					+ " LEFT JOIN tblplaylistdetail B ON A.videoid = B.videoid"
+					+ " LEFT JOIN tblplaylist P ON B.playlistid = P.playlistid"
+					+ " WHERE A.userid=1 AND P.maincategory<>0 AND P.status=true GROUP BY 1,2,4,5,6,7 ORDER BY watched DESC LIMIT 20;";
+			PreparedStatement ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(rs.getString("userid"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
+				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public List<Playlist> recommendedVideos(String userid) {
+		try {
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql = "SELECT A.userid, B.playlistid , COUNT(A.videoid) as watched,  A.videoid , v.videoname, v.description, v.viewcount,v.youtubeurl"
+					+ " FROM tbllog A"
+					+ " LEFT JOIN tblplaylistdetail B ON A.videoid = B.videoid"
+					+ " LEFT JOIN tblvideo v ON A.videoid = v.videoid"
+					+ " LEFT JOIN tblplaylist P ON B.playlistid = P.playlistid"
+					+ " WHERE A.userid=1 AND P.maincategory <> 0 AND P.status=true GROUP BY 1,2,4,5,6,7,8 ORDER BY watched DESC LIMIT 20;";
+			PreparedStatement ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(rs.getString("userid"));
+				playlist.setThumbnailUrl(rs.getString("youtubeurl"));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
+				playlist.setPlaylistName(rs.getString("videoname"));
+				playlist.setCountVideos(rs.getInt("viewcount"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	
 }

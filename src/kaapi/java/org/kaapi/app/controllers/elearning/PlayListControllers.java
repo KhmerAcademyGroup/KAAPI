@@ -621,8 +621,8 @@ public class PlayListControllers {
 		
 	}
 	
-	@RequestMapping(value="/playlists/recents", method= RequestMethod.GET, headers= "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> listPlayStatusByListName(){
+	@RequestMapping(value="/playlists/recents/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlayStatusByListName(@PathVariable String userid){
 		Map<String, Object> map= new HashMap<String, Object>();
 		List<Playlist> playlists = new ArrayList<Playlist>();
 		//List<Playlist> playlistsHighSchool = new ArrayList<Playlist>();
@@ -636,6 +636,11 @@ public class PlayListControllers {
 				map.put("HIGH_SCHOOL", playlistservice.listRecentPlaylists("25"));
 				map.put("COMPUTER_SCIENCE" , playlistservice.listRecentPlaylists("1"));
 				map.put("LANGUAGES" , playlistservice.listRecentPlaylists("23"));
+				if(!userid.equals("null")){
+					map.put("RECOMMENDED_VIDEOS", playlistservice.recommendedVideos(userid));
+					map.put("RECOMMENDED_COURSE" , playlistservice.recommendedCourses(userid));
+				}
+				System.out.println("userid " + userid);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
@@ -688,5 +693,29 @@ public class PlayListControllers {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(value="/recommend/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> recommendedVideosAndCourses(@PathVariable("userid") String userid){
+		Map<String, Object> map= new HashMap<String, Object>();
+		List<Playlist> playlists = new ArrayList<Playlist>();
+		try{
+			if(!playlists.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", playlists);
+				map.put("RECOMMENDED_VIDEOS", playlistservice.recommendedCourses(userid));
+				map.put("RECOMMENDED_COURSE" , playlistservice.recommendedVideos(userid));
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
 			
 }

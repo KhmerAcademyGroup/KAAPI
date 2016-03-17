@@ -54,4 +54,8 @@ public interface PlayListServics {
 	
 	public ArrayList<Playlist> listPlaylistByUseridPlaylistNameMainCategoryName(Playlist playlist , Pagination pagin);
 	public int countPlaylistByUseridPlaylistNameMainCategoryName(Playlist playlist);
+	
+	public List<Playlist> recommendedCourses(String userid);
+	public List<Playlist> recommendedVideos(String userid);
+
 }
