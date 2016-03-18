@@ -1,5 +1,10 @@
 package org.kaapi.app.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.kaapi.app.forms.RecommendedVideos;
+
 public class Playlist {
 
 	private String playlistId;
@@ -15,6 +20,8 @@ public class Playlist {
 	private String maincategory;
 	private String maincategoryname;
 	private String bgImage;
+	private List<RecommendedVideos> videos;
+	
 	public String getMaincategoryname() {
 		return maincategoryname;
 	}
@@ -112,5 +119,12 @@ public class Playlist {
 	public void setCountVideos(int countVideos) {
 		this.countVideos = countVideos;
 	}
+	public List<RecommendedVideos> getVideos() {
+		return videos;
+	}
+	public void setVideos(List<RecommendedVideos> videos) {
+		this.videos = videos;
+	}
+	
 	
 }

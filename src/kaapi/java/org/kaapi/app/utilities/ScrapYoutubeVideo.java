@@ -8,7 +8,7 @@ import org.jsoup.select.Elements;
 
 public class ScrapYoutubeVideo {
 
-	public static void main(String[] args) throws IOException {
+	/*public static void main(String[] args) throws IOException {
 		try{
 			
 			Document doc = Jsoup.connect("https://www.youtube.com/playlist?list=PLWznN7ZS7n8U-tlROS8R5sYnXOSZZUrIx").get();
@@ -26,5 +26,5 @@ public class ScrapYoutubeVideo {
 			exception.printStackTrace();	
 		}
 		
-	}
+	}*/
 }

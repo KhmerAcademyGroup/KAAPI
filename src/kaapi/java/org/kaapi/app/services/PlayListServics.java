@@ -9,6 +9,7 @@ import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
+import org.kaapi.app.forms.RecommendedVideos;
 
 
 public interface PlayListServics {
@@ -56,6 +57,9 @@ public interface PlayListServics {
 	public int countPlaylistByUseridPlaylistNameMainCategoryName(Playlist playlist);
 	
 	public List<Playlist> recommendedCourses(String userid);
-	public List<Playlist> recommendedVideos(String userid);
+	public List<RecommendedVideos> recommendedVideos(String userid);
+	
+    public List<RecommendedVideos> listVideoInPlaylists(String playlistid);
+
 
 }

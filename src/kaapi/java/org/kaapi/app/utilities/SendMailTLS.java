@@ -68,11 +68,11 @@ public class SendMailTLS {
 		}
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		new SendMailTLS().sendMaile("tolapheng99@gmail.com", "Test", "Hello Hello");
 //		for(int i=0;i<500;i++){
 //			new SendMailTLS().sendMaile("t00639204@gmail.com", "Test", "Hello Hello");
 //			System.out.println(i);
 //		}
-	}
+	}*/
 }
