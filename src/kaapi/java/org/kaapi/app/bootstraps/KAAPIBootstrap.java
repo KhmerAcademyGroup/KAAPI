@@ -18,7 +18,6 @@ public class KAAPIBootstrap implements WebApplicationInitializer{
 		AnnotationConfigWebApplicationContext servletContext = new AnnotationConfigWebApplicationContext();
 		// 2. Add the Configuration class
 		servletContext.register(KAAPIWebConfiguraion.class);
-		
 		// 3. Create DispatcherServlet, add it to container, 
 		//    and assign it to the servletRegistration
 		ServletRegistration.Dynamic dispatcherServlet = 
