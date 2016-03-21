@@ -1242,4 +1242,22 @@ public class VideoServiceImplement implements VideosService{
 		return null;
 	}
 	
+	@Override
+	public String getPlaylistName(String videoId) {
+		String sql = " SELECT P.playlistname"
+				+ " FROM tblplaylist P"
+				+ " LEFT JOIN tblplaylistdetail D ON P.playlistid = D.playlistid"
+				+ " WHERE D.videoid = ? AND P.status = TRUE AND P.maincategory <> 0 ";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1, Integer.parseInt(Encryption.decode(videoId)));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getString(1);				
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

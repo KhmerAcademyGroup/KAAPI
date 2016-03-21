@@ -46,4 +46,5 @@ public interface VideosService {
 	public List<Playlist> listMainCategory();
 	public List<Playlist> listPlaylist();
 	public String getVideoId(int playlistId);
+	public String getPlaylistName(String videoId);
 }

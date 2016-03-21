@@ -643,6 +643,7 @@ public class VideoController {
 				map.put("LOGID", logid);
 				map.put("VIDEO", video);
 				map.put("STATUS", true);
+				map.put("PLAYLISTNAME", videoService.getPlaylistName(vid));
 				map.put("MESSAGE", "VIDEO FOUND");
 			}else{
 				map.put("MESSAGE", "VIDEO NOT FOUND");

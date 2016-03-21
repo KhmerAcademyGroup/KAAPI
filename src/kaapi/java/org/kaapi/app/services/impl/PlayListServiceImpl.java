@@ -1448,8 +1448,9 @@ public class PlayListServiceImpl implements PlayListServics{
 					+ " LEFT JOIN tblplaylistdetail B ON A.videoid = B.videoid"
 					+ " LEFT JOIN tblplaylist P ON B.playlistid = P.playlistid"
 					+ " LEFT JOIN tbluser U ON A.userid = U.userid"
-					+ " WHERE A.userid=1 AND P.maincategory<>0 AND P.status=true GROUP BY 1,2,4,5,6,7,8 ORDER BY watched DESC LIMIT 20;";
+					+ " WHERE A.userid=? AND P.maincategory<>0 AND P.status=true GROUP BY 1,2,4,5,6,7,8 ORDER BY watched DESC LIMIT 20;";
 			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1,Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
 			while(rs.next()){
 				playlist =new Playlist();
