@@ -466,7 +466,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean mobileInsertUser(FrmMobileRegister user) {
 		String sql =  " INSERT INTO TBLUSER"
-				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed, u.sc_fb_id , u.sc_tw_id , u.sc_gm_id, sc_type)"
+				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed, sc_fb_id , sc_tw_id , sc_gm_id, sc_type)"
 				+ " VALUES"
 				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'user/avatar.jpg',2,?,?,'1',true,?,?,?,?);";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
