@@ -7,6 +7,11 @@ public class FrmMobileRegister {
 	private String username;
 	private String gender;
 	
+	private int scFacebookId;
+	private int scTwitterId;
+	private int scGmailId;
+	private int scType;
+	
 	public String getEmail() {
 		return email;
 	}
@@ -30,6 +35,30 @@ public class FrmMobileRegister {
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+	public int getScFacebookId() {
+		return scFacebookId;
+	}
+	public void setScFacebookId(int scFacebookId) {
+		this.scFacebookId = scFacebookId;
+	}
+	public int getScTwitterId() {
+		return scTwitterId;
+	}
+	public void setScTwitterId(int scTwitterId) {
+		this.scTwitterId = scTwitterId;
+	}
+	public int getScGmailId() {
+		return scGmailId;
+	}
+	public void setScGmailId(int scGmailId) {
+		this.scGmailId = scGmailId;
+	}
+	public int getScType() {
+		return scType;
+	}
+	public void setScType(int scType) {
+		this.scType = scType;
 	}
 	
 	
