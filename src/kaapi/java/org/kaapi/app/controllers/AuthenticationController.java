@@ -37,6 +37,10 @@ public class AuthenticationController {
 				map.put("EMAIL", u.getEmail());
 				map.put("PROFILE_IMG_URL", u.getUserImageUrl());
 				map.put("COVER_IMG_URL", u.getCoverphoto());
+				map.put("FACEBOOK_ID", u.getScFacebookId());
+				map.put("TWITTER_ID", u.getScTwitterId());
+				map.put("GMAIL_ID",u.getScGmailId());
+				map.put("SOCIAL_TYPE", u.getScType());
 			}else{
 				map.put("MESSAGE", "Logined unsuccess! Invalid email or password!");
 				map.put("STATUS", false);

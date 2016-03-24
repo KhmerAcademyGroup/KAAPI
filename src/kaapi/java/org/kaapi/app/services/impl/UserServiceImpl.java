@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public User mobileLogin(FrmMobileLogin mFrm) {
-		String sql =  " SELECT u.userid , u.username , u.email, u.userimageurl ,co.coverphoto as coverphotourl"
+		String sql =  " SELECT u.userid , u.username , u.email, u.userimageurl ,co.coverphoto as coverphotourl , u.sc_fb_id , u.sc_tw_id , u.sc_gm_id, sc_type"
 					+ " FROM tbluser u LEFT JOIN tblcoverphoto co ON u.userid = co.userid"
 					+ " WHERE LOWER(u.email)=LOWER(?) AND u.password = ? AND u.userstatus = '1';";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
@@ -58,6 +58,10 @@ public class UserServiceImpl implements UserService {
 				u.setEmail(rs.getString("email"));
 				u.setUserImageUrl(rs.getString("userimageurl"));
 				u.setCoverphoto(rs.getString("coverphotourl"));
+				u.setScFacebookId(rs.getInt("sc_fb_id"));
+				u.setScTwitterId(rs.getInt("sc_tw_id"));
+				u.setScGmailId(rs.getInt("sc_gm_id"));
+				u.setScType(rs.getInt("sc_type"));
 				return u;
 			}
 		} catch (SQLException e) {

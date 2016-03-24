@@ -972,7 +972,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			
 			ResultSet rs = null;
 			String sql = "SELECT * FROM tblplaylist P "
-							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) "
+							+"WHERE LOWER(P.playlistname) LIKE LOWER(?) AND status=true "
 							+"order by playlistid desc offset ? limit ?"; 
 								
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -1015,7 +1015,7 @@ public class PlayListServiceImpl implements PlayListServics{
 	public int countSearchPlayList(String kesearch) {
 		try {
 			con = dataSource.getConnection();
-			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST P WHERE LOWER(P.playlistname) LIKE LOWER(?)";
+			String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST P WHERE LOWER(P.playlistname) LIKE LOWER(?) AND status=true";
 			PreparedStatement ps=con.prepareStatement(sql);
 			ps.setString(1, "%"+kesearch+"%");
 			ResultSet rs = ps.executeQuery();

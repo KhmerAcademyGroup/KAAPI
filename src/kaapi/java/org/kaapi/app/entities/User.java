@@ -38,6 +38,14 @@ public class User {
 	private boolean userStatus;
 	private boolean isConfirmed;
 	
+	
+	
+	private int scFacebookId;
+	private int scTwitterId;
+	private int scGmailId;
+	private int scType;
+	
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -211,6 +219,30 @@ public class User {
 	}
 	public void setConfirmed(boolean isConfirmed) {
 		this.isConfirmed = isConfirmed;
+	}
+	public int getScFacebookId() {
+		return scFacebookId;
+	}
+	public void setScFacebookId(int scFacebookId) {
+		this.scFacebookId = scFacebookId;
+	}
+	public int getScTwitterId() {
+		return scTwitterId;
+	}
+	public void setScTwitterId(int scTwitterId) {
+		this.scTwitterId = scTwitterId;
+	}
+	public int getScGmailId() {
+		return scGmailId;
+	}
+	public void setScGmailId(int scGmailId) {
+		this.scGmailId = scGmailId;
+	}
+	public int getScType() {
+		return scType;
+	}
+	public void setScType(int scType) {
+		this.scType = scType;
 	}
 	
 	
