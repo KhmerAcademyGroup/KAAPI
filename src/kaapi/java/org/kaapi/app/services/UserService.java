@@ -1,26 +1,20 @@
 
 package org.kaapi.app.services;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.User;
-import org.kaapi.app.forms.FrmMobileLogin;
-import org.kaapi.app.forms.FrmMobileRegister;
-import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmAddUpdateCoverPhoto;
 import org.kaapi.app.forms.FrmAddUser;
 import org.kaapi.app.forms.FrmChangePassword;
+import org.kaapi.app.forms.FrmMobileLogin;
+import org.kaapi.app.forms.FrmMobileRegister;
+import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.forms.accountSetting;
-
-import java.util.List;
-
-import org.kaapi.app.entities.Pagination;
-import org.kaapi.app.entities.User;
 
 public interface UserService {
 
@@ -48,7 +42,8 @@ public interface UserService {
     public boolean updateHistoryResetPassword(String id);
     public boolean confirmEmail(String email);
     
-	
+    public boolean checkSocialID(String scType , String ID);
+	public boolean insertUserSC(FrmAddUser u);
 	
 }
 

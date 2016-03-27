@@ -8,6 +8,10 @@ public class FrmAddUser {
 	private String gender;
 	private String universityId;
 	private String departmentId;
+	private String imageUrl;
+	
+	private String scID;
+	private String scType;
 	
 	public String getEmail() {
 		return email;
@@ -45,5 +49,24 @@ public class FrmAddUser {
 	public void setDepartmentId(String departmentId) {
 		this.departmentId = departmentId;
 	}
+	public String getScID() {
+		return scID;
+	}
+	public void setScID(String scID) {
+		this.scID = scID;
+	}
+	public String getScType() {
+		return scType;
+	}
+	public void setScType(String scType) {
+		this.scType = scType;
+	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	
 	
 }

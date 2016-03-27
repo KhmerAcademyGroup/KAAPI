@@ -17,6 +17,7 @@ import org.kaapi.app.forms.FrmMobileRegister;
 import org.kaapi.app.forms.FrmResetPassword;
 import org.kaapi.app.forms.FrmUpdateUser;
 import org.kaapi.app.forms.FrmValidateEmail;
+import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.forms.accountSetting;
 import org.kaapi.app.services.DepartmentService;
 import org.kaapi.app.services.UniversityService;
@@ -209,6 +210,7 @@ public class UserController {
 				map.put("STATUS", false);
 			}
 		}catch(Exception e){
+			e.printStackTrace();
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
 		}
@@ -473,4 +475,34 @@ public class UserController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}		
 	
+	@RequestMapping(value="/add_user_sc" ,method = RequestMethod.POST , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> addUserSocial(@RequestBody FrmAddUser user){
+		Map<String , Object> map = new HashMap<String , Object>();
+		try{
+			System.out.println(user.getEmail());
+			if(user.getEmail() == null){
+				user.setEmail(user.getScID());
+			}
+			if(userService.insertUserSC(user)){
+				FrmWebLogin w = new FrmWebLogin(); 
+				w.setEmail(user.getEmail());
+				User u = userService.webLogin(w);
+				if(u != null){
+					map.put("MESSAGE", "User has been inserted. Logined success!");
+					map.put("STATUS", true);
+					map.put("USER", u);
+				}else{
+					map.put("MESSAGE", "Logined unsuccess! Invalid email!");
+					map.put("STATUS", false);
+				}
+			}else{
+				map.put("MESSAGE", "User has not been inserted.");
+				map.put("STATUS", false);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+	}
 }

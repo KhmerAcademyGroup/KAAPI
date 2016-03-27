@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kaapi.app.entities.User;
+import org.kaapi.app.forms.FrmAddUser;
+import org.kaapi.app.forms.FrmLoginWithSC;
 import org.kaapi.app.forms.FrmMobileLogin;
+import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,5 +77,51 @@ public class AuthenticationController {
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/login_with_fb" , method = RequestMethod.POST , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> loginWithFB(
+			@RequestBody FrmLoginWithSC s
+		){
+		Map<String, Object> map = new HashMap<String , Object>();
+		try{
+			System.out.println(s.getEmail());
+			if(s.getEmail() == null){
+				s.setEmail(s.getScID());
+			}
+			FrmWebLogin wFrm = new FrmWebLogin();
+			wFrm.setEmail(s.getEmail());
+			FrmValidateEmail v = new FrmValidateEmail();
+			v.setEmail(wFrm.getEmail());
+			if(userService.validateEmail(v)){
+				User u = userService.webLogin(wFrm);
+				if(u != null){
+					map.put("MESSAGE", "Logined success!");
+					map.put("STATUS", true);
+					map.put("USER", u);
+				}else{
+					map.put("MESSAGE", "Logined unsuccess! Invalid email!");
+					map.put("STATUS", false);
+				}
+			}else{
+				if(userService.checkSocialID(s.getScType(), s.getScID())){
+					User u = userService.webLogin(wFrm);
+					if(u != null){
+						map.put("MESSAGE", "Logined success!");
+						map.put("STATUS", true);
+						map.put("USER", u);
+					}else{
+						map.put("MESSAGE", "Logined unsuccess! Invalid email!");
+						map.put("STATUS", false);
+					}
+				}else{
+					map.put("MESSAGE", "Let login fb process!");
+					map.put("STATUS", true);
+				}
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
+	}
 	
 }

@@ -61,5 +61,7 @@ public interface PlayListServics {
 	
     public List<RecommendedVideos> listVideoInPlaylists(String playlistid);
 
+    public List<Playlist> listPlaylistsByMainCategory(String mainCategoryId);
+    public List<RecommendedVideos> mostViewedVideos();
 
 }

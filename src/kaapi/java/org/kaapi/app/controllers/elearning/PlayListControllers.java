@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kaapi.app.entities.MainCategory;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
+import org.kaapi.app.services.MainCategoryService;
 import org.kaapi.app.services.PlayListServics;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,9 @@ public class PlayListControllers {
 	
 	@Autowired
 	PlayListServics playlistservice;
+	
+	@Autowired
+	MainCategoryService maincategoryService;
 	
 	
 	//Toggle playlist: 
@@ -717,5 +723,60 @@ public class PlayListControllers {
 		
 	}
 	
+	@RequestMapping(value="/playlists/index_new_1/{userid}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlayMainCategorye(@PathVariable String userid){
+		Map<String, Object> map= new HashMap<String, Object>();
+//		Map<String, Object> courseMap= new HashMap<String, Object>();
+//		List<String> mID = new ArrayList<String>();
+
+		List<Playlist> playlists = new ArrayList<Playlist>();
+		//List<Playlist> playlistsHighSchool = new ArrayList<Playlist>();
+		try{
+			playlists = playlistservice.listRecentPlaylists("");
+//			List<MainCategory> mainCategory = maincategoryService.listMainCategory("");
+			map.put("STATUS", true);
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("RESP_DATA", playlists);
+			map.put("POPULAR_VIDEOS", playlistservice.mostViewedVideos());
+			/*for(int i=0;i<mainCategory.size();i++){
+				courseMap.put(mainCategory.get(i).getMainCategoryName(), playlistservice.listPlaylistsByMainCategory(mainCategory.get(i).getMainCategoryId()));
+				mID.add(mainCategory.get(i).getMainCategoryId());
+			}
+			map.put("MAIN_CATEGORY_ID", mID);
+			map.put("COURSES", courseMap);*/
+			if(!userid.equals("null")){
+				map.put("RECOMMENDED_VIDEOS", playlistservice.recommendedVideos(userid));
+				map.put("RECOMMENDED_COURSE" , playlistservice.recommendedCourses(userid));
+			}
+			System.out.println("userid " + userid);
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	
+	@RequestMapping(value="/list_playlist_by_maincategoryid/{mainCategoryID}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlayListByMaincategory(@PathVariable("mainCategoryID") String mainCategoryID){
+		Map<String, Object> map= new HashMap<String, Object>();
+		List<Playlist> playlists = new ArrayList<Playlist>();
+		try{
+			playlists = playlistservice.listPlaylistsByMainCategory(mainCategoryID);
+			if(playlists != null){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RESP_DATA", playlists);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
 			
 }

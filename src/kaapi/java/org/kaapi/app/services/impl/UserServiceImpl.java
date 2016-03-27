@@ -590,5 +590,59 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 		
+	}
+
+	@Override
+	public boolean checkSocialID(String scType, String scID) {
+		String sqlFB = "select sc_fb_id FROM tbluser WHERE sc_fb_id = ? and sc_type=?";
+//		String sqlTW = "select id WHERE sc_fb_id = ? and sc_type=?";
+//		String sqlGM = "select id WHERE sc_fb_id = ? and sc_type=?";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sqlFB) ){
+			ps.setString(1, scID );
+			ps.setString(2, scType );
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				System.out.println(rs.getInt("count") + " " + rs.getString("sc_fb_id"));
+				if(rs.getInt("count")>0){
+					return true;
+				}
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean insertUserSC(FrmAddUser u) {
+		String sqlFB =  " INSERT INTO TBLUSER"
+				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed,sc_fb_id,sc_type)"
+				+ " VALUES"
+				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),?,2,?,?,'1',true,?,?);";
+		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sqlFB)){
+			ps.setString(1, u.getEmail());
+			ps.setString(2, u.getScID()+u.getScType());
+			ps.setString(3, u.getUsername());
+			ps.setString(4, u.getGender());
+			if(u.getImageUrl().equals("")){
+				ps.setString(5, environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg");
+			}else{
+				ps.setString(5, u.getImageUrl());
+
+			}
+			ps.setInt(6, 36);
+			ps.setInt(7, 12);
+			ps.setString(8, u.getScID());
+			ps.setString(9, u.getScType());
+			if(ps.executeUpdate()>0)
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return false;
 	}	
+	
+	
+	
 }
