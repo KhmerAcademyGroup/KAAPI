@@ -1257,12 +1257,12 @@ public class PlayListServiceImpl implements PlayListServics{
 			Playlist playlist = null;
 			ResultSet rs = null;
 			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, B.email, B.username, A.bgimage, A.color, A.thumbnailurl, A.status "
-					   + ",(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid " 
+					   + " ,(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid " 
 					   + "FROM tblplaylist A "
 					   + "INNER JOIN tbluser B ON A.userid = B.userid "
-					   + "WHERE maincategory<>0 AND A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
+					   + "WHERE   A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
 					   + "ORDER BY 1 DESC "
-					   + "LIMIT 12";
+					   + "LIMIT 8";
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -1277,10 +1277,6 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
-				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
-				if(mainCategoryId.equals("")){
-					playlist.setVideos(listVideoInPlaylists(Encryption.encode(rs.getString("playlistid"))));
-				}
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -1324,7 +1320,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
-				playlist.setCountVideos(rs.getInt("countvideos"));
+//				playlist.setCountVideos(rs.getInt("countvideos"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setUsername(rs.getString("username"));
 				playlists.add(playlist);
@@ -1420,7 +1416,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
-				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+//				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setUsername(rs.getString("username"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
 				playlists.add(playlist);
@@ -1450,7 +1446,7 @@ public class PlayListServiceImpl implements PlayListServics{
 					+ " LEFT JOIN tblplaylistdetail B ON A.videoid = B.videoid"
 					+ " LEFT JOIN tblplaylist P ON B.playlistid = P.playlistid"
 					+ " LEFT JOIN tbluser U ON A.userid = U.userid"
-					+ " WHERE A.userid=? AND P.maincategory<>0 AND P.status=true GROUP BY 1,2,4,5,6,7,8 ORDER BY watched DESC LIMIT 20;";
+					+ " WHERE A.userid=?  AND P.status=true GROUP BY 1,2,4,5,6,7,8 ORDER BY watched DESC LIMIT 8;";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1,Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
@@ -1462,7 +1458,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(rs.getString("userid"));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
-				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+//				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setUsername(rs.getString("username"));
 				playlists.add(playlist);
 			}
@@ -1578,7 +1574,7 @@ public class PlayListServiceImpl implements PlayListServics{
 					   + "FROM tblplaylist A "
 					   + "INNER JOIN tbluser B ON A.userid = B.userid "
 					   + "INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid "
-					   + "WHERE maincategory<>0 AND A.status = true " + ((Encryption.decode(mainCategoryId)=="") ? "" : " AND maincategory= "+ Encryption.decode(mainCategoryId)+ " ")
+					   + "WHERE A.status = true " + ((Encryption.decode(mainCategoryId)=="") ? "" : " AND maincategory= "+ Encryption.decode(mainCategoryId)+ " ")
 					   + "ORDER BY 1 DESC ";
 //					   + "LIMIT 12";
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -1595,7 +1591,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
-				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+//				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setMaincategoryname(rs.getString("maincategoryname"));
 				playlist.setMaincategory(Encryption.encode(rs.getString("maincategoryid")));
 				playlists.add(playlist);

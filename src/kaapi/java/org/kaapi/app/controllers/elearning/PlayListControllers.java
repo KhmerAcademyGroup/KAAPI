@@ -643,7 +643,7 @@ public class PlayListControllers {
 				map.put("COMPUTER_SCIENCE" , playlistservice.listRecentPlaylists("1"));
 				map.put("LANGUAGES" , playlistservice.listRecentPlaylists("23"));
 				if(!userid.equals("null")){
-					map.put("RECOMMENDED_VIDEOS", playlistservice.recommendedVideos(userid));
+//					map.put("RECOMMENDED_VIDEOS", playlistservice.recommendedVideos(userid));
 					map.put("RECOMMENDED_COURSE" , playlistservice.recommendedCourses(userid));
 				}
 				System.out.println("userid " + userid);
