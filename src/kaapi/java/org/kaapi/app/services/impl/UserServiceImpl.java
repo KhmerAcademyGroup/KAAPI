@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
 				u.setScTwitterId(rs.getInt("sc_tw_id"));
 				u.setScGmailId(rs.getInt("sc_gm_id"));
 				u.setScType(rs.getInt("sc_type"));
+				u.setOriginalID(rs.getInt("userid"));
 				return u;
 			}
 		} catch (SQLException e) {

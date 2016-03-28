@@ -44,6 +44,7 @@ public class AuthenticationController {
 				map.put("TWITTER_ID", u.getScTwitterId());
 				map.put("GMAIL_ID",u.getScGmailId());
 				map.put("SOCIAL_TYPE", u.getScType());
+				map.put("ORIGINAL_ID", u.getOriginalID());
 			}else{
 				map.put("MESSAGE", "Logined unsuccess! Invalid email or password!");
 				map.put("STATUS", false);

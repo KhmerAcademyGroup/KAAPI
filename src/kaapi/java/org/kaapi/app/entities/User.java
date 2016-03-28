@@ -45,7 +45,17 @@ public class User {
 	private int scGmailId;
 	private int scType;
 	
+	private int originalID;
 	
+	
+	
+	
+	public int getOriginalID() {
+		return originalID;
+	}
+	public void setOriginalID(int originalID) {
+		this.originalID = originalID;
+	}
 	public String getUserId() {
 		return userId;
 	}
