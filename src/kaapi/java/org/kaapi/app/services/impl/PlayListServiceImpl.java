@@ -1278,7 +1278,9 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
 				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
-//				playlist.setVideos(listVideoInPlaylists(Encryption.encode(rs.getString("playlistid"))));
+				if(mainCategoryId.equals("")){
+					playlist.setVideos(listVideoInPlaylists(Encryption.encode(rs.getString("playlistid"))));
+				}
 				playlists.add(playlist);
 			}
 			return playlists;
