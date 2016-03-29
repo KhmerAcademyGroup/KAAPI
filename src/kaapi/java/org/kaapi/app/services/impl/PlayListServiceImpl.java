@@ -1256,13 +1256,13 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, B.email, B.username, A.bgimage, A.color, A.thumbnailurl, A.status "
+			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid,  A.bgimage, A.color, A.thumbnailurl, A.status "
 					   + " ,(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid " 
-					   + "FROM tblplaylist A "
-					   + "INNER JOIN tbluser B ON A.userid = B.userid "
-					   + "WHERE   A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
-					   + "ORDER BY 1 DESC "
-					   + "LIMIT 8";
+					   + " ,( select COUNT(videoid) FROM tblplaylistdetail where playlistid = A.playlistid GROUP BY playlistid ) as conutvideo "
+					   + " FROM tblplaylist A "
+					   + " WHERE   A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
+					   + " ORDER BY 1 DESC "
+					   + " LIMIT 8";
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -1270,13 +1270,13 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setDescription(rs.getString("description"));
-				playlist.setUsername(rs.getString("username"));
 				playlist.setUserId(rs.getString("userid"));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
+				playlist.setCountVideos(rs.getInt("conutvideo"));
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -1441,12 +1441,12 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "SELECT A.userid, B.playlistid , COUNT(A.videoid) as watched, P.playlistname, P.description ,  P.thumbnailurl, A.videoid , U.username"
+			String sql = "SELECT A.userid, B.playlistid , COUNT(A.videoid) as watched, P.playlistname, P.description ,  P.thumbnailurl, A.videoid"
+					+ " ,( select COUNT(videoid) FROM tblplaylistdetail where playlistid = B.playlistid GROUP BY playlistid ) as conutvideo "
 					+ " FROM tbllog A"
 					+ " LEFT JOIN tblplaylistdetail B ON A.videoid = B.videoid"
 					+ " LEFT JOIN tblplaylist P ON B.playlistid = P.playlistid"
-					+ " LEFT JOIN tbluser U ON A.userid = U.userid"
-					+ " WHERE A.userid=?  AND P.status=true GROUP BY 1,2,4,5,6,7,8 ORDER BY watched DESC LIMIT 8;";
+					+ " WHERE A.userid=?  AND P.status=true GROUP BY 1,2,4,5,6,7 ORDER BY watched DESC LIMIT 8;";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1,Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
@@ -1458,8 +1458,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setUserId(rs.getString("userid"));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
-//				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
-				playlist.setUsername(rs.getString("username"));
+				playlist.setCountVideos(rs.getInt("conutvideo"));
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -1482,13 +1481,12 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<RecommendedVideos> videos =new ArrayList<RecommendedVideos>();
 			RecommendedVideos video = null;
 			ResultSet rs = null;
-			String sql = "SELECT A.userid, B.playlistid , COUNT(A.videoid) as watched,  P.playlistname ,A.videoid , v.videoname, v.description, v.viewcount,v.youtubeurl,U.username "
+			String sql = "SELECT A.userid, B.playlistid , COUNT(A.videoid) as watched,  P.playlistname ,A.videoid , v.videoname, v.description, v.viewcount,v.youtubeurl "
 					+ " FROM tbllog A"
 					+ " LEFT JOIN tblplaylistdetail B ON A.videoid = B.videoid"
 					+ " LEFT JOIN tblvideo v ON A.videoid = v.videoid"
 					+ " LEFT JOIN tblplaylist P ON B.playlistid = P.playlistid"
-					+ " LEFT JOIN tbluser U ON A.userid = U.userid"
-					+ " WHERE A.userid=? AND P.maincategory <> 0 AND P.status=true GROUP BY 1,2,4,5,6,7,8,9,10 ORDER BY watched DESC LIMIT 20;";
+					+ " WHERE A.userid=? AND P.maincategory <> 0 AND P.status=true GROUP BY 1,2,4,5,6,7,8,9 ORDER BY watched DESC LIMIT 20;";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, Integer.parseInt(Encryption.decode(userid)));
 			rs = ps.executeQuery();
@@ -1502,7 +1500,6 @@ public class PlayListServiceImpl implements PlayListServics{
 				video.setUserId(rs.getString("userid"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
 				video.setView(rs.getInt("viewcount"));
-				video.setUsername(rs.getString("username"));
 				videos.add(video);
 			}
 			return videos;
@@ -1525,10 +1522,9 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<RecommendedVideos> videos =new ArrayList<RecommendedVideos>();
 			RecommendedVideos video = null;
 			ResultSet rs = null;
-			String sql = "SELECT PD.*,P.playlistname, U.username,U.userid,V.videoname,V.youtubeurl,V.viewcount,V.description"
+			String sql = "SELECT PD.*,P.playlistname, V.userid,V.videoname,V.youtubeurl,V.viewcount,V.description"
 					+ " FROM tblplaylistdetail PD"
 					+ " LEFT JOIN tblplaylist P ON PD.playlistid = P.playlistid"
-					+ " LEFT JOIN tbluser U ON P.userid = U.userid"
 					+ " LEFT JOIN tblvideo V ON PD.videoid = V.videoid"
 					+ " WHERE  P.status=true and P.maincategory<>0 AND PD.playlistid=?"
 					+ " ORDER BY PD.index ASC,P.playlistid DESC ";
@@ -1545,7 +1541,6 @@ public class PlayListServiceImpl implements PlayListServics{
 				video.setUserId(rs.getString("userid"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
 				video.setView(rs.getInt("viewcount"));
-				video.setUsername(rs.getString("username"));
 				videos.add(video);
 			}
 			return videos;
@@ -1568,11 +1563,11 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
 			Playlist playlist = null;
 			ResultSet rs = null;
-			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, B.email, B.username, A.bgimage, A.color, A.thumbnailurl, A.status ,MC.maincategoryid "
+			String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, A.bgimage, A.color, A.thumbnailurl, A.status ,MC.maincategoryid "
 					   + ",(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid " 
 					   + ",MC.maincategoryname "
+						+ " ,( select COUNT(videoid) FROM tblplaylistdetail where playlistid =A.playlistid GROUP BY playlistid ) as conutvideo "
 					   + "FROM tblplaylist A "
-					   + "INNER JOIN tbluser B ON A.userid = B.userid "
 					   + "INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid "
 					   + "WHERE A.status = true " + ((Encryption.decode(mainCategoryId)=="") ? "" : " AND maincategory= "+ Encryption.decode(mainCategoryId)+ " ")
 					   + "ORDER BY 1 DESC ";
@@ -1584,16 +1579,15 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setDescription(rs.getString("description"));
-				playlist.setUsername(rs.getString("username"));
 				playlist.setUserId(rs.getString("userid"));
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
-//				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
 				playlist.setMaincategoryname(rs.getString("maincategoryname"));
 				playlist.setMaincategory(Encryption.encode(rs.getString("maincategoryid")));
+				playlist.setCountVideos(rs.getInt("conutvideo"));
 				playlists.add(playlist);
 			}
 			return playlists;
@@ -1618,12 +1612,11 @@ public class PlayListServiceImpl implements PlayListServics{
 			ArrayList<RecommendedVideos> videos =new ArrayList<RecommendedVideos>();
 			RecommendedVideos video = null;
 			ResultSet rs = null;
-			String sql = "SELECT A.userid, B.playlistid ,  P.playlistname ,A.videoid , v.videoname, v.description, v.viewcount,v.youtubeurl,U.username "
+			String sql = "SELECT A.userid, B.playlistid ,  P.playlistname ,A.videoid , v.videoname, v.description, v.viewcount,v.youtubeurl "
 					+ " FROM tblvideo A"
 					+ " LEFT JOIN tblplaylistdetail B ON A.videoid = B.videoid"
 					+ " LEFT JOIN tblvideo v ON A.videoid = v.videoid"
 					+ " LEFT JOIN tblplaylist P ON B.playlistid = P.playlistid"
-					+ " LEFT JOIN tbluser U ON A.userid = U.userid"
 					+ " WHERE  P.maincategory <> 0 AND P.status=true ORDER BY A.viewcount DESC LIMIT 12;";
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
@@ -1637,7 +1630,6 @@ public class PlayListServiceImpl implements PlayListServics{
 				video.setUserId(rs.getString("userid"));
 				video.setYoutubeUrl(rs.getString("youtubeurl"));
 				video.setView(rs.getInt("viewcount"));
-				video.setUsername(rs.getString("username"));
 				videos.add(video);
 			}
 			return videos;
