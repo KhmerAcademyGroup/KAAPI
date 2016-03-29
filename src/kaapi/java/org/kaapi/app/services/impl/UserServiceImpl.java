@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User webLogin(FrmWebLogin wFrm) {
 		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , uni.universityname, u.departmentid ,dep.departmentname , u.point , co.coverphoto as coverphotourl, u.userstatus,u.isconfirmed, "
-					+ " ut.usertypeid, ut.usertypename  ,"
+					+ " ut.usertypeid, ut.usertypename  , u.sc_fb_id , u.sc_tw_id , u.sc_gm_id, sc_type"
 					+ " COUNT(DISTINCT V.VIDEOID) COUNTVIDEOS, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS , "
 					+ " COUNT(DISTINCT pl.PLAYLISTID) COUNTPLAYLIST"
 					+ " FROM TBLUSER u INNER JOIN TBLUSERTYPE ut ON u.USERTYPEID=ut.USERTYPEID "
@@ -119,6 +119,12 @@ public class UserServiceImpl implements UserService {
 				u.setCountVideos(rs.getInt("countvideos"));
 				u.setUserStatus(rs.getBoolean("userstatus"));
 				u.setConfirmed(rs.getBoolean("isconfirmed"));
+				
+				u.setScFacebookId(rs.getInt("sc_fb_id"));
+				u.setScTwitterId(rs.getInt("sc_tw_id"));
+				u.setScGmailId(rs.getInt("sc_gm_id"));
+				u.setScType(rs.getInt("sc_type"));
+				u.setOriginalID(rs.getInt("userid"));
 				return u;
 			}
 		} catch (SQLException e) {
