@@ -71,6 +71,7 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	
 	@Override
 	public User webLogin(FrmWebLogin wFrm) {
 		String sql =  " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , uni.universityname, u.departmentid ,dep.departmentname , u.point , co.coverphoto as coverphotourl, u.userstatus,u.isconfirmed, "

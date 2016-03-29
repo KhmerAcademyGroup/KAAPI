@@ -38,8 +38,6 @@ public class User {
 	private boolean userStatus;
 	private boolean isConfirmed;
 	
-	
-	
 	private String scFacebookId;
 	private String scTwitterId;
 	private String scGmailId;
