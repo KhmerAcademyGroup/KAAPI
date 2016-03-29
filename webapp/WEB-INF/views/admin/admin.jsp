@@ -69,15 +69,15 @@
                                 </button>
                                 <span class="clearfix"></span>
                             </div>
-                            <form class="navbar-form pull-left" role="search">
+                           <!--  <form class="navbar-form pull-left" role="search">
                                 <div class="form-group">
                                     <input type="text" class="form-control search-bar" placeholder="Type here for search...">
                                 </div>
                                 <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
-                            </form>
+                            </form> -->
 
                             <ul class="nav navbar-nav navbar-right pull-right">
-                                <li class="dropdown hidden-xs">
+                               <!--  <li class="dropdown hidden-xs">
                                     <a href="#" data-target="#" class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="true">
                                         <i class="md md-notifications"></i> <span class="badge badge-xs badge-danger" id="totalRequestedUser"></span>
                                     </a>
@@ -85,16 +85,16 @@
                                         <li class="text-center notifi-title">Notification</li>
                                         <li class="list-group" id="listRequestedUser" style="max-height: 400px; overflow: auto">
                                            
-                                           <!-- list Requested User-->
+                                           list Requested User
                                           
                                            
                                         </li>
                                     </ul>
-                                </li>
+                                </li> -->
                                 <li class="hidden-xs">
-                                    <a href="#" id="btn-fullscreen" class="waves-effect waves-light"><i class="md md-crop-free"></i></a>
+                                    <a href="${pageContext.request.contextPath}/logout" id="btn-fullscreen" class="waves-effect waves-light">Logout</a>
                                 </li>
-                                <li class="hidden-xs">
+                               <%--  <li class="hidden-xs">
                                     <a href="#" class="right-bar-toggle waves-effect waves-light"><i class="md md-chat"></i></a>
                                 </li>
                                 <li class="dropdown">
@@ -105,8 +105,8 @@
                                         <li><a href="javascript:void(0)"><i class="md md-lock"></i> Lock screen</a></li>
                                         <li><a href="${PageContext.request.contextPath}"><i class="md md-settings-power"></i> Logout</a></li>
                                     </ul>
-                                </li>
-                            </ul>
+                                </li> --%>
+                            </ul> 
                         </div>
                         <!--/.nav-collapse -->
                     </div>
@@ -119,24 +119,7 @@
 
             <div class="left side-menu">
                 <div class="sidebar-inner slimscrollleft">
-                    <div class="user-details">
-                        <div class="pull-left">
-                            <img src="${pageContext.request.contextPath}/resources/theme/images/users/avatar-1.jpg" alt="" class="thumb-md img-circle">
-                        </div>
-                        <div class="user-info">
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">John Doe <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="javascript:void(0)"><i class="md md-face-unlock"></i> Profile<div class="ripple-wrapper"></div></a></li>
-                                    <li><a href="javascript:void(0)"><i class="md md-settings"></i> Settings</a></li>
-                                    <li><a href="javascript:void(0)"><i class="md md-lock"></i> Lock screen</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/logout"><i class="md md-settings-power"></i> Logout</a></li>
-                                </ul>
-                            </div>
-                            
-                            <p class="text-muted m-0">Administrator</p>
-                        </div>
-                    </div>
+                    
                     <!--- Divider -->
                     <div id="sidebar-menu">
                         <ul>
@@ -144,7 +127,7 @@
                                 <a href="#" class="waves-effect"><i class="md md-account-child"></i><span>User</span></a>
                             </li>
                             <li>
-                                <a href="${pageContext.request.contextPath}/wsapi" class="waves-effect"><i class="md md-account-child"></i><span>WS API</span></a>
+                                <a href="${pageContext.request.contextPath}/wsapi" class="waves-effect" target="_blank"><i class="md md-account-child"></i><span>WS API</span></a>
                             </li>
                         </ul>
                         <div class="clearfix"></div>

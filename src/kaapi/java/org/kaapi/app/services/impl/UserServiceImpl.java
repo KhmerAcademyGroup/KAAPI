@@ -477,10 +477,10 @@ public class UserServiceImpl implements UserService {
 			ps.setString(4, user.getGender());
 			ps.setInt(5,36);
 			ps.setInt(6, 12 );
-			ps.setInt(7,user.getScFacebookId());
-			ps.setInt(8,user.getScTwitterId());
-			ps.setInt(9,user.getScGmailId());
-			ps.setInt(10,user.getScType());
+			ps.setString(7,user.getScFacebookId());
+			ps.setString(8,user.getScTwitterId());
+			ps.setString(9,user.getScGmailId());
+			ps.setString(10,user.getScType());
 			if(ps.executeUpdate()>0)
 				return true;
 		} catch (SQLException e) {
