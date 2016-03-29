@@ -595,9 +595,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean checkSocialID(String scType, String scID) {
-		String sqlFB = "select sc_fb_id FROM tbluser WHERE sc_fb_id = ? and sc_type=?";
-//		String sqlTW = "select id WHERE sc_fb_id = ? and sc_type=?";
-//		String sqlGM = "select id WHERE sc_fb_id = ? and sc_type=?";
+		String sqlFB = "select sc_fb_id, count(sc_fb_id) FROM tbluser WHERE sc_fb_id = ? and sc_type=?";
+//		String sqlTW = "select id, count(sc_fb_id) WHERE sc_fb_id = ? and sc_type=?";
+//		String sqlGM = "select id, count(sc_fb_id) WHERE sc_fb_id = ? and sc_type=?";
 		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sqlFB) ){
 			ps.setString(1, scID );
 			ps.setString(2, scType );
