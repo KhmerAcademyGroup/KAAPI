@@ -40,10 +40,10 @@ public class User {
 	
 	
 	
-	private int scFacebookId;
-	private int scTwitterId;
-	private int scGmailId;
-	private int scType;
+	private String scFacebookId;
+	private String scTwitterId;
+	private String scGmailId;
+	private String scType;
 	
 	private int originalID;
 	
@@ -230,28 +230,28 @@ public class User {
 	public void setConfirmed(boolean isConfirmed) {
 		this.isConfirmed = isConfirmed;
 	}
-	public int getScFacebookId() {
+	public String getScFacebookId() {
 		return scFacebookId;
 	}
-	public void setScFacebookId(int scFacebookId) {
+	public void setScFacebookId(String scFacebookId) {
 		this.scFacebookId = scFacebookId;
 	}
-	public int getScTwitterId() {
+	public String getScTwitterId() {
 		return scTwitterId;
 	}
-	public void setScTwitterId(int scTwitterId) {
+	public void setScTwitterId(String scTwitterId) {
 		this.scTwitterId = scTwitterId;
 	}
-	public int getScGmailId() {
+	public String getScGmailId() {
 		return scGmailId;
 	}
-	public void setScGmailId(int scGmailId) {
+	public void setScGmailId(String scGmailId) {
 		this.scGmailId = scGmailId;
 	}
-	public int getScType() {
+	public String getScType() {
 		return scType;
 	}
-	public void setScType(int scType) {
+	public void setScType(String scType) {
 		this.scType = scType;
 	}
 	
