@@ -15,22 +15,30 @@ import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.services.CourseManagementService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class CourseManagementServiceImpl implements CourseManagementService{
 
 	@Autowired
 	DataSource dataSource;
 	
 	@Override
-	public List<Playlist> listCourses(String mainCategoryId,Pagination pagination) {
+	public ArrayList<Playlist> listCourses(String mainCategoryId,Pagination pagination) {
+		if(mainCategoryId.equals("empty")){
+			mainCategoryId = "";
+		}else{
+			mainCategoryId = Encryption.decode(mainCategoryId);
+		}
 		String sql = "SELECT A.playlistid, A.playlistname, A.description, A.userid, B.email, B.username, A.bgimage, A.color, A.thumbnailurl, A.status ,MC.maincategoryid "
 				   + ",(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid " 
 				   + ",MC.maincategoryname "
-				   + "FROM tblplaylist A "
-				   + "INNER JOIN tbluser B ON A.userid = B.userid "
-				   + "INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid "
-				   + "WHERE A.status = true " + ((Encryption.decode(mainCategoryId)=="") ? "" : " AND maincategory= "+ Encryption.decode(mainCategoryId)+ " ")
-				   + " ORDER BY 1 DESC "
+				   + " ,( select COUNT(videoid) FROM tblplaylistdetail where playlistid = A.playlistid GROUP BY playlistid ) as conutvideo "
+				   + " FROM tblplaylist A "
+				   + " INNER JOIN tbluser B ON A.userid = B.userid "
+				   + " INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid "
+				   + " WHERE A.status = true " + ((mainCategoryId=="") ? "" : " AND A.maincategory= "+ mainCategoryId+ " ")
+				   + " ORDER BY A.playlistid DESC "
 				   + " offset ? limit ?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
@@ -51,7 +59,7 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlist.setStatus(rs.getBoolean("status"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
-//				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlist.setCountVideos(rs.getInt("conutvideo"));
 				playlist.setMaincategoryname(rs.getString("maincategoryname"));
 				playlist.setMaincategory(Encryption.encode(rs.getString("maincategoryid")));
 				playlists.add(playlist);
@@ -63,9 +71,28 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 		return null;
 	}
 	
+	@Override
+	public int countCourse(String mainCategoryId) {
+		if(mainCategoryId.equals("empty")){
+			mainCategoryId = "";
+		}else{
+			mainCategoryId = Encryption.decode(mainCategoryId);
+		}
+		String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where   status=true   " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ");	
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	
 	@Override
-	public List<CourseVideoManagement> listVideosInCourse(String curseId, Pagination pagination) {
+	public ArrayList<CourseVideoManagement> listVideosInCourse(String curseId, Pagination pagination) {
 		String sql = "SELECT PL.playlistid, PL.playlistname, PL.description playlist_description, PL.thumbnailurl, PL.status playlist_status,"
 				+ " V.videoid , V.videoname, V.description video_description, V.youtubeurl, V.fileurl, V.postdate, V.userid, V.viewcount,"
 				+ " U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX ,V.status video_status"
@@ -82,7 +109,7 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 				+ " offset ? limit ?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ArrayList<CourseVideoManagement> cArr =new ArrayList<CourseVideoManagement>();
-			ps.setInt(1,Integer.parseInt(Encryption.encode(curseId)));
+			ps.setInt(1,Integer.parseInt(Encryption.decode(curseId)));
 			ps.setInt(2,pagination.offset());
 			ps.setInt(3, pagination.getItem());
 			CourseVideoManagement c = null;
@@ -110,6 +137,7 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 				c.setCountVotePlus(rs.getInt("countvoteminus"));
 				c.setIndex(rs.getInt("index"));
 				c.setVideoStatus(rs.getBoolean("video_status"));
+				cArr.add(c);
 			}
 			return cArr;
 		} catch (SQLException e) {

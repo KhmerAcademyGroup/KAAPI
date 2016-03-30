@@ -1395,6 +1395,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ResultSet rs = null;
 			String sql = "SELECT P.playlistid, P.playlistname, P.description, P.userid, U.email, U.username, P.bgimage, P.color, P.thumbnailurl, P.status"
 					+ " ,(SELECT videoid from tblplaylistdetail where playlistid=P.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=P.playlistid) )"
+					+ " ,( select COUNT(videoid) FROM tblplaylistdetail where playlistid = P.playlistid GROUP BY P.playlistid ) as conutvideo "
 					+ " FROM tblplaylist P"
 					+ " INNER JOIN tbluser u ON u.userid = P.userid"
 					+ " WHERE LOWER(P.playlistname) LIKE LOWER(?) AND P.status = TRUE"
@@ -1416,7 +1417,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setBgImage(rs.getString("bgimage"));
 				playlist.setColor(rs.getString("color"));
 				playlist.setStatus(rs.getBoolean("status"));
-//				playlist.setCountVideos(this.countVideoInPlayList(rs.getInt("playlistid")));
+				playlist.setCountVideos(rs.getInt("conutvideo"));
 				playlist.setUsername(rs.getString("username"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
 				playlists.add(playlist);
