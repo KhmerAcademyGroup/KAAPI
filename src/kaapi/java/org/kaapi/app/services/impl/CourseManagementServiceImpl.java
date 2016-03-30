@@ -5,13 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.kaapi.app.entities.CourseVideoManagement;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
+import org.kaapi.app.forms.FrmUpdatePlaylist;
 import org.kaapi.app.services.CourseManagementService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,6 +144,54 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public Playlist getCourse(String courseId) {
+		String sql = "Select playlistid, playlistname, description ,thumbnailurl, maincategory, bgimage, color, status from tblplaylist where playlistid=?;";
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1,Integer.parseInt(Encryption.decode(courseId)));
+			Playlist playlist = null;
+			ResultSet rs = null;
+			rs = ps.executeQuery();
+			if(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategory")));
+				return playlist;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean updateCourse(FrmUpdatePlaylist playlist) {
+		String sql = "UPDATE tblplaylist SET playlistname=?,description=?,thumbnailurl=?,maincategory=?,bgimage=?,color=?,status=? WHERE playlistid=?";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps  =  cnn.prepareStatement(sql);
+		){
+				ps.setString(1, playlist.getPlaylistName());
+				ps.setString(2, playlist.getDescription());
+				ps.setString(3, playlist.getThumbnailUrl());
+				ps.setInt(4, Integer.parseInt(Encryption.decode(playlist.getMaincategory())));
+				ps.setString(5, playlist.getBgImage());
+				ps.setString(6, playlist.getColor());
+				ps.setBoolean(7, playlist.isStatus());
+				ps.setInt(8, Integer.parseInt(Encryption.decode(playlist.getPlaylistId())));
+				if(ps.executeUpdate() > 0 ) return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	
