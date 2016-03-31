@@ -63,5 +63,6 @@ public interface PlayListServics {
 
     public List<Playlist> listPlaylistsByMainCategory(String mainCategoryId);
     public List<RecommendedVideos> mostViewedVideos();
-
+    public List<Playlist> listPlaylistsByMainCategoryWithPagin(String mainCategoryId,Pagination pagin);
+    public int countPlaylists(String mainCategoryId);
 }

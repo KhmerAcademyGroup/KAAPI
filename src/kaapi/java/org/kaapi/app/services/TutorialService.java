@@ -20,4 +20,8 @@ public interface TutorialService {
 	public int countByUser(String userid);
 	public int count(String categoryid);
 	public ArrayList<Category> listCategories();
+	
+	
+	public int countTutorial();
+	public ArrayList<Category> listTutorial(Pagination pagin);
 }

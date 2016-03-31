@@ -198,4 +198,33 @@ public class TutorialController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
 	}
 	
+	
+	@RequestMapping(value="list_tutorial", method= RequestMethod.GET, headers="Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listTutorialPagin( 
+			  @RequestParam(value = "page", required = false , defaultValue="1") int page 
+			, @RequestParam(value="item" , required = false , defaultValue="20") int item){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			Pagination pagination = new Pagination();
+			pagination.setItem(item);
+			pagination.setPage(page);
+			pagination.setTotalCount(service.countTutorial());
+			pagination.setTotalPages(pagination.totalPages());
+			ArrayList<Category> category = service.listTutorial(pagination);
+			if(category.isEmpty()){
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+			map.put("STATUS", true);
+			map.put("MESSAGE", "RECORD FOUND");
+			map.put("RES_DATA", category);
+			map.put("PAGINATION", pagination);
+			
+		}catch(Exception e){
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
+	
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.websocket.server.PathParam;
+
 import org.kaapi.app.entities.MainCategory;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
@@ -778,5 +780,39 @@ public class PlayListControllers {
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
+		
+	
+	@RequestMapping(value="/byMainCategoryWithPagin/{mainCategoryId}", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlaylistsByMainCategoryWithPagin(
+												@PathVariable String mainCategoryId,
+												@RequestParam(value ="page", required = false, defaultValue = "1") int page,
+												@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			Pagination pagin = new Pagination();
+			pagin.setItem(item);
+			pagin.setPage(page);
 			
+			pagin.setTotalCount(playlistservice.countPlaylists(mainCategoryId));
+			pagin.setTotalPages(pagin.totalPages());
+			
+			ArrayList<Playlist>  arr= (ArrayList<Playlist>) playlistservice.listPlaylistsByMainCategoryWithPagin(mainCategoryId, pagin);
+			if(!arr.isEmpty()){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("RES_DATA", arr);
+				map.put("PAGINATION", pagin);
+			}else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD NOT FOUND!");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
 }

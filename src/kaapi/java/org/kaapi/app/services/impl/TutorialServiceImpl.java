@@ -348,5 +348,61 @@ public class TutorialServiceImpl implements TutorialService{
 		return 0;
 	}
 
+	@Override
+	public int countTutorial() {
+		try {
+			con = ds.getConnection();
+			ResultSet rs = null;
+			String sql = "select COUNT(tutorialid) from tblcategory c INNER JOIN tbltutorial t on c.categoryid = t.categoryid GROUP BY c.categoryid ORDER BY c.categoryname";
+			PreparedStatement ps= con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			if(rs.next())
+				return rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Category> listTutorial(Pagination pagin) {
+		try {
+			con = ds.getConnection();
+			ResultSet rs = null;			
+			String sql = "select c.categoryid, c.categoryname, c.categorylogourl from tblcategory c INNER JOIN tbltutorial t on c.categoryid = t.categoryid GROUP BY c.categoryid ORDER BY c.categoryid OFFSET ? LIMIT ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, pagin.offset());
+			ps.setInt(2, pagin.getItem());
+			rs = ps.executeQuery();
+			ArrayList<Category> categories= new ArrayList<Category>();
+			while(rs.next()){
+				Category dto= new Category();
+				dto.setCategoryId(Encryption.encode(rs.getString("categoryid")));
+				dto.setCategoryName(rs.getString("categoryname"));
+				dto.setCategoryLogoUrl(rs.getString("categorylogourl"));
+				categories.add(dto);
+			}
+			rs.close();
+			return categories;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;	
+	}
+
 
 }

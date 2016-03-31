@@ -1262,7 +1262,7 @@ public class PlayListServiceImpl implements PlayListServics{
 					   + " FROM tblplaylist A "
 					   + " WHERE   A.status = true " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ")
 					   + " ORDER BY 1 DESC "
-					   + " LIMIT 8";
+					   + " LIMIT 10";
 			PreparedStatement ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -1645,6 +1645,90 @@ public class PlayListServiceImpl implements PlayListServics{
 		}
 		return null;
 	}
+	
+	
+	@Override
+	public List<Playlist> listPlaylistsByMainCategoryWithPagin(String mainCategoryId,Pagination pagin) {
+		try {
+			String mID = "";
+			if(!mainCategoryId.equals("empty")){
+				mID = Encryption.decode(mainCategoryId);
+			}
+			con = dataSource.getConnection();
+			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
+			Playlist playlist = null;
+			ResultSet rs = null;
+			String sql = " SELECT A.playlistid, A.playlistname, A.description, A.userid, A.bgimage, A.color, A.thumbnailurl, A.status ,MC.maincategoryid "
+					   + ",(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid " 
+					   + ", MC.maincategoryname "
+						+ " ,( select COUNT(videoid) FROM tblplaylistdetail where playlistid =A.playlistid GROUP BY playlistid ) as conutvideo "
+					   + " FROM tblplaylist A "
+					   + " INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid "
+					   + " WHERE A.status = true " + ((mID=="") ? "" : " AND maincategory= "+ mID+ " ")
+					   + " ORDER BY 1 DESC "
+					   + " LIMIT ? OFFSET ?" ;
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, pagin.getItem());
+			ps.setInt(2, pagin.offset());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new Playlist();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setUserId(rs.getString("userid"));
+				playlist.setBgImage(rs.getString("bgimage"));
+				playlist.setColor(rs.getString("color"));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlist.setStatus(rs.getBoolean("status"));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
+				playlist.setMaincategoryname(rs.getString("maincategoryname"));
+				playlist.setMaincategory(Encryption.encode(rs.getString("maincategoryid")));
+				playlist.setCountVideos(rs.getInt("conutvideo"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public int countPlaylists(String mainCategoryId) {
+		try {
+			String mID = "";
+			if(!mainCategoryId.equals("empty")){
+				mID = Encryption.decode(mainCategoryId);
+			}
+			con = dataSource.getConnection();
+			String sql = "SELECT COUNT(A.playlistid)"
+					+ " FROM tblplaylist A"
+					+ " INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid"
+					+ " WHERE A.status = true  " + ((mID=="") ? "" : " AND maincategory= "+ mID+ " ");
+			PreparedStatement ps=con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return 0;
+	}
+	
 	
 	
 	
