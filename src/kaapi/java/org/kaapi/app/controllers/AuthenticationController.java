@@ -38,6 +38,7 @@ public class AuthenticationController {
 				map.put("USERID", u.getUserId());
 				map.put("USERNAME" , u.getUsername());
 				map.put("EMAIL", u.getEmail());
+				map.put("GENDER", u.getGender());
 				map.put("PROFILE_IMG_URL", u.getUserImageUrl());
 				map.put("COVER_IMG_URL", u.getCoverphoto());
 				map.put("FACEBOOK_ID", u.getScFacebookId());
