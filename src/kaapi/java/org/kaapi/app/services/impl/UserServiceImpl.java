@@ -482,7 +482,7 @@ public class UserServiceImpl implements UserService {
 			ps.setString(2, user.getPassword());
 			ps.setString(3, user.getUsername());
 			ps.setString(4, user.getGender());
-			ps.setString(5, user.getImageUrl());
+			ps.setString(5, user.getUserImageUrl());
 			ps.setInt(6,36);
 			ps.setInt(7, 12 );
 			ps.setString(8,user.getScFacebookId());

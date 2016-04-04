@@ -188,11 +188,11 @@ public class UserController {
 				map.put("STATUS", false);
 			}else{
 				
-				String userImageUrl = (user.getImageUrl() == null)
+				String userImageUrl = (user.getUserImageUrl() == null)
 						? request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 								+ request.getContextPath() + "/resources/upload/file/user/avatar.jpg"
-						: user.getImageUrl();
-				user.setImageUrl(userImageUrl);
+						: user.getUserImageUrl();
+				user.setUserImageUrl(userImageUrl);
 				
 				if(userService.mobileInsertUser(user)){
 					map.put("MESSAGE", "User has been inserted.");

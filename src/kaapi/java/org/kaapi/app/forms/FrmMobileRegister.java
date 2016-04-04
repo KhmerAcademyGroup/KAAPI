@@ -12,7 +12,7 @@ public class FrmMobileRegister {
 	private String scGmailId;
 	private String scType;
 
-	private String imageUrl;
+	private String userImageUrl;
 
 	public String getEmail() {
 		return email;
@@ -78,12 +78,12 @@ public class FrmMobileRegister {
 		this.scType = scType;
 	}
 	
-	public String getImageUrl() {
-		return imageUrl;
+	public String getUserImageUrl() {
+		return userImageUrl;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setUserImageUrl(String userImageUrl) {
+		this.userImageUrl = userImageUrl;
 	}
 
 }
