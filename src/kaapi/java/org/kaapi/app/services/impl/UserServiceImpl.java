@@ -1,7 +1,6 @@
 package org.kaapi.app.services.impl;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -477,18 +476,19 @@ public class UserServiceImpl implements UserService {
 		String sql =  " INSERT INTO TBLUSER"
 				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed, sc_fb_id , sc_tw_id , sc_gm_id, sc_type)"
 				+ " VALUES"
-				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'user/avatar.jpg',2,?,?,'1',true,?,?,?,?);";
+				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),?,2,?,?,'1',true,?,?,?,?);";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
 			ps.setString(3, user.getUsername());
 			ps.setString(4, user.getGender());
-			ps.setInt(5,36);
-			ps.setInt(6, 12 );
-			ps.setString(7,user.getScFacebookId());
-			ps.setString(8,user.getScTwitterId());
-			ps.setString(9,user.getScGmailId());
-			ps.setString(10,user.getScType());
+			ps.setString(5, user.getImageUrl());
+			ps.setInt(6,36);
+			ps.setInt(7, 12 );
+			ps.setString(8,user.getScFacebookId());
+			ps.setString(9,user.getScTwitterId());
+			ps.setString(10,user.getScGmailId());
+			ps.setString(11,user.getScType());
 			if(ps.executeUpdate()>0)
 				return true;
 		} catch (SQLException e) {

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.kaapi.app.entities.Department;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.University;
@@ -175,7 +177,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="mobileuserregister" , method = RequestMethod.POST , headers = "Accept=application/json")
-	public ResponseEntity<Map<String , Object>> mobileAddUser(@RequestBody FrmMobileRegister user){
+	public ResponseEntity<Map<String , Object>> mobileAddUser(@RequestBody FrmMobileRegister user, HttpServletRequest request){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
 			FrmValidateEmail email = new FrmValidateEmail();
@@ -185,6 +187,13 @@ public class UserController {
 				map.put("EMAIL", email.getEmail());
 				map.put("STATUS", false);
 			}else{
+				
+				String userImageUrl = (user.getImageUrl() == null)
+						? request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+								+ request.getContextPath() + "/resources/upload/file/user/avatar.jpg"
+						: user.getImageUrl();
+				user.setImageUrl(userImageUrl);
+				
 				if(userService.mobileInsertUser(user)){
 					map.put("MESSAGE", "User has been inserted.");
 					map.put("STATUS", true);
