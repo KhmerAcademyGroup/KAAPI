@@ -9,8 +9,8 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 
 public interface CourseManagementService {
 	
-	 public ArrayList<Playlist> listCourses(String mainCategoryId,Pagination pagination);
-	 public int countCourse(String mainCategoryId);
+	 public ArrayList<Playlist> listCourses(String playlistName , String mainCategoryId,Pagination pagination);
+	 public int countCourse(String playlistName , String mainCategoryId);
 	 public ArrayList<CourseVideoManagement> listVideosInCourse(String curseId,Pagination pagination);
 	 public Playlist getCourse(String courseId);
 	 public boolean updateCourse(FrmUpdatePlaylist p);

@@ -16,6 +16,7 @@ import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
+import org.kaapi.app.forms.PlaylistDTO;
 import org.kaapi.app.forms.RecommendedVideos;
 import org.kaapi.app.services.PlayListServics;
 import org.kaapi.app.utilities.Encryption;
@@ -1727,6 +1728,49 @@ public class PlayListServiceImpl implements PlayListServics{
 			}
 		}
 		return 0;
+	}
+	
+	@Override
+	public List<PlaylistDTO> listPlaylistDTOByMainCategoryWithPagin(String mainCategoryId, Pagination pagin) {
+		try {
+			String mID = "";
+			if(!mainCategoryId.equals("empty")){
+				mID = Encryption.decode(mainCategoryId);
+			}
+			con = dataSource.getConnection();
+			ArrayList<PlaylistDTO> playlists =new ArrayList<PlaylistDTO>();
+			PlaylistDTO playlist = null;
+			ResultSet rs = null;
+			String sql = " SELECT A.playlistid, A.playlistname, A.description, A.thumbnailurl,(SELECT videoid from tblplaylistdetail where playlistid=A.playlistid and index=(select min(index) from tblplaylistdetail where playlistid=A.playlistid) ) as videoid "
+					   + " FROM tblplaylist A "
+					   + " INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid "
+					   + " WHERE A.status = true " + ((mID=="") ? "" : " AND maincategory= "+ mID+ " ")
+					   + " ORDER BY 1 DESC "
+					   + " LIMIT ? OFFSET ?" ;
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, pagin.getItem());
+			ps.setInt(2, pagin.offset());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				playlist =new PlaylistDTO();
+				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
+				playlist.setPlaylistName(rs.getString("playlistname"));
+				playlist.setDescription(rs.getString("description"));
+				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
+				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
+				playlists.add(playlist);
+			}
+			return playlists;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	

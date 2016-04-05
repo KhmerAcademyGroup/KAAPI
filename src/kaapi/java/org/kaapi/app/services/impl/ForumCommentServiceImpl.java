@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.ForumCommentDTO;
 import org.kaapi.app.forms.FrmAddAnswer;
 import org.kaapi.app.forms.FrmAddQuestion;
 import org.kaapi.app.forms.FrmUpdateAnswer;
@@ -34,7 +35,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid "
 					+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid "
 					+ " LEFT JOIN TBLFORUMVOTE FV ON C1.Commentid=FV.Commentid "
-					+ " WHERE C1.Parentid IS NULL GROUP BY C1.Commentid, U.Userid, FV.Commentid "
+					+ " WHERE C1.Parentid IS NULL AND C1.status = true  GROUP BY C1.Commentid, U.Userid, FV.Commentid "
 					+ " ORDER BY COMMENTID DESC LIMIT ? OFFSET ?";
 		try(
 				Connection cnn = dataSource.getConnection();
@@ -73,7 +74,31 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 		return null;
 	}
 
-	
+	@Override
+	public List<ForumCommentDTO> listCommentDTO(Pagination pagination) {
+		String sql =  " SELECT commentid,title FROM TBLFORUMCOMMENT WHERE Parentid IS NULL  AND status = true "
+				+ " ORDER BY COMMENTID DESC LIMIT ? OFFSET ?";
+	try(
+			Connection cnn = dataSource.getConnection();
+			PreparedStatement ps = cnn.prepareStatement(sql);
+	){
+			ps.setInt(1, pagination.getItem());
+			ps.setInt(2, pagination.offset());
+			ResultSet rs = ps.executeQuery();
+			List<ForumCommentDTO> list = new ArrayList<ForumCommentDTO>();
+			ForumCommentDTO dto = null;
+			while(rs.next()){
+				dto  = new ForumCommentDTO();
+				dto.setCommentId(Encryption.encode(rs.getString("commentid")));
+				dto.setTitle(rs.getString("title"));
+				list.add(dto);
+			}
+			return list;
+	}catch(SQLException e){
+		e.printStackTrace();
+	}
+	return null;
+	}
 
 	@Override
 	public List<ForumComment> listQuestionByUserid(String userid, Pagination pagination) {

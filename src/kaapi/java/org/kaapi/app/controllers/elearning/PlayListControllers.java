@@ -5,18 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.websocket.server.PathParam;
-
-import org.kaapi.app.entities.MainCategory;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
+import org.kaapi.app.forms.PlaylistDTO;
 import org.kaapi.app.services.MainCategoryService;
 import org.kaapi.app.services.PlayListServics;
-import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -796,7 +793,7 @@ public class PlayListControllers {
 			pagin.setTotalCount(playlistservice.countPlaylists(mainCategoryId));
 			pagin.setTotalPages(pagin.totalPages());
 			
-			ArrayList<Playlist>  arr= (ArrayList<Playlist>) playlistservice.listPlaylistsByMainCategoryWithPagin(mainCategoryId, pagin);
+			ArrayList<PlaylistDTO>  arr= (ArrayList<PlaylistDTO>) playlistservice.listPlaylistDTOByMainCategoryWithPagin(mainCategoryId, pagin);
 			if(!arr.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");

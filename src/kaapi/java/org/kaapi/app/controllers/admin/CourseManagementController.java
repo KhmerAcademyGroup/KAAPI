@@ -29,6 +29,7 @@ public class CourseManagementController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{mainCategoryId}", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> courses(
 			@PathVariable("mainCategoryId") String mainCategoryId,
+			@RequestParam(value ="playlistName", required = false, defaultValue = "") String playlistName,
 			@RequestParam(value ="page", required = false, defaultValue = "1") int page,
 			@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -36,9 +37,9 @@ public class CourseManagementController {
 			Pagination pagin = new Pagination();
 			pagin.setItem(item);
 			pagin.setPage(page);
-			pagin.setTotalCount(courseService.countCourse(mainCategoryId));
+			pagin.setTotalCount(courseService.countCourse(playlistName,mainCategoryId));
 			pagin.setTotalPages(pagin.totalPages());
-			ArrayList<Playlist>  arr = courseService.listCourses(mainCategoryId, pagin);
+			ArrayList<Playlist>  arr = courseService.listCourses(playlistName , mainCategoryId, pagin);
 			if(!arr.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");

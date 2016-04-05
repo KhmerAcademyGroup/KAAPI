@@ -9,6 +9,7 @@ import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
+import org.kaapi.app.forms.PlaylistDTO;
 import org.kaapi.app.forms.RecommendedVideos;
 
 
@@ -65,4 +66,6 @@ public interface PlayListServics {
     public List<RecommendedVideos> mostViewedVideos();
     public List<Playlist> listPlaylistsByMainCategoryWithPagin(String mainCategoryId,Pagination pagin);
     public int countPlaylists(String mainCategoryId);
+    public List<PlaylistDTO> listPlaylistDTOByMainCategoryWithPagin(String mainCategoryId,Pagination pagin);
+
 }

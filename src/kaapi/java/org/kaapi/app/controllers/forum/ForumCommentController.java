@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.ForumCommentDTO;
 import org.kaapi.app.forms.FrmAddAnswer;
 import org.kaapi.app.forms.FrmAddQuestion;
 import org.kaapi.app.forms.FrmUpdateAnswer;
@@ -206,6 +207,34 @@ public class ForumCommentController {
 		pagination.setTotalPages(pagination.totalPages());
 		try{
 			List<ForumComment> question = forumCommentService.listAllQuestion( pagination);
+			if(question == null){
+				map.put("MESSAGE", "RECORD NOT FOUND");
+				map.put("STATUS", false);
+			}else{
+				map.put("MESSAGE", "RECORD FOUND");
+				map.put("STATUS", true);
+				map.put("RES_DATA", question);
+				map.put("PAGINATION", pagination);
+			}
+		}catch(Exception e){
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String , Object>> (map , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/listquestiondto" , method = RequestMethod.GET , headers = "Accept=application/json")
+	public ResponseEntity<Map<String , Object>> listCommentDTO(
+			  @RequestParam(value = "page", required = false , defaultValue="1") int page 
+			, @RequestParam(value="item" , required = false , defaultValue="20") int item  ){
+		Map<String , Object> map = new HashMap<String , Object>();
+		Pagination pagination = new Pagination();
+		pagination.setItem(item);
+		pagination.setPage(page);
+		pagination.setTotalCount(forumCommentService.countQuestion());
+		pagination.setTotalPages(pagination.totalPages());
+		try{
+			List<ForumCommentDTO> question = forumCommentService.listCommentDTO( pagination);
 			if(question == null){
 				map.put("MESSAGE", "RECORD NOT FOUND");
 				map.put("STATUS", false);

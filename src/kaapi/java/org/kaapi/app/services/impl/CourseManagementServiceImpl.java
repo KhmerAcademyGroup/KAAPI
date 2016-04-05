@@ -24,7 +24,7 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 	DataSource dataSource;
 	
 	@Override
-	public ArrayList<Playlist> listCourses(String mainCategoryId,Pagination pagination) {
+	public ArrayList<Playlist> listCourses(String playlistName , String mainCategoryId,Pagination pagination) {
 		if(mainCategoryId.equals("empty")){
 			mainCategoryId = "";
 		}else{
@@ -37,13 +37,15 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 				   + " FROM tblplaylist A "
 				   + " INNER JOIN tbluser B ON A.userid = B.userid "
 				   + " INNER JOIN tblmaincategory MC ON A.maincategory = MC.maincategoryid "
-				   + " WHERE A.status = true " + ((mainCategoryId=="") ? "" : " AND A.maincategory= "+ mainCategoryId+ " ")
+				   + " WHERE A.maincategory <> 0 AND   LOWER(A.playlistname) LIKE  LOWER(?) " + ((mainCategoryId=="") ? "" : " AND A.maincategory= "+ mainCategoryId+ " ")
 				   + " ORDER BY A.playlistid DESC "
 				   + " offset ? limit ?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ArrayList<Playlist> playlists =new ArrayList<Playlist>();
-			ps.setInt(1,pagination.offset());
-			ps.setInt(2, pagination.getItem());
+			ps.setString(1,"%"+playlistName+"%");
+			System.out.println(playlistName);
+			ps.setInt(2,pagination.offset());
+			ps.setInt(3, pagination.getItem());
 			Playlist playlist = null;
 			ResultSet rs = null;
 			rs = ps.executeQuery();
@@ -72,14 +74,15 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 	}
 	
 	@Override
-	public int countCourse(String mainCategoryId) {
+	public int countCourse(String playlistName,String mainCategoryId) {
 		if(mainCategoryId.equals("empty")){
 			mainCategoryId = "";
 		}else{
 			mainCategoryId = Encryption.decode(mainCategoryId);
 		}
-		String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where   status=true   " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ");	
+		String sql = "SELECT COUNT(playlistid) FROM TBLPLAYLIST where   maincategory <> 0 AND   LOWER(playlistname) LIKE  LOWER(?)   " + ((mainCategoryId=="") ? "" : " AND maincategory= "+ mainCategoryId+ " ");	
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setString(1, "%"+playlistName+"%");
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				return rs.getInt(1); 

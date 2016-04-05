@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.kaapi.app.entities.ForumComment;
 import org.kaapi.app.entities.Pagination;
+import org.kaapi.app.forms.ForumCommentDTO;
 import org.kaapi.app.forms.FrmAddAnswer;
 import org.kaapi.app.forms.FrmAddQuestion;
 import org.kaapi.app.forms.FrmUpdateAnswer;
@@ -41,4 +42,6 @@ public interface ForumCommentService {
 	public boolean updateQuestion(FrmUpdateQuestion updateQuestion);
 	
 	public String[] getAllTags();
+	
+	public List<ForumCommentDTO> listCommentDTO(Pagination pagination);
 }
