@@ -30,22 +30,26 @@ public class AuthenticationController {
 			@RequestBody FrmMobileLogin mobileLoginFrm
 		){
 		Map<String, Object> map = new HashMap<String , Object>();
+		Map<String, Object> userMap =  new HashMap<>();
 		try{
 			User u = userService.mobileLogin(mobileLoginFrm);
 			if(u != null){
+				
+				userMap.put("userId", u.getUserId());
+				userMap.put("username" , u.getUsername());
+				userMap.put("email", u.getEmail());
+				userMap.put("gender", u.getGender());
+				userMap.put("userImageUrl", u.getUserImageUrl());
+				userMap.put("coverphoto", u.getCoverphoto());
+				userMap.put("scFacebookId", u.getScFacebookId());
+				userMap.put("scTwitterId", u.getScTwitterId());
+				userMap.put("scGmailId",u.getScGmailId());
+				userMap.put("scType", u.getScType());
+				userMap.put("originalID", u.getOriginalID());
+				
 				map.put("MESSAGE", "Logined success");
 				map.put("STATUS", true);
-				map.put("USERID", u.getUserId());
-				map.put("USERNAME" , u.getUsername());
-				map.put("EMAIL", u.getEmail());
-				map.put("GENDER", u.getGender());
-				map.put("PROFILE_IMG_URL", u.getUserImageUrl());
-				map.put("COVER_IMG_URL", u.getCoverphoto());
-				map.put("FACEBOOK_ID", u.getScFacebookId());
-				map.put("TWITTER_ID", u.getScTwitterId());
-				map.put("GMAIL_ID",u.getScGmailId());
-				map.put("SOCIAL_TYPE", u.getScType());
-				map.put("ORIGINAL_ID", u.getOriginalID());
+				map.put("USER", userMap);
 			}else{
 				map.put("MESSAGE", "Logined unsuccess! Invalid email or password!");
 				map.put("STATUS", false);
