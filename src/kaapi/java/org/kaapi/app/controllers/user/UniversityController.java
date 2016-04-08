@@ -130,7 +130,7 @@ public class UniversityController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			String university = universityService.findUniversityById(universityId);
-			System.out.println(university);
+//			System.out.println(university);
 			if (university == null) {
 				map.put("MESSAGE", "RECORD  NOT FOUND");
 				map.put("STATUS", false);

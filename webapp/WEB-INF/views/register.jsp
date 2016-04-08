@@ -136,7 +136,7 @@
 	               xhr.setRequestHeader("Content-Type", "application/json");
 	            },
   	            success: function(data) {
-  	            	send();
+//   	            	send();
   	            	location.href = "${pageContext.request.contextPath}/login";
   	            	alert(data.MESSAGE);
   	            },
@@ -152,7 +152,7 @@
         });
         
         
-	        var webSocket = 
+	        /* var webSocket = 
 				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/websockets/notify');
 			
 			webSocket.onerror = function(event) {
@@ -183,7 +183,7 @@
 				var txt = "SENT";
 				webSocket.send(txt);
 				return false;
-			}
+			} */
         </script>
         
         

@@ -19,7 +19,7 @@ public class NotificationController {
 	  @OnMessage
 	  public void onMessage(String message, Session session) 
 	    throws IOException, InterruptedException {
-		  System.out.println(message);
+//		  System.out.println(message);
 //		  synchronized(clients){
 //				// Iterate over the connected sessions
 //				// and broadcast the received message
@@ -33,7 +33,7 @@ public class NotificationController {
 		  synchronized(clients){
 		  for (Session client : clients) {
 				try {
-					System.out.println("MESSAGE=" + message);
+//					System.out.println("MESSAGE=" + message);
 					client.getBasicRemote().sendText(message);
 				} catch (IOException ex) {
 					ex.printStackTrace();

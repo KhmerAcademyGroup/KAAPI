@@ -344,7 +344,7 @@ public class UserServiceImpl implements UserService {
 			ps.setString(1, vFrm.getEmail());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
-				System.out.println(rs.getInt("count") + " " + rs.getString("email"));
+//				System.out.println(rs.getInt("count") + " " + rs.getString("email"));
 				if(rs.getInt("count")>0){
 					return true;
 				}
@@ -372,7 +372,7 @@ public class UserServiceImpl implements UserService {
 				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 		}
 		return false;
 	}
@@ -493,7 +493,7 @@ public class UserServiceImpl implements UserService {
 				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 		}
 		return false;
 	}
@@ -523,7 +523,7 @@ public class UserServiceImpl implements UserService {
 			//rs.next();
 			//System.err.println(rs.getInt("userid"));
 			if(rs.next()){
-				System.err.println(rs.getInt("userid") + "/ Crush " + rs.getString("email") );
+//				System.err.println(rs.getInt("userid") + "/ Crush " + rs.getString("email") );
 				User u = new User();
 				u.setUserId(Encryption.encode(rs.getString("userid")));
 				u.setEmail(email);
@@ -546,7 +546,7 @@ public class UserServiceImpl implements UserService {
 			return true;
 	} catch (SQLException e) {
 		e.printStackTrace();
-		System.out.println(e.getMessage());
+//		System.out.println(e.getMessage());
 	}
 	return false;
 	}
@@ -611,7 +611,7 @@ public class UserServiceImpl implements UserService {
 			ps.setString(2, scType );
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
-				System.out.println(rs.getInt("count") + " " + rs.getString("sc_fb_id"));
+//				System.out.println(rs.getInt("count") + " " + rs.getString("sc_fb_id"));
 				if(rs.getInt("count")>0){
 					return true;
 				}
@@ -647,7 +647,7 @@ public class UserServiceImpl implements UserService {
 				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 		}
 		return false;
 	}	

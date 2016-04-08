@@ -705,7 +705,7 @@
 			/*************************************************************/
 			
 			
-			var webSocket = 
+			/* var webSocket = 
 				new WebSocket('ws://'+ document.location.host + '${pageContext.request.contextPath}/websockets/notify');
 			
 			webSocket.onerror = function(event) {
@@ -721,7 +721,7 @@
 			};
 			
 			function onMessage(event) {
-				users.countRequestedUser();
+// 				users.countRequestedUser();
 				console.log("GET : " + event.data);
 			}
 			
@@ -731,7 +731,7 @@
 			
 			function onError(event) {
 				alert(event.data);
-			}
+			} */
 			
 	</script>
 	</body>

@@ -52,8 +52,8 @@ public class APIUserController {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		APIUser user = (APIUser)authentication.getPrincipal();
-		System.out.print("____________adminID " +user.getId());
-		System.out.print("____________adminID " +user.getUsername());
+//		System.out.print("____________adminID " +user.getId());
+//		System.out.print("____________adminID " +user.getUsername());
 		
 		return new ResponseEntity<Map<String,Object>>(map , HttpStatus.OK);
 	}
@@ -100,7 +100,7 @@ public class APIUserController {
 	public ResponseEntity<Map<String, Object>> acceptRequest(@PathVariable("userID") int userID ){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		APIUser user = (APIUser)authentication.getPrincipal();
-		System.out.print("adminID " +user.getId());
+//		System.out.print("adminID " +user.getId());
 		Map<String , Object> map = new HashMap<String , Object>();
 		if(apiUserService.acceptRequest(userID, user.getId())){
 			map.put("MESSAGE", "Success");
@@ -123,8 +123,8 @@ public class APIUserController {
 	public int getUserID(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		APIUser user = (APIUser)authentication.getPrincipal();
-		System.out.print("____________adminID " +user.getId());
-		System.out.print("____________adminID " +user.getUsername());
+//		System.out.print("____________adminID " +user.getId());
+//		System.out.print("____________adminID " +user.getUsername());
 		return user.getId();
 	}
 	

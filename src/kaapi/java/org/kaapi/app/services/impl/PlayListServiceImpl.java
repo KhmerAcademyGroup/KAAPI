@@ -544,7 +544,7 @@ public class PlayListServiceImpl implements PlayListServics{
 			ps.setBoolean(8, playlist.isStatus());
 			ps.setInt(9, Integer.parseInt(Encryption.decode(playlist.getPlaylistId())));
 			if(ps.executeUpdate()>0){
-				System.out.println();
+//				System.out.println();
 				return true;
 			}
 		} catch (SQLException e) {
@@ -909,12 +909,12 @@ public class PlayListServiceImpl implements PlayListServics{
 			}
 			return total;
 		} catch (SQLException e) {
-			System.out.println(e);
+//			System.out.println(e);
 		}finally{
 			try {
 				con.close();
 			} catch (SQLException e) {
-				System.out.println(e);
+//				System.out.println(e);
 			}
 		}
 		return 0;
@@ -1342,7 +1342,7 @@ public class PlayListServiceImpl implements PlayListServics{
 	
 	@Override
 	public int countPlaylistByUseridPlaylistNameMainCategoryName(Playlist p) {
-		System.out.println("123 "+ p.getUserId() + " PN " + p.getPlaylistName() + " MN "+ p.getMaincategoryname() );
+//		System.out.println("123 "+ p.getUserId() + " PN " + p.getPlaylistName() + " MN "+ p.getMaincategoryname() );
 		String sql = "SELECT COUNT(P.playlistid)"
 				+ " FROM TBLPLAYLIST P INNER JOIN TBLUSER U ON P.userid=U.userid"
 				+ " INNER JOIN TBLMAINCATEGORY M ON P.maincategory = M.maincategoryid"

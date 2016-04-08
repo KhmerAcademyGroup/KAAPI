@@ -175,7 +175,7 @@ public class MainCategoryServiceImpl implements MainCategoryService {
 	public boolean deleteMainCategory(String maincategoryid) {
 
 		try {
-			System.out.println(maincategoryid + " hellow world");
+//			System.out.println(maincategoryid + " hellow world");
 			String sql = "DELETE FROM TBLMAINCATEGORY WHERE maincategoryid=?";
 			con = dataSource.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);

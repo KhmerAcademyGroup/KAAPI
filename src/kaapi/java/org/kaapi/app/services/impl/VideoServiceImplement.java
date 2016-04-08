@@ -168,7 +168,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;
@@ -221,7 +221,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;
@@ -320,7 +320,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;
@@ -492,7 +492,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;
@@ -517,7 +517,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -540,7 +540,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -557,7 +557,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Delete Error Convert ID To Integer!");
+//			System.out.println("Delete Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -575,7 +575,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -592,7 +592,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -664,7 +664,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -694,7 +694,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -711,7 +711,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -861,7 +861,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;
@@ -914,7 +914,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;
@@ -931,7 +931,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -975,7 +975,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -993,7 +993,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -1045,7 +1045,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;
@@ -1064,7 +1064,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -1148,12 +1148,12 @@ public class VideoServiceImplement implements VideosService{
 			}
 			return total;
 		} catch (SQLException e) {
-			System.out.println(e);
+//			System.out.println(e);
 		}finally{
 			try {
 				con.close();
 			} catch (SQLException e) {
-				System.out.println(e);
+//				System.out.println(e);
 			}
 		}
 		return 0;
@@ -1236,7 +1236,7 @@ public class VideoServiceImplement implements VideosService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return null;
 		}
 		return null;

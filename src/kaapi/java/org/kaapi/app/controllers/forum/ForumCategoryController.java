@@ -105,7 +105,7 @@ public class ForumCategoryController {
 	
 	@RequestMapping( method = RequestMethod.POST)
 	public ResponseEntity<Map<String , Object>> addForumCate(@RequestBody FrmAddForumCategory forumCate){
-		System.out.println(forumCate.getCategoryName());
+//		System.out.println(forumCate.getCategoryName());
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
 			if(forumCateService.addForumCategory(forumCate)){

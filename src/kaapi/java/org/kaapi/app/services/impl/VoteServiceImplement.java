@@ -28,7 +28,7 @@ public class VoteServiceImplement implements VoteService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return 0;
 		}
 		return 0;
@@ -47,7 +47,7 @@ public class VoteServiceImplement implements VoteService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -71,7 +71,7 @@ public class VoteServiceImplement implements VoteService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -89,7 +89,7 @@ public class VoteServiceImplement implements VoteService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;
@@ -108,7 +108,7 @@ public class VoteServiceImplement implements VoteService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e1){
-			System.out.println("Error Convert ID To Integer!");
+//			System.out.println("Error Convert ID To Integer!");
 			return false;
 		}
 		return false;

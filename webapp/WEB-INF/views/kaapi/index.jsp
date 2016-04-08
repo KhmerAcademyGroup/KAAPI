@@ -106,7 +106,7 @@
 <body class="swagger-section">
 <div id='header'>
   <div class="swagger-ui-wrap">
-    <a id="logo" href="http://khmeracademy.org">KA API UI :${kaapi}</a>
+    <a id="logo" href="http://khmeracademy.org">KA API UI</a>
     <form id='api_selector'>
       <div class='input'><input placeholder="${pageContext.request.contextPath}/api-docs" value="${pageContext.request.contextPath}/api-docs" id="input_baseUrl" name="baseUrl" type="hidden"/></div>
       <div class='input'><input placeholder="api_key" value="Basic S0FBUEkhQCMkOiFAIyRLQUFQSQ==" id="input_apiKey" name="apiKey" type="hidden"/></div>
