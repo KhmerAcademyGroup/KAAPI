@@ -318,11 +318,11 @@ public class UserController {
 	@RequestMapping(value="/changepassword" ,method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> changePassword(@RequestBody FrmChangePassword changePassword){
 		Map<String , Object> map = new HashMap<String , Object>();
-		System.out.println("Changed");
+//		System.out.println("Changed");
 		try{
-			System.out.println(changePassword.getNewPassword());
-			System.out.println(changePassword.getOldPassword());
-			System.out.println(Encryption.decode(changePassword.getUserId()));
+//			System.out.println(changePassword.getNewPassword());
+//			System.out.println(changePassword.getOldPassword());
+//			System.out.println(Encryption.decode(changePassword.getUserId()));
 			if(userService.changePassword(changePassword)){
 				map.put("MESSAGE", "Password has been changed.");
 				map.put("STATUS", true);
@@ -404,9 +404,9 @@ public class UserController {
 			){		
 		Map<String , Object> map = new HashMap<String , Object> ();				
 		try{
-			System.out.println("type: "+type);
+//			System.out.println("type: "+type);
 			User u = userService.getUSerEmail(email);
-			System.out.println("Email: "+u.getEmail());
+//			System.out.println("Email: "+u.getEmail());
 			if(u != null){
 					SecureRandom random = new SecureRandom();
 				    byte bytes[] = new byte[20];
@@ -496,7 +496,7 @@ public class UserController {
 	public ResponseEntity<Map<String , Object>> addUserSocial(@RequestBody FrmAddUser user){
 		Map<String , Object> map = new HashMap<String , Object>();
 		try{
-			System.out.println(user.getEmail());
+//			System.out.println(user.getEmail());
 			if(user.getEmail() == null){
 				user.setEmail(user.getScID());
 			}

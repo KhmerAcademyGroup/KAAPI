@@ -159,7 +159,7 @@ public class VideoController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/video/{id}", headers = "Accept=application/json")
 	public ResponseEntity<Map<String, Object>> deleteVideo(@PathVariable("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println(id);
+//		System.out.println(id);
 		if (videoService.delete(id)) {
 			videoService.removeVideoFromCategory(id);
 			map.put("STATUS", true);

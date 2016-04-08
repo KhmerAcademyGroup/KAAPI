@@ -130,7 +130,7 @@ public class APIUserServiceImpl implements APIUserService {
 				ResultSet rs = ps.getGeneratedKeys();
 				if ( rs.next() ) {
 				    // Retrieve the auto generated key(s).
-				    System.out.println(rs.getInt(1));
+//				    System.out.println(rs.getInt(1));
 				    this.addUserRoles(rs.getInt(1), 4);
 				}
 				return true;

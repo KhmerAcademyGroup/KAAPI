@@ -88,15 +88,15 @@ public class UploadFile {
 				stream.write(bytes);
 				stream.close();
 
-				System.out.println(serverFile.getAbsolutePath());
-				System.out.println("You are successfully uploaded file " + fileName);
+//				System.out.println(serverFile.getAbsolutePath());
+//				System.out.println("You are successfully uploaded file " + fileName);
 				pathAndFileName+="/"+fileName;
 				
 			} catch (Exception e) {
-				System.out.println("You are failed to upload " + fileName + " => " + e.getMessage());
+//				System.out.println("You are failed to upload " + fileName + " => " + e.getMessage());
 			}
 		} else {
-			System.out.println("You are failed to upload " + filename + " because the file was empty!");
+//			System.out.println("You are failed to upload " + filename + " because the file was empty!");
 		}
 
 		return pathAndFileName;

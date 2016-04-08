@@ -168,7 +168,7 @@ public class PreCourseServiceImpl implements PreCourseService {
 			ResultSet rs = pstmt.executeQuery();
 			rs.next();
 			int count = rs.getInt("count");
-			System.out.println(count);
+//			System.out.println(count);
 			if(count>0){
 				return true;
 			}

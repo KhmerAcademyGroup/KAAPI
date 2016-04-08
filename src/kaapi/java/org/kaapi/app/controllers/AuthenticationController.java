@@ -89,7 +89,7 @@ public class AuthenticationController {
 		){
 		Map<String, Object> map = new HashMap<String , Object>();
 		try{
-			System.out.println(s.getEmail());
+//			System.out.println(s.getEmail());
 			if(s.getEmail() == null){
 				s.setEmail(s.getScID());
 			}

@@ -6,15 +6,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class BCryptPasswordEncoderTest {
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 			// Encrypt Password
-			System.out.println(new BCryptPasswordEncoder().encode("!@#$KAAPI"));
+//			System.out.println(new BCryptPasswordEncoder().encode("!@#$KAAPI"));
 			
 			//EncryptPassword basic authentication
 		  //  System.out.println(Base64.getUrlEncoder().encodeToString("KAAPI!@#$:!@#$KAAPI".getBytes()));
 
-			/*String str = "61";
+			String str = "61";
 
 
 	        // encode data using BASE64
@@ -25,14 +25,14 @@ public class BCryptPasswordEncoderTest {
 	        String decoded = new String(DatatypeConverter.parseBase64Binary(encoded));
 	        System.out.println("decoded value is \t" + decoded);
 
-	        System.out.println("original value is \t" + str);*/
+	        System.out.println("original value is \t" + str);
 	        
 	        
 	        
 	        
 	        
 	        
-	        /* UUID uuid = UUID.randomUUID();
+	         UUID uuid = UUID.randomUUID();
 			 long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
 			 System.out.println(Long.toString(l,Character.MAX_RADIX));
 			 
@@ -48,14 +48,14 @@ public class BCryptPasswordEncoderTest {
 			 UUID uuid3 = UUID.randomUUID();
 			 long l3 = ByteBuffer.wrap(uuid3.toString().getBytes()).getLong();
 			 System.out.println(Long.toString(l3,Character.MAX_RADIX));
-			 */
 			 
-			 /*UUID uuid4 = UUID.fromString("1");
+			 
+			 UUID uuid4 = UUID.fromString("1");
 			 long l4 = ByteBuffer.wrap(uuid4.toString().getBytes()).getLong();
 			 System.out.println(Long.toString(l4,Character.MAX_RADIX));
-		*/
 		
-	}
+		
+	}*/
 	
 }
 

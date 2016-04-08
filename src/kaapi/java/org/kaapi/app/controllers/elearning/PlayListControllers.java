@@ -645,7 +645,7 @@ public class PlayListControllers {
 //					map.put("RECOMMENDED_VIDEOS", playlistservice.recommendedVideos(userid));
 					map.put("RECOMMENDED_COURSE" , playlistservice.recommendedCourses(userid));
 				}
-				System.out.println("userid " + userid);
+//				System.out.println("userid " + userid);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
@@ -667,7 +667,7 @@ public class PlayListControllers {
 												@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
 		Map<String, Object> map= new HashMap<String, Object>();
 		try{
-			System.out.println(userid);
+//			System.out.println(userid);
 			
 			Pagination pagin = new Pagination();
 			Playlist dto = new Playlist();
@@ -747,7 +747,7 @@ public class PlayListControllers {
 				map.put("RECOMMENDED_VIDEOS", playlistservice.recommendedVideos(userid));
 				map.put("RECOMMENDED_COURSE" , playlistservice.recommendedCourses(userid));
 			}
-			System.out.println("userid " + userid);
+//			System.out.println("userid " + userid);
 		}catch(Exception e){
 			map.put("STATUS", false);
 			map.put("MESSAGE", "ERROR OCCURRING!");

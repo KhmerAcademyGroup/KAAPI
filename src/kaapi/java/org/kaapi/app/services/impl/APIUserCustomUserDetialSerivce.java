@@ -22,10 +22,10 @@ public class APIUserCustomUserDetialSerivce implements UserDetailsService{
 		
 		APIUser user = apiUserService.findUserByUsername(username);
 		if (user == null) {
-			System.out.println("User not found");
+//			System.out.println("User not found");
 			throw new UsernameNotFoundException("User not found");
 		}
-		System.out.println("User ID : " + user.getId());
+//		System.out.println("User ID : " + user.getId());
 //		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
 //				user.getStatus().equals("1"), true, true, true, getGrantedAuthorities(user));
 		return user;

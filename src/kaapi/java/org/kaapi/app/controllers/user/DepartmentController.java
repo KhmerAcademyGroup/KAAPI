@@ -138,7 +138,7 @@ public class DepartmentController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			try{
 				String department = departmentService.findDepartmentById(departmentId);
-				System.out.println(department);
+//				System.out.println(department);
 				if (department == null) {
 					map.put("MESSAGE", "RECORD  NOT FOUND");
 					map.put("STATUS", false);

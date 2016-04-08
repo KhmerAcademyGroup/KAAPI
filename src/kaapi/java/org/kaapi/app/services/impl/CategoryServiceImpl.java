@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
 		List<Category> category = new ArrayList<Category>();
 		Category dto = null;
 		ResultSet rs = null;
-		System.err.println(keyword);
+//		System.err.println(keyword);
 
 		try {
 
@@ -284,7 +284,7 @@ public class CategoryServiceImpl implements CategoryService {
 		return null;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		String str = "2";	
 		 // encode data using BASE64
         String encoded = DatatypeConverter.printBase64Binary(str.getBytes());
@@ -295,7 +295,7 @@ public class CategoryServiceImpl implements CategoryService {
         System.out.println("decoded value is \t" + decoded);
 
         System.out.println("original value is \t" + str);
-	 }
+	 }*/
 
 	@Override
 	public List<Category> listCategory() {

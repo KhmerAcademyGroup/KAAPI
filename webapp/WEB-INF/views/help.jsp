@@ -98,7 +98,7 @@
 
       function log() {
         if ('console' in window) {
-          console.log.apply(console, arguments);
+//           console.log.apply(console, arguments);
         }
       }
   });

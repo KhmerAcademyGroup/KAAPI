@@ -39,7 +39,8 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
                 "KhmerAcademy  REST API" ,
-                "API KEY : "+header+"  (eg. header {'Authorization' , 'Basic "+header+"'} )",
+//                "API KEY : "+header+"  (eg. header {'Authorization' , 'Basic "+header+"'} )",
+                "API KEY : Please contact to WS Developer for Key",
                 "KA API",
                 "info.kshrd@gmail.com",
                 "API License",
