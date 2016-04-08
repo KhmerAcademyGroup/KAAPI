@@ -34,6 +34,7 @@ public class UploadFiles {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String ramdom_file_name="";
 		try {
+			
 			String savePath = request.getSession().getServletContext().getRealPath("/resources/upload/file/"+url);
 			UploadFile fileName = new UploadFile();
 			if (file == null) {
