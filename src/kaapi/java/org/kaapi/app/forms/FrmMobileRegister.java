@@ -1,5 +1,7 @@
 package org.kaapi.app.forms;
 
+import java.sql.Date;
+
 public class FrmMobileRegister {
 
 	private String email;
@@ -13,6 +15,9 @@ public class FrmMobileRegister {
 	private String scType;
 
 	private String userImageUrl;
+	
+	private String phoneNumber;
+	private Date dateOfBirth;
 
 	public String getEmail() {
 		return email;
@@ -84,6 +89,22 @@ public class FrmMobileRegister {
 
 	public void setUserImageUrl(String userImageUrl) {
 		this.userImageUrl = userImageUrl;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }
