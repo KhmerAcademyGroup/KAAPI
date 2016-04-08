@@ -14,6 +14,7 @@ public interface CourseManagementService {
 	 public ArrayList<CourseVideoManagement> listVideosInCourse(String curseId,Pagination pagination);
 	 public Playlist getCourse(String courseId);
 	 public boolean updateCourse(FrmUpdatePlaylist p);
+	 public boolean updateStatus(String courseId, boolean value);
 	
 
 }

@@ -197,5 +197,21 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 		return false;
 	}
 
+	@Override
+	public boolean updateStatus(String courseId, boolean value) {
+		String sql = "UPDATE tblplaylist SET status=? WHERE playlistid=?";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps  =  cnn.prepareStatement(sql);
+		){
+				ps.setBoolean(1, value);
+				ps.setInt(2, Integer.parseInt(Encryption.decode(courseId)));
+				if(ps.executeUpdate() > 0 ) return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	
 }

@@ -117,5 +117,25 @@ public class CourseManagementController {
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
 	}
+	
+	@RequestMapping(value="/update_status/{courseid}/{value}", method = RequestMethod.PUT, headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> updateCourseStatus(@PathVariable("courseid") String courseId,@PathVariable("value") boolean value){
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			if(courseService.updateStatus(courseId, value)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN UPDATED");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN UPDATED");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
 
 }
