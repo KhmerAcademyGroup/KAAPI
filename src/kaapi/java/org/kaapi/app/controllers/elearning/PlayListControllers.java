@@ -5,15 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kaapi.app.entities.Category;
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.entities.Playlist;
 import org.kaapi.app.entities.PlaylistDetail;
 import org.kaapi.app.entities.Video;
+import org.kaapi.app.forms.ForumCommentDTO;
 import org.kaapi.app.forms.FrmCreatePlaylist;
 import org.kaapi.app.forms.FrmUpdatePlaylist;
 import org.kaapi.app.forms.PlaylistDTO;
+import org.kaapi.app.services.ForumCommentService;
 import org.kaapi.app.services.MainCategoryService;
 import org.kaapi.app.services.PlayListServics;
+import org.kaapi.app.services.TutorialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +37,12 @@ public class PlayListControllers {
 	
 	@Autowired
 	MainCategoryService maincategoryService;
+	
+	@Autowired
+	TutorialService tutorialService;
+	
+	@Autowired
+	ForumCommentService forumCommentService;
 	
 	
 	//Toggle playlist: 
@@ -803,6 +813,50 @@ public class PlayListControllers {
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
 			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("STATUS", false);
+			map.put("MESSAGE", "ERROR OCCURRING!");
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value="/main_page", method= RequestMethod.GET, headers= "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listPlaylistsByMainCategoryWithPagin(){
+		Map<String, Object> map= new HashMap<String, Object>();
+		try{
+			
+			Pagination pagin = new Pagination();
+			pagin.setItem(9);
+			pagin.setPage(1);
+			
+			/*pagin.setTotalCount(playlistservice.countPlaylists("empty"));
+			pagin.setTotalPages(pagin.totalPages());*/
+			
+			ArrayList<PlaylistDTO>  courses= (ArrayList<PlaylistDTO>) playlistservice.listPlaylistDTOByMainCategoryWithPagin("empty", pagin);
+			if(!courses.isEmpty()){
+				map.put("LIST_COURSE", courses);
+			}else{
+				map.put("STATUS_COURSE", false);
+			}
+			
+			pagin.setItem(12);
+			ArrayList<Category> categories = tutorialService.listTutorial(pagin);
+			if(!categories.isEmpty()){
+				map.put("LIST_CATEGORIES", categories);
+			}else{
+				map.put("STATUS_CATEGORIES", false);
+			}
+			
+			pagin.setItem(10);
+			List<ForumCommentDTO> question = forumCommentService.listCommentDTO(pagin);
+			if(!categories.isEmpty()){
+				map.put("LIST_QUESTION", question);
+			}else{
+				map.put("STATUS_QUESTION", false);
+			}
+			
 		}catch(Exception e){
 			e.printStackTrace();
 			map.put("STATUS", false);
