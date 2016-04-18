@@ -5,15 +5,27 @@ import javax.xml.bind.DatatypeConverter;
 public class Encryption {
 
 	public static String encode(String code){
-		return DatatypeConverter.printBase64Binary(code.getBytes());
+		String encoded = "";
+		try{
+			encoded = DatatypeConverter.printBase64Binary(code.getBytes());
+		}catch(Exception e){
+//			e.printStackTrace();
+		}
+		return encoded;
 	}
 	
 	public static String decode(String encoded){
-		return  new String(DatatypeConverter.parseBase64Binary(encoded));
+		String decoded = "";
+		try{
+			decoded =  new String(DatatypeConverter.parseBase64Binary(encoded));
+		}catch(Exception e){
+//			e.printStackTrace();
+		}
+		return decoded;
 	}
-	public static void main(String[] args) {
-		System.out.println(new Encryption().encode("1"));
-	}
+//	public static void main(String[] args) {
+//		System.out.println(new Encryption().encode("1"));
+//	}
 	
 	/*MzQx*/
 }

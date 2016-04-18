@@ -828,7 +828,7 @@ public class PlayListControllers {
 		try{
 			
 			Pagination pagin = new Pagination();
-			pagin.setItem(9);
+			pagin.setItem(10);
 			pagin.setPage(1);
 			
 			/*pagin.setTotalCount(playlistservice.countPlaylists("empty"));
