@@ -88,6 +88,11 @@ public class AuthenticationController {
 			@RequestBody FrmAddUser s
 		){
 		Map<String, Object> map = new HashMap<String , Object>();
+		if(s.getEmail() == null){
+			map.put("MESSAGE", "Email is required!.");
+			map.put("STATUS", false);
+			return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);
+		}
 		try{
 //			System.out.println(s.getEmail());
 			if(s.getEmail() == null){
@@ -137,11 +142,7 @@ public class AuthenticationController {
 					}else{
 						map.put("MESSAGE", "User has not been inserted.");
 						map.put("STATUS", false);
-					}
-					
-					
-					
-					
+					}	
 				}
 			}
 		}catch(Exception e){
