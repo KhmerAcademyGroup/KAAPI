@@ -85,7 +85,7 @@ public class AuthenticationController {
 	
 	@RequestMapping(value="/login_with_fb" , method = RequestMethod.POST , headers = "Accept=application/json")
 	public ResponseEntity<Map<String , Object>> loginWithFB(
-			@RequestBody FrmLoginWithSC s
+			@RequestBody FrmAddUser s
 		){
 		Map<String, Object> map = new HashMap<String , Object>();
 		try{
@@ -119,8 +119,29 @@ public class AuthenticationController {
 						map.put("STATUS", false);
 					}
 				}else{
-					map.put("MESSAGE", "Let login fb process!");
+					map.put("MESSAGE", "Let signup with fb process!");
 					map.put("STATUS", true);
+					
+					if(userService.insertUserSC(s)){
+						FrmWebLogin w = new FrmWebLogin(); 
+						w.setEmail(s.getEmail());
+						User u = userService.webLogin(w);
+						if(u != null){
+							map.put("MESSAGE", "User has been inserted. Logined success and logged success!");
+							map.put("STATUS", true);
+							map.put("USER", u);
+						}else{
+							map.put("MESSAGE", "Logined unsuccess! Invalid email, but User has been inserted!");
+							map.put("STATUS", false);
+						}
+					}else{
+						map.put("MESSAGE", "User has not been inserted.");
+						map.put("STATUS", false);
+					}
+					
+					
+					
+					
 				}
 			}
 		}catch(Exception e){

@@ -505,11 +505,11 @@ public class UserController {
 				w.setEmail(user.getEmail());
 				User u = userService.webLogin(w);
 				if(u != null){
-					map.put("MESSAGE", "User has been inserted. Logined success!");
+					map.put("MESSAGE", "User has been inserted. Logined success and logged success!");
 					map.put("STATUS", true);
 					map.put("USER", u);
 				}else{
-					map.put("MESSAGE", "Logined unsuccess! Invalid email!");
+					map.put("MESSAGE", "Logined unsuccess! Invalid email, but User has been inserted!");
 					map.put("STATUS", false);
 				}
 			}else{
