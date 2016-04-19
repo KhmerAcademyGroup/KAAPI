@@ -15,13 +15,21 @@ import org.kaapi.app.forms.FrmUpdatePlaylist;
 import org.kaapi.app.services.CourseManagementService;
 import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@PropertySource(
+		value={"classpath:applications.properties"}
+)
 public class CourseManagementServiceImpl implements CourseManagementService{
 
 	@Autowired
 	DataSource dataSource;
+	
+	@Autowired
+	private Environment environment;
 	
 	@Override
 	public ArrayList<Playlist> listCourses(String playlistName , String mainCategoryId,Pagination pagination) {
@@ -95,26 +103,28 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 	
 	
 	@Override
-	public ArrayList<CourseVideoManagement> listVideosInCourse(String curseId, Pagination pagination) {
+	public ArrayList<CourseVideoManagement> listVideosInCourse(String curseId, Pagination pagination, String videoTitle) {
 		String sql = "SELECT PL.playlistid, PL.playlistname, PL.description playlist_description, PL.thumbnailurl, PL.status playlist_status,"
 				+ " V.videoid , V.videoname, V.description video_description, V.youtubeurl, V.fileurl, V.postdate, V.userid, V.viewcount,"
 				+ " U.USERNAME, CC.CATEGORYNAMES, COUNT(DISTINCT C.VIDEOID) COUNTCOMMENTS, COUNT(DISTINCT VP.*) COUNTVOTEPLUS, COUNT(DISTINCT VM.*) COUNTVOTEMINUS, PD.INDEX ,V.status video_status"
-				+ " FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID"
+				+ " , mc.maincategoryname FROM TBLVIDEO V LEFT JOIN TBLUSER U ON V.USERID=U.USERID"
 				+ " LEFT JOIN (SELECT CV.videoid, string_agg(CT.categoryname, ', ') CATEGORYNAMES FROM TBLCATEGORY CT LEFT JOIN TBLCATEGORYVIDEO CV ON CT.categoryid=CV.categoryid GROUP BY CV.videoid) CC ON V.videoid=CC.videoid"
 				+ " LEFT JOIN TBLCOMMENT C ON V.VIDEOID=C.VIDEOID"
 				+ " LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=1) VP ON V.VIDEOID=VP.VIDEOID"
 				+ " LEFT JOIN (SELECT * FROM TBLVOTE WHERE VOTETYPE=-1) VM ON V.VIDEOID=VM.VIDEOID"
 				+ " INNER JOIN TBLPLAYLISTDETAIL PD ON PD.VIDEOID=V.VIDEOID "
 				+ " INNER JOIN tblplaylist PL ON PD.PLAYLISTID = PL.playlistid"
-				+ " WHERE PD.PLAYLISTID=?"
-				+ " GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES, PD.INDEX , PL.playlistid"
+				+ " LEFT JOIN tblmaincategory mc ON mc.maincategoryid = PL.maincategory"
+				+ " WHERE PD.PLAYLISTID=? and LOWER(V.videoname) LIKE LOWER(?)"
+				+ " GROUP BY V.VIDEOID, U.USERNAME, CC.CATEGORYNAMES, PD.INDEX , PL.playlistid , mc.maincategoryname"
 				+ " ORDER BY PD.INDEX" 
 				+ " offset ? limit ?";
 		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
 			ArrayList<CourseVideoManagement> cArr =new ArrayList<CourseVideoManagement>();
 			ps.setInt(1,Integer.parseInt(Encryption.decode(curseId)));
-			ps.setInt(2,pagination.offset());
-			ps.setInt(3, pagination.getItem());
+			ps.setInt(3,pagination.offset());
+			ps.setInt(4, pagination.getItem());
+			ps.setString(2, "%"+videoTitle+"%");
 			CourseVideoManagement c = null;
 			ResultSet rs = null;
 			rs = ps.executeQuery();
@@ -140,6 +150,7 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 				c.setCountVotePlus(rs.getInt("countvoteminus"));
 				c.setIndex(rs.getInt("index"));
 				c.setVideoStatus(rs.getBoolean("video_status"));
+				c.setMainCategoryName(rs.getString("maincategoryname"));
 				cArr.add(c);
 			}
 			return cArr;
@@ -149,6 +160,21 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 		return null;
 	}
 
+	@Override
+	public int countVideosInCourse(String courseId , String videoTitle) {
+		String sql = "SELECT COUNT(playlistid) FROM tblplaylistdetail WHERE playlistid=?";	
+		try (Connection cnn = dataSource.getConnection(); PreparedStatement ps = cnn.prepareStatement(sql);) {
+			ps.setInt(1,Integer.parseInt(Encryption.decode(courseId)));
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	@Override
 	public Playlist getCourse(String courseId) {
 		String sql = "Select playlistid, playlistname, description ,thumbnailurl, maincategory, bgimage, color, status from tblplaylist where playlistid=?;";
@@ -206,6 +232,37 @@ public class CourseManagementServiceImpl implements CourseManagementService{
 		){
 				ps.setBoolean(1, value);
 				ps.setInt(2, Integer.parseInt(Encryption.decode(courseId)));
+				if(ps.executeUpdate() > 0 ) return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean addCourse(FrmUpdatePlaylist playlist) {
+		String sql = "INSERT INTO TBLPLAYLIST VALUES(nextval('seq_playlist'), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps  =  cnn.prepareStatement(sql);
+		){
+				ps.setString(1, playlist.getPlaylistName());
+				ps.setString(2, playlist.getDescription());
+				ps.setInt(3, Integer.parseInt(Encryption.decode(playlist.getUserId())));
+				if(playlist.getThumbnailUrl().equalsIgnoreCase("default-playlist.jpg")){
+					ps.setString(4, environment.getProperty("KA.path")+"/resources/upload/file/playlist/thumbnail/"+playlist.getThumbnailUrl());
+				}else{
+					ps.setString(7, playlist.getThumbnailUrl());
+				}
+				ps.setBoolean(5,true);
+				ps.setInt(6, Integer.parseInt(Encryption.decode(playlist.getMaincategory())));
+				if(playlist.getBgImage().equalsIgnoreCase("default-bgimage.jpg")){
+					ps.setString(7, environment.getProperty("KA.path")+"/resources/upload/file/maincategory/"+playlist.getBgImage());
+				}else{
+					ps.setString(7, playlist.getBgImage());
+				}
+				ps.setString(8, playlist.getColor());
+				ps.setBoolean(9, playlist.isStatus());
 				if(ps.executeUpdate() > 0 ) return true;
 		}catch(SQLException e){
 			e.printStackTrace();

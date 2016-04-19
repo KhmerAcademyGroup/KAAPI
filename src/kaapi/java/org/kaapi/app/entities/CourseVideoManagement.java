@@ -20,6 +20,7 @@ public class CourseVideoManagement {
 	private int countVotePlus;
 	private int countVoteMinus;
 	private String categoryName;
+	private String mainCategoryName;
 	private int index;
 	private boolean videoStatus;
 	private int countComment;
@@ -147,7 +148,13 @@ public class CourseVideoManagement {
 		this.username = username;
 	}
 	
+	public void setMainCategoryName(String mainCategoryName) {
+		this.mainCategoryName = mainCategoryName;
+	}
 	
+	public String getMainCategoryName() {
+		return mainCategoryName;
+	}
 	
 
 }

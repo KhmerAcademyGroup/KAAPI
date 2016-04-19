@@ -11,10 +11,13 @@ public interface CourseManagementService {
 	
 	 public ArrayList<Playlist> listCourses(String playlistName , String mainCategoryId,Pagination pagination);
 	 public int countCourse(String playlistName , String mainCategoryId);
-	 public ArrayList<CourseVideoManagement> listVideosInCourse(String curseId,Pagination pagination);
+	 public ArrayList<CourseVideoManagement> listVideosInCourse(String curseId,Pagination pagination,String videoTitle);
+	 public int countVideosInCourse(String courseId,String videoTitle);
 	 public Playlist getCourse(String courseId);
 	 public boolean updateCourse(FrmUpdatePlaylist p);
 	 public boolean updateStatus(String courseId, boolean value);
+	 
+	 public boolean addCourse(FrmUpdatePlaylist p);
 	
 
 }

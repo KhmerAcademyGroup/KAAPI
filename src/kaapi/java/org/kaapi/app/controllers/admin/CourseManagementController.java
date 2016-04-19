@@ -56,27 +56,32 @@ public class CourseManagementController {
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
 	}
 	
-	@RequestMapping( method = RequestMethod.GET, value = "/videos/{curseId}", headers = "Accept=application/json")
-	public ResponseEntity<Map<String, Object>> videoCourses(
+	@RequestMapping( method = RequestMethod.GET, value = "/listvideos/{curseId}", headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> listVideosInCourse(
 			@PathVariable("curseId") String curseId,
 			@RequestParam(value ="page", required = false, defaultValue = "1") int page,
-			@RequestParam(value ="item" , required = false , defaultValue = "10") int item){
+			@RequestParam(value ="item" , required = false , defaultValue = "10") int item,
+			@RequestParam(value ="videoTitle" , required = false , defaultValue = "") String videoTitle){
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			Pagination pagin = new Pagination();
 			pagin.setItem(item);
 			pagin.setPage(page);
-			ArrayList<CourseVideoManagement>  arr = courseService.listVideosInCourse(curseId, pagin);
+			pagin.setTotalCount(courseService.countVideosInCourse(curseId,videoTitle));
+			pagin.setTotalPages(pagin.totalPages());
+			ArrayList<CourseVideoManagement>  arr = courseService.listVideosInCourse(curseId, pagin,videoTitle);
 			if(!arr.isEmpty()){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", arr);
+				map.put("PAGINATION", pagin);
 			}else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD NOT FOUND!");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			System.out.println(e.getMessage());
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
 		}
@@ -129,6 +134,26 @@ public class CourseManagementController {
 			else{
 				map.put("STATUS", false);
 				map.put("MESSAGE", "RECORD HAS NOT BEEN UPDATED");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
+	
+	@RequestMapping( method = RequestMethod.POST, headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> addCourse(@RequestBody FrmUpdatePlaylist p){
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			if(courseService.addCourse(p)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "RECORD HAS BEEN ADDED");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "RECORD HAS NOT BEEN ADDED");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
