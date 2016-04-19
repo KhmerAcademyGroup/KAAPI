@@ -1756,7 +1756,7 @@ public class PlayListServiceImpl implements PlayListServics{
 				playlist.setPlaylistId(Encryption.encode(rs.getString("playlistid")));
 				playlist.setPlaylistName(rs.getString("playlistname"));
 				playlist.setDescription(rs.getString("description"));
-				System.out.println(rs.getString("videoid"));
+//				System.out.println(rs.getString("videoid"));
 				playlist.setVideoId(Encryption.encode(rs.getString("videoid")));
 				playlist.setThumbnailUrl(rs.getString("thumbnailurl"));
 				playlists.add(playlist);

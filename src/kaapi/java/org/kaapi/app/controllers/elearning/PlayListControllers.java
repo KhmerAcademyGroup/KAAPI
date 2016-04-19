@@ -804,7 +804,7 @@ public class PlayListControllers {
 			pagin.setTotalPages(pagin.totalPages());
 			
 			ArrayList<PlaylistDTO>  arr= (ArrayList<PlaylistDTO>) playlistservice.listPlaylistDTOByMainCategoryWithPagin(mainCategoryId, pagin);
-			if(!arr.isEmpty()){
+			if(arr != null){
 				map.put("STATUS", true);
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("RES_DATA", arr);
