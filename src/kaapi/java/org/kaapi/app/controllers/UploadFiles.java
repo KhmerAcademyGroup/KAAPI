@@ -50,6 +50,7 @@ public class UploadFiles {
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
 		}

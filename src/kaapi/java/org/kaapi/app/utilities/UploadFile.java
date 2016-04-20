@@ -52,16 +52,16 @@ public class UploadFile {
 					stream.write(bytes);
 					stream.close();
 					
-					System.out.println(serverFile.getAbsolutePath());
+//					System.out.println(serverFile.getAbsolutePath());
 					
 					message += "You are successfully upload file = " + ramdom_file_name + "</br>";
 										
 					
 				}catch(Exception e){
-					//return "You are failed to upload " + name + " => " + e.getMessage();
+					return "You are failed to upload " + name + " => " + e.getMessage();
 				}
 			}else{
-				System.out.println("You are failed to upload "+ ramdom_file_name + " because the file was empty!");
+//				System.out.println("You are failed to upload "+ ramdom_file_name + " because the file was empty!");
 			}
 		}
 		
@@ -88,15 +88,16 @@ public class UploadFile {
 				stream.write(bytes);
 				stream.close();
 
-//				System.out.println(serverFile.getAbsolutePath());
+				System.out.println(serverFile.getAbsolutePath());
 //				System.out.println("You are successfully uploaded file " + fileName);
 				pathAndFileName+="/"+fileName;
 				
 			} catch (Exception e) {
-//				System.out.println("You are failed to upload " + fileName + " => " + e.getMessage());
+				e.printStackTrace();
+				System.out.println("You are failed to upload " + fileName + " => " + e.getMessage());
 			}
 		} else {
-//			System.out.println("You are failed to upload " + filename + " because the file was empty!");
+			System.out.println("You are failed to upload " + filename + " because the file was empty!");
 		}
 
 		return pathAndFileName;
