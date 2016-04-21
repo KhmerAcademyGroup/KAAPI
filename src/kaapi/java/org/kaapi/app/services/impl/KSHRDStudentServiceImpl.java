@@ -15,7 +15,9 @@ import javax.sql.DataSource;
 
 import org.kaapi.app.entities.Pagination;
 import org.kaapi.app.forms.FrmStudentDetail;
+import org.kaapi.app.forms.FrmUpdatePlaylist;
 import org.kaapi.app.services.KSHRDStudentService;
+import org.kaapi.app.utilities.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -44,7 +46,7 @@ public class KSHRDStudentServiceImpl implements KSHRDStudentService{
 				+ " WHERE"
 				+ " LOWER(S.fullname) LIKE LOWER(?) AND" // 1
 				+ " CAST(SC.id as VARCHAR) LIKE ? AND"   // 2 
-				+ " CAST(SS.shift as VARCHAR) LIKE ? AND"// 3  
+				+ " CAST(SS.id as VARCHAR) LIKE ? AND"// 3  
 				+ " CAST(ST.id as VARCHAR) LIKE ? AND"   // 4
 				+ " CAST(SD.ispaid as VARCHAR) LIKE ? AND" // 5
 				+ " CAST(SD.status as VARCHAR) LIKE ? "     // 6
@@ -133,6 +135,51 @@ public class KSHRDStudentServiceImpl implements KSHRDStudentService{
 		}
 		return 0;
 	}
+
+	@Override
+	public boolean updateStatus(FrmStudentDetail d ) {
+		String sql = "UPDATE shortcourse.tblstudent_detail SET status=? WHERE id=?";
+		boolean status = false;
+		if(d.getStatus().equalsIgnoreCase("t")){
+			status = true;
+		}else if(d.getStatus().equalsIgnoreCase("f")){
+			status = false;
+		}
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps  =  cnn.prepareStatement(sql);
+		){
+				ps.setBoolean(1, status );
+				ps.setInt(2, Integer.parseInt(d.getStudentDetailId()));
+				if(ps.executeUpdate() > 0 ) return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateIsPaid(FrmStudentDetail d ) {
+		String sql = "UPDATE shortcourse.tblstudent_detail SET ispaid=? WHERE id=?";
+		boolean isPaid = false;
+		if(d.getIsPaid().equalsIgnoreCase("t")){
+			isPaid = true;
+		}else if(d.getIsPaid().equalsIgnoreCase("f")){
+			isPaid = false;
+		}
+		try(
+				Connection cnn = dataSource.getConnection();
+				PreparedStatement ps  =  cnn.prepareStatement(sql);
+		){
+				ps.setBoolean(1, isPaid );
+				ps.setInt(2, Integer.parseInt(d.getStudentDetailId()));
+				if(ps.executeUpdate() > 0 ) return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 
 	
 }

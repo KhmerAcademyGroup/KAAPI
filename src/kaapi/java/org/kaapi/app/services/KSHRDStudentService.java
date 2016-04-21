@@ -9,5 +9,7 @@ public interface KSHRDStudentService {
 	
 	public List<FrmStudentDetail> listKSHRDStudent(FrmStudentDetail d , Pagination pagin);
 	public int countKSHRDStudent(FrmStudentDetail d);
+	public boolean updateStatus(FrmStudentDetail d );
+	public boolean updateIsPaid(FrmStudentDetail d );
 
 }

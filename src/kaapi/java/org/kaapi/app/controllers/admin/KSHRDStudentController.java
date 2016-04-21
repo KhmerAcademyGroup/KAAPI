@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -78,6 +79,46 @@ public class KSHRDStudentController {
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
 			e.printStackTrace();
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
+	
+	@RequestMapping(value="/update_student_status", method = RequestMethod.PUT, headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> updateStudentStatus(@RequestBody FrmStudentDetail d){
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			if(kshrdService.updateStatus(d)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "STATUS HAS BEEN UPDATED TO TRUE");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "STATUS HAS NOT BEEN UPDATED TO FALSE");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
+	}
+	
+	@RequestMapping(value="/update_student_ispaid", method = RequestMethod.PUT, headers = "Accept=application/json")
+	public ResponseEntity<Map<String, Object>> updateStudentIsPaid(@RequestBody FrmStudentDetail d){
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			if(kshrdService.updateIsPaid(d)){
+				map.put("STATUS", true);
+				map.put("MESSAGE", "ISPAID HAS BEEN UPDATED TO TRUE");
+			}
+			else{
+				map.put("STATUS", false);
+				map.put("MESSAGE", "ISPAID HAS NOT BEEN UPDATED TO FALSE");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			map.put("MESSAGE", "OPERATION FAIL");
+			map.put("STATUS", false);
 		}
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);	
 	}
