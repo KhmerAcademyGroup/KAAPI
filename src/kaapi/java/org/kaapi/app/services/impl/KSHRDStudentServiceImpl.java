@@ -1,5 +1,9 @@
 package org.kaapi.app.services.impl;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -97,7 +101,7 @@ public class KSHRDStudentServiceImpl implements KSHRDStudentService{
 		String betwwen = "";
 		if(d.getRegisteredDate()!= null && d.getUntilDate()!= null){ 
 			betwwen  = " AND SD.register_date BETWEEN '"+d.getRegisteredDate()+"' AND '"+d.getUntilDate()+"' ";
-		} 
+		}
 		String sql = "SELECT"
 				+ " COUNT( SD.id)" 
 				+ " FROM shortcourse.tblstudent_detail SD"
@@ -130,4 +134,5 @@ public class KSHRDStudentServiceImpl implements KSHRDStudentService{
 		return 0;
 	}
 
+	
 }
