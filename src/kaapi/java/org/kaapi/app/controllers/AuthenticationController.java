@@ -46,7 +46,7 @@ public class AuthenticationController {
 				userMap.put("scGmailId",u.getScGmailId());
 				userMap.put("scType", u.getScType());
 				userMap.put("originalID", u.getOriginalID());
-				
+				userMap.put("isConfirmed", u.isConfirmed());
 				map.put("MESSAGE", "Logined success");
 				map.put("STATUS", true);
 				map.put("USER", userMap);
