@@ -476,7 +476,7 @@ public class UserServiceImpl implements UserService {
 		String sql =  " INSERT INTO TBLUSER"
 				+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed, sc_fb_id , sc_tw_id , sc_gm_id, sc_type,phonenumber,dateofbirth)"
 				+ " VALUES"
-				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),?,2,?,?,'1',true,?,?,?,?,?,?);";
+				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),?,2,?,?,'1',false,?,?,?,?,?,?);";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
