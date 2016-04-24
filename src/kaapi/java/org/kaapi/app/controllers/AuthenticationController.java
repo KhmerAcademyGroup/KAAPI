@@ -95,9 +95,9 @@ public class AuthenticationController {
 		}
 		try{
 //			System.out.println(s.getEmail());
-			if(s.getEmail() == null){
-				s.setEmail(s.getScID());
-			}
+//			if(s.getEmail() == null){
+//				s.setEmail(s.getScID());
+//			}
 			FrmWebLogin wFrm = new FrmWebLogin();
 			wFrm.setEmail(s.getEmail());
 			FrmValidateEmail v = new FrmValidateEmail();
