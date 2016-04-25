@@ -50,7 +50,9 @@ public class SendMailTLS {
 
 			if(type.equals("reset")){
 					message.setSubject("Khmer Academy - Reset Password");
-			}
+			}else if(type.equals("fbSignUp")){
+				message.setSubject("Welcome to Khmer Academy");
+		    }
 			else{
 				message.setSubject("Khmer Academy - Email Verification");
 			}
