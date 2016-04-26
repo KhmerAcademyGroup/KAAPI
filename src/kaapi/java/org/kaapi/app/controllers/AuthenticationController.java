@@ -2,6 +2,7 @@ package org.kaapi.app.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.kaapi.app.entities.User;
 import org.kaapi.app.forms.FrmAddUser;
@@ -10,6 +11,7 @@ import org.kaapi.app.forms.FrmMobileLogin;
 import org.kaapi.app.forms.FrmValidateEmail;
 import org.kaapi.app.forms.FrmWebLogin;
 import org.kaapi.app.services.UserService;
+import org.kaapi.app.utilities.SendMailTLS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -98,6 +100,11 @@ public class AuthenticationController {
 //			if(s.getEmail() == null){
 //				s.setEmail(s.getScID());
 //			}
+			String password = UUID.randomUUID()+"";
+//			s.setPassword("905f6087-c786-4911-a434-f30c09bb45bd");
+			
+			System.out.println(s.getPassword());
+			
 			FrmWebLogin wFrm = new FrmWebLogin();
 			wFrm.setEmail(s.getEmail());
 			FrmValidateEmail v = new FrmValidateEmail();
@@ -128,6 +135,9 @@ public class AuthenticationController {
 					map.put("STATUS", true);
 					
 					if(userService.insertUserSC(s)){
+					   
+						new SendMailTLS().sendMaile(s.getEmail(),"fbSignUp", "<h4>You recently registered for Khmer Academy with your facebook account.</h4> <p>If you want to login without facebook account you can use this email and password : <p> <p> Email : "+s.getEmail()+" </p><p> Password : "+password+" </p> ");
+					   
 						FrmWebLogin w = new FrmWebLogin(); 
 						w.setEmail(s.getEmail());
 						User u = userService.webLogin(w);

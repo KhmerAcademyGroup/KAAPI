@@ -415,15 +415,11 @@ public class UserController {
 				    userService.insertHistoryResetPassWord(token,u.getEmail(),type);
 				    if(type.equals("reset")){
 				    	new SendMailTLS().sendMaile(email,type, "<h4>We have just received a password reset request for "+u.getEmail()+" </h4> <h4> Please click <a href='"+environment.getProperty("KA.UI_PATH")+"/reset?code="+token+"'>here</a> to reset your password.  </h4> "
-				    			+ "<h4>If the link does not work for you, please copy and paste the following into your browser address bar:</h4> "+environment.getProperty("KA.UI_PATH")+"/reset?code="+token);
-				    }else if(type.equals("fbSignUp")){
-				    	new SendMailTLS().sendMaile(email,type, "<h4>You recently registered for Khmer Academy with your facebook account.</h4> "
-				    			+ "<h4>If the link does not work for you, please copy and paste the following into your browser address bar:</h4> "+environment.getProperty("KA.UI_PATH")+"/reset?code="+token);
-				    }
-				    else{
+				    			+ "<h4>If the link does not work for you, please copy and paste this link into your browser:</h4><a href='"+environment.getProperty("KA.UI_PATH")+"/reset?code="+token+"'>"+environment.getProperty("KA.UI_PATH")+"/reset?code="+token+"</a>");
+				    }else{
 				    	new SendMailTLS().sendMaile(email,type, "   <h1>Welcome to Khmer Academy</h1> <h4>You recently registered for Khmer Academy. To complete your Khmer Academy registration, please confirm your account.</h4>" 
 				    											+ " <h4><a href='"+environment.getProperty("KA.UI_PATH")+"/confirmemail?code="+token+"'>"+"Click to Confirm Your Accoun</a></h4>"
-				    											+ " <h4>If the link does not work for you, please copy and paste the following into your browser address bar:</h4> "+environment.getProperty("KA.UI_PATH")+"/confirmemail?code="+token);
+				    											+ " <h4>If the link does not work for you, please copy and paste this link into your browser:</h4><a href='"+environment.getProperty("KA.UI_PATH")+"/confirmemail?code="+token+"'>"+environment.getProperty("KA.UI_PATH")+"/confirmemail?code="+token+"</a>");
 				    }
 				map.put("MESSAGE", "RECORD FOUND");
 				map.put("STATUS", true);

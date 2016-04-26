@@ -633,7 +633,7 @@ public class UserServiceImpl implements UserService {
 				+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),?,2,?,?,'1',true,?,?);";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sqlFB)){
 			ps.setString(1, u.getEmail());
-			ps.setString(2, u.getScID()+u.getScType());
+			ps.setString(2, u.getPassword());
 			ps.setString(3, u.getUsername());
 			ps.setString(4, u.getGender());
 			if(u.getImageUrl().equals("")){
