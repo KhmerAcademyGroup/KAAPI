@@ -45,6 +45,7 @@ public interface UserService {
     
     public boolean checkSocialID(String scType , String ID);
 	public boolean insertUserSC(FrmAddUser u);
+	public boolean checkIsFacebookAccount(String email);
 	
 	
 	

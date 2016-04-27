@@ -156,19 +156,28 @@ public class UserController {
 		try{
 			FrmValidateEmail email = new FrmValidateEmail();
 			email.setEmail(user.getEmail());
-			if(userService.validateEmail(email)){
-				map.put("MESSAGE", "Email already exists.");
+			
+			if(userService.checkIsFacebookAccount(user.getEmail())){
+				map.put("MESSAGE", "This email is already registered with Facebook Account.");
 				map.put("EMAIL", email.getEmail());
-				map.put("STATUS", false);
+				map.put("STATUS", "FACEBOOK");
 			}else{
-				if(userService.insertUser(user)){
-					map.put("MESSAGE", "User has been inserted.");
-					map.put("STATUS", true);
-				}else{
-					map.put("MESSAGE", "User has not been inserted.");
+				if(userService.validateEmail(email)){
+					map.put("MESSAGE", "Email already exists.");
+					map.put("EMAIL", email.getEmail());
 					map.put("STATUS", false);
+				}else{
+					if(userService.insertUser(user)){
+						map.put("MESSAGE", "User has been inserted.");
+						map.put("STATUS", true);
+					}else{
+						map.put("MESSAGE", "User has not been inserted.");
+						map.put("STATUS", false);
+					}
 				}
 			}
+			
+			
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);

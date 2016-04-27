@@ -655,6 +655,22 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}	
 	
+	@Override
+	public boolean checkIsFacebookAccount(String email) {
+		String sqlFB = "select count(email) FROM tbluser WHERE email = ? and sc_fb_id NOTNULL";
+		try(Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sqlFB) ){
+			ps.setString(1, email );
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				if(rs.getInt("count")>0){
+					return true;
+				}
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	
 }
