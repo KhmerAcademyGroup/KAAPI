@@ -108,6 +108,12 @@ public class AuthenticationController {
 			wFrm.setEmail(s.getEmail());
 			FrmValidateEmail v = new FrmValidateEmail();
 			v.setEmail(wFrm.getEmail());
+			if(userService.isAccountConfirmed(wFrm.getEmail())){
+				map.put("MESSAGE", "This email is already registered with Khmer Academy, but not yet confirm.");
+				map.put("EMAIL", wFrm.getEmail());
+				map.put("STATUS", "NOTCONFIRMED");
+				return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+			}
 			if(userService.validateEmail(v)){
 				User u = userService.webLogin(wFrm);
 				if(u != null){

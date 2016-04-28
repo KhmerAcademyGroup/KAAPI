@@ -47,6 +47,8 @@ public interface UserService {
 	public boolean insertUserSC(FrmAddUser u);
 	public boolean checkIsFacebookAccount(String email);
 	
+	public boolean isAccountConfirmed(String email);
+	
 	
 	
 }

@@ -156,7 +156,12 @@ public class UserController {
 		try{
 			FrmValidateEmail email = new FrmValidateEmail();
 			email.setEmail(user.getEmail());
-			
+			if(userService.isAccountConfirmed(user.getEmail())){
+				map.put("MESSAGE", "This email is already registered with Khmer Academy, but not yet confirm.");
+				map.put("EMAIL", email.getEmail());
+				map.put("STATUS", "NOTCONFIRMED");
+				return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+			}
 			if(userService.checkIsFacebookAccount(user.getEmail())){
 				map.put("MESSAGE", "This email is already registered with Facebook Account.");
 				map.put("EMAIL", email.getEmail());
@@ -191,26 +196,39 @@ public class UserController {
 		try{
 			FrmValidateEmail email = new FrmValidateEmail();
 			email.setEmail(user.getEmail());
-			if(userService.validateEmail(email)){
-				map.put("MESSAGE", "Email already exists.");
+			if(userService.isAccountConfirmed(user.getEmail())){
+				map.put("MESSAGE", "This email is already registered with Khmer Academy, but not yet confirm.");
 				map.put("EMAIL", email.getEmail());
-				map.put("STATUS", false);
+				map.put("STATUS", "NOTCONFIRMED");
+				return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
+			}
+			if(userService.checkIsFacebookAccount(user.getEmail())){
+				map.put("MESSAGE", "This email is already registered with Facebook Account.");
+				map.put("EMAIL", email.getEmail());
+				map.put("STATUS", "FACEBOOK");
 			}else{
-				
-				String userImageUrl = (user.getUserImageUrl() == null)
-						? request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-								+ request.getContextPath() + "/resources/upload/file/user/avatar.jpg"
-						: user.getUserImageUrl();
-				user.setUserImageUrl(userImageUrl);
-				
-				if(userService.mobileInsertUser(user)){
-					map.put("MESSAGE", "User has been inserted.");
-					map.put("STATUS", true);
-				}else{
-					map.put("MESSAGE", "User has not been inserted.");
+				if(userService.validateEmail(email)){
+					map.put("MESSAGE", "Email already exists.");
+					map.put("EMAIL", email.getEmail());
 					map.put("STATUS", false);
+				}else{
+					
+					String userImageUrl = (user.getUserImageUrl() == null)
+							? request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+									+ request.getContextPath() + "/resources/upload/file/user/avatar.jpg"
+							: user.getUserImageUrl();
+					user.setUserImageUrl(userImageUrl);
+					
+					if(userService.mobileInsertUser(user)){
+						map.put("MESSAGE", "User has been inserted.");
+						map.put("STATUS", true);
+					}else{
+						map.put("MESSAGE", "User has not been inserted.");
+						map.put("STATUS", false);
+					}
 				}
 			}
+			
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
