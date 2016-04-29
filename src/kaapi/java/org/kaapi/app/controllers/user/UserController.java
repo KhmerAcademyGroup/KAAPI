@@ -222,6 +222,8 @@ public class UserController {
 					if(userService.mobileInsertUser(user)){
 						if(sendEmailToUser("signup",user.getEmail())){
 							map.put("MESSAGE_EMAIL", "Email has been sent to " + user.getEmail());
+						}else{
+							map.put("MESSAGE_EMAIL", "Error! Email has not been sent to " + user.getEmail());
 						}
 						map.put("MESSAGE", "User has been inserted.");
 						map.put("STATUS", true);
