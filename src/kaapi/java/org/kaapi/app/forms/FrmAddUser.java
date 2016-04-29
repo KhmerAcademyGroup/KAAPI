@@ -1,5 +1,7 @@
 package org.kaapi.app.forms;
 
+import java.sql.Date;
+
 public class FrmAddUser {
 	
 	private String email;
@@ -9,6 +11,7 @@ public class FrmAddUser {
 	private String universityId;
 	private String departmentId;
 	private String imageUrl;
+	private Date dateofbirth;
 	
 	private String scID;
 	private String scType;
@@ -67,6 +70,12 @@ public class FrmAddUser {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+	public Date getDateofbirth() {
+		return dateofbirth;
+	}
 	
+	public void setDateofbirth(Date dateofbirth) {
+		this.dateofbirth = dateofbirth;
+	}
 	
 }

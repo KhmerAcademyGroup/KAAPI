@@ -157,7 +157,7 @@ public class UserController {
 			FrmValidateEmail email = new FrmValidateEmail();
 			email.setEmail(user.getEmail());
 			if(userService.isAccountConfirmed(user.getEmail())){
-				map.put("MESSAGE", "This email is already registered with Khmer Academy, but not yet confirm.");
+				map.put("MESSAGE", "This email is already registered with Khmer Academy, but not yet activate.");
 				map.put("EMAIL", email.getEmail());
 				map.put("STATUS", "NOTCONFIRMED");
 				return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
@@ -175,6 +175,11 @@ public class UserController {
 					if(userService.insertUser(user)){
 						map.put("MESSAGE", "User has been inserted.");
 						map.put("STATUS", true);
+						if(sendEmailToUser("signup",user.getEmail())){
+							map.put("MESSAGE_EMAIL", "Email has been sent to " + user.getEmail());
+						}else{
+							map.put("MESSAGE_EMAIL", "Error! Email has not been sent to " + user.getEmail());
+						}
 					}else{
 						map.put("MESSAGE", "User has not been inserted.");
 						map.put("STATUS", false);
@@ -186,6 +191,7 @@ public class UserController {
 		}catch(Exception e){
 			map.put("MESSAGE", "OPERATION FAIL");
 			map.put("STATUS", false);
+			e.printStackTrace();
 		}
 		return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 	}

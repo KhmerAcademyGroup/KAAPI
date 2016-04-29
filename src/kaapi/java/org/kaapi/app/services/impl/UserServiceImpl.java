@@ -359,9 +359,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean insertUser(FrmAddUser user) {
 		String sql =  " INSERT INTO TBLUSER"
-					+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed)"
+					+ " (userid,email,password,username,gender,registerdate,userimageurl,usertypeid,universityid,departmentid,userstatus,isconfirmed,dateofbirth)"
 					+ " VALUES"
-					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'"+environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg',2,?,?,'1',false);";
+					+ " (NEXTVAL('seq_user'),?,?,?,?,NOW(),'"+environment.getProperty("KA.path")+"/resources/upload/file/user/avatar.jpg',2,?,?,'1',false,?);";
 		try (Connection cnn = dataSource.getConnection() ; PreparedStatement ps = cnn.prepareStatement(sql)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getPassword());
@@ -369,6 +369,7 @@ public class UserServiceImpl implements UserService {
 			ps.setString(4, user.getGender());
 			ps.setInt(5, Integer.parseInt(Encryption.decode(user.getUniversityId())));
 			ps.setInt(6, Integer.parseInt(Encryption.decode(user.getDepartmentId())));
+			ps.setDate(7, user.getDateofbirth());
 			if(ps.executeUpdate()>0)
 				return true;
 		} catch (SQLException e) {
