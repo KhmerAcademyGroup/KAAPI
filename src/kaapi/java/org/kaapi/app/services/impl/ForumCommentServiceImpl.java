@@ -232,7 +232,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 
 	@Override
 	public List<ForumComment> listQuestionByTitle(String title, Pagination pagination) {
-		String sql =      " SELECT DISTINCT(C1.*), U.Username, COUNT(C2.Commentid) COMMENTCOUNT, COUNT(FV.Commentid) VOTECOUNT"
+		String sql =      " SELECT DISTINCT(C1.*), U.Username,  COUNT(C2.Commentid) COMMENTCOUNT, COUNT(FV.Commentid) VOTECOUNT"
 						+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid"
 						+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid"
 						+ " LEFT JOIN TBLFORUMVOTE FV ON C1.Commentid=FV.Commentid AND FV.Votetype=1"
@@ -300,7 +300,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 	
 	@Override
 	public List<ForumComment> listQuestionByTag(String tag, Pagination pagination) {
-		String sql =      " SELECT DISTINCT(C1.*), U.Username, COUNT(C2.Commentid) COMMENTCOUNT, COUNT(FV.Commentid) VOTECOUNT"
+		String sql =      " SELECT DISTINCT(C1.*), U.Username, U.UserImageUrl,COUNT(C2.Commentid) COMMENTCOUNT, COUNT(FV.Commentid) VOTECOUNT"
 						+ " FROM TBLFORUMCOMMENT C1 LEFT JOIN TBLFORUMCOMMENT C2 ON C1.Commentid=C2.Parentid"
 						+ " INNER JOIN TBLUSER U ON C1.Userid=U.Userid"
 						+ " LEFT JOIN TBLFORUMVOTE FV ON C1.Commentid=FV.Commentid AND FV.Votetype=1"
@@ -338,6 +338,7 @@ public class ForumCommentServiceImpl implements ForumCommentService{
 					dto.setCommentCount(rs.getInt("commentcount"));
 					dto.setUserImageUrl(rs.getString("userimageurl"));
 					dto.setVote(rs.getInt("votecount"));
+					System.out.println(rs.getString("title"));
 					list.add(dto);
 				}
 				return list;

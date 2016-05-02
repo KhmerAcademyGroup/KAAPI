@@ -12,6 +12,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -70,8 +71,12 @@ public class KAAPIWebConfiguraion extends WebMvcConfigurerAdapter {
         return multipartResolver;
     }
 	
-
-	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+				.allowedMethods("GET","POST","DELETE","PUT","OPTIONS","PATCH")
+				.allowedOrigins("*");
+	}
 	
 	
 	
