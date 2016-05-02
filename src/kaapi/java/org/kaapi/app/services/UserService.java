@@ -48,7 +48,7 @@ public interface UserService {
 	public boolean checkIsFacebookAccount(String email);
 	
 	public boolean isAccountConfirmed(String email);
-	
+
 	
 	
 }

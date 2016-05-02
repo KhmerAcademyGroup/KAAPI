@@ -12,6 +12,7 @@ public class FrmAddUser {
 	private String departmentId;
 	private String imageUrl;
 	private Date dateofbirth;
+	private String type;
 	
 	private String scID;
 	private String scType;
@@ -77,5 +78,10 @@ public class FrmAddUser {
 	public void setDateofbirth(Date dateofbirth) {
 		this.dateofbirth = dateofbirth;
 	}
-	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 }

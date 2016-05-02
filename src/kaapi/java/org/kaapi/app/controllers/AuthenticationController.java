@@ -36,7 +36,6 @@ public class AuthenticationController {
 		try{
 			User u = userService.mobileLogin(mobileLoginFrm);
 			if(u != null){
-				
 				userMap.put("userId", u.getUserId());
 				userMap.put("username" , u.getUsername());
 				userMap.put("email", u.getEmail());
