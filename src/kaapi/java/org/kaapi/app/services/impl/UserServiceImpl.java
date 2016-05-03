@@ -213,7 +213,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> searchUserByUsername(String username , Pagination pagination) {
 		String sql = " SELECT  u.userid, u.email, u.password, u.username, u.gender, u.dateofbirth, u.phonenumber,u.registerdate,u.userimageurl, u.universityid , uni.universityname, u.departmentid ,dep.departmentname , u.point, co.coverphoto as coverphotourl,"
-				+ " ut.usertypeid, ut.usertypename  ,"
+				+ " ut.usertypeid, ut.usertypename  ,  u.sc_fb_id , "
 				+ " COUNT(DISTINCT V.VIDEOID) COUNTVIDEOS, COUNT(DISTINCT C.COMMENTID) COUNTCOMMENTS ,"
 				+ " COUNT(DISTINCT pl.PLAYLISTID) COUNTPLAYLIST"
 				+ " FROM TBLUSER u INNER JOIN TBLUSERTYPE ut ON u.USERTYPEID=ut.USERTYPEID"
@@ -259,6 +259,7 @@ public class UserServiceImpl implements UserService {
 				u.setCountComments(rs.getInt("countcomments"));
 				u.setCountPlaylists(rs.getInt("countplaylist"));
 				u.setCountVideos(rs.getInt("countvideos"));
+				u.setScFacebookId(rs.getString("sc_fb_id"));
 				lst.add(u);
 			}
 			return lst;
