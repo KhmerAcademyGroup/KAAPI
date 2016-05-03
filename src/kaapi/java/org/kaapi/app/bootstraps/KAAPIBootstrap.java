@@ -23,6 +23,7 @@ public class KAAPIBootstrap implements WebApplicationInitializer{
 		ServletRegistration.Dynamic dispatcherServlet = 
 				container.addServlet("springDispatcher", new DispatcherServlet(servletContext));
 		
+		
 		dispatcherServlet.addMapping("/");
 		dispatcherServlet.setLoadOnStartup(1);
 	}
