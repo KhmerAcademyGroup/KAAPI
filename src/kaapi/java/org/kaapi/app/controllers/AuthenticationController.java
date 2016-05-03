@@ -114,15 +114,34 @@ public class AuthenticationController {
 				return new ResponseEntity<Map<String , Object>>(map , HttpStatus.OK);	
 			}
 			if(userService.validateEmail(v)){
-				User u = userService.webLogin(wFrm);
-				if(u != null){
-					map.put("MESSAGE", "Logined success!");
-					map.put("STATUS", true);
-					map.put("USER", u);
+				//////////////////////////////////////
+				if(userService.checkSocialID(s.getScID())){
+					User u = userService.webLogin(wFrm);
+					if(u != null){
+						map.put("MESSAGE", "Logined success!");
+						map.put("STATUS", true);
+						map.put("USER", u);
+					}else{
+						map.put("MESSAGE", "Logined unsuccess! Invalid email!");
+						map.put("STATUS", false);
+					}
 				}else{
-					map.put("MESSAGE", "Logined unsuccess! Invalid email!");
-					map.put("STATUS", false);
+					if(userService.isUpdateUserFaceboook(s)){
+						User u = userService.webLogin(wFrm);
+						if(u != null){
+							map.put("MESSAGE", "Logined and Updated user successfully!");
+							map.put("STATUS", true);
+							map.put("USER", u);
+						}else{
+							map.put("MESSAGE", "Invalid email! Logined unsuccess, but updated user unsuccess! ");
+							map.put("STATUS", false);
+						}
+					}else{
+						map.put("MESSAGE", "updated user unsuccess! ");
+						map.put("STATUS", false);
+					}
 				}
+				////////////////////////////////////////////////
 			}else{
 				if(userService.checkSocialID(s.getScType(), s.getScID())){
 					User u = userService.webLogin(wFrm);

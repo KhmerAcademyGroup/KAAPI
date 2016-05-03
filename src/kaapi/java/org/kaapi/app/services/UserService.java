@@ -48,6 +48,9 @@ public interface UserService {
 	public boolean checkIsFacebookAccount(String email);
 	
 	public boolean isAccountConfirmed(String email);
+	
+	public boolean isUpdateUserFaceboook(FrmAddUser user);
+	public boolean checkSocialID(String ID);
 
 	
 	
